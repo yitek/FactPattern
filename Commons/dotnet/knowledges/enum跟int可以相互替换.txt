@@ -1,0 +1,35 @@
+﻿using System;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        enum E { 
+            Fail,
+            Success
+        }
+        static void Main(string[] args)
+        {
+            object o = 1;
+            int i = 1;
+            // int 转 enum
+            E eo = (E)o;
+            E ei = (E)i;
+            Console.WriteLine(eo);
+            Console.WriteLine(ei);
+            //enum 转 int
+            object eObj = ei;
+            Console.WriteLine((int)eo);
+            Console.WriteLine((int)eObj);
+            Console.ReadKey();
+        }
+
+    }
+}
+
+
+Success
+Success
+1
+1

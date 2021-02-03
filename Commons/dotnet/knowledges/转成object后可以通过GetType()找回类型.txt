@@ -1,0 +1,21 @@
+﻿using System;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        
+        static void Main(string[] args)
+        {
+            var t = new DateTime();
+            object obj = t;
+            Console.WriteLine(obj.GetType().FullName);
+            
+            Console.ReadKey();
+        }
+
+    }
+}
+
+返回System.DateTime

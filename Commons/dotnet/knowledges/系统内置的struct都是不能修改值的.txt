@@ -1,0 +1,25 @@
+﻿using System;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        
+        static void Main(string[] args)
+        {
+            var t = new DateTime();
+            object obj = t;
+            var t1 = (DateTime)obj;
+            t1.AddMilliseconds(33300000);
+            Console.WriteLine(t);
+            Console.WriteLine(t1);
+            Console.WriteLine(t==t1);
+            
+            Console.ReadKey();
+        }
+
+    }
+}
+
+//True

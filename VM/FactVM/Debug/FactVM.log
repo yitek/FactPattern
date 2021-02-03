@@ -1,0 +1,3 @@
+﻿  Memory.c
+D:\Yitek\FactPattern\VM\FactVM\Memory.c(53,50): warning C4244: “return”: 从“__int64”转换到“HOST_DWORD”，可能丢失数据
+  FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

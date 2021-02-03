@@ -1,0 +1,3 @@
+﻿  main.c
+D:\Yitek\FactPattern\VM\FactVM\main.c(10,24): warning C4101: “ins”: 未引用的局部变量
+  FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

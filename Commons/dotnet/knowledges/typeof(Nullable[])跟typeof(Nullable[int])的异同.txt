@@ -1,0 +1,30 @@
+﻿Guid 一样，但hashCode不一样
+using System;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var gnullType = typeof(Nullable<>);
+            var intNullType = typeof(int?);
+            Console.WriteLine(gnullType == intNullType);
+            Console.WriteLine(gnullType.GUID);
+            Console.WriteLine(gnullType.GetHashCode());
+
+            Console.WriteLine(intNullType.GUID);
+            Console.WriteLine(intNullType.GetHashCode());
+            Console.ReadKey();
+        }
+
+    }
+}
+
+
+False
+1dacaf51-59b5-3188-bd41-4abf2014296a
+58225482
+1dacaf51-59b5-3188-bd41-4abf2014296a
+54267293

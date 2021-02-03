@@ -1,0 +1,23 @@
+﻿using System;
+using System.Linq.Expressions;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        
+        static void Main(string[] args)
+        {
+            var t = typeof(Nullable<>);
+            var nullableInt = typeof(int?);
+            var makedNullableInt = t.MakeGenericType(typeof(int));
+            Console.WriteLine(nullableInt==makedNullableInt);
+            
+            Console.ReadKey();
+        }
+
+    }
+}
+
+结果True

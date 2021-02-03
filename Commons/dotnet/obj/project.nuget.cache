@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "VqcGCqOGAkV5NG8d/ubgwD10dqaGBg9QFgXotKEsqlm8aWx0cHmb9KxhgdaqJBEWENfSVJBkgLqntoluBnir0g==",
+  "success": true,
+  "projectFilePath": "D:\\Yitek\\FactPattern\\Commons\\dotnet\\FactPattern.Commons.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\YIY\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

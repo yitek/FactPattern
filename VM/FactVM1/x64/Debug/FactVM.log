@@ -1,0 +1,10 @@
+﻿  FactVM.c
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(44,54): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“DWORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(48,53): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“WORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(57,43): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“DWORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(61,42): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“WORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(78,43): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“DWORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(82,42): warning C4312: “类型强制转换”: 从“WORD”转换到更大的“WORD *”
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(113,13): warning C4013: “exit”未定义；假设外部返回 int
+D:\Yitek\FactPattern\VM\FactVM\FactVM.c(167,10): warning C4013: “getch”未定义；假设外部返回 int
+  FactVM.vcxproj -> D:\Yitek\FactPattern\x64\Debug\FactVM.exe

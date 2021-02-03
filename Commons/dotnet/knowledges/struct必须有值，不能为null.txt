@@ -1,0 +1,21 @@
+﻿一下代码会报错
+
+using System;
+
+namespace FactPattern
+{
+    
+    class Program
+    {
+        struct Student {
+            string Name;
+        }
+        static void Main(string[] args)
+        {
+            object obj = null;
+            Student st = (Student)obj;
+            Console.ReadKey();
+        }
+
+    }
+}
