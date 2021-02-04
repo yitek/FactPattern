@@ -1,0 +1,10 @@
+﻿  main.c
+D:\Yitek\FactPattern\VM\FactVM\main.c(24,28): warning C4047: “=”:“int”与“void *”的间接级别不同
+D:\Yitek\FactPattern\VM\FactVM\main.c(46,27): warning C4022: “List_find”: 指针与实参 2 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(48,27): warning C4022: “List_find”: 指针与实参 2 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(51,41): warning C4022: “List_find”: 指针与实参 3 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(54,30): warning C4022: “List_remove”: 指针与实参 2 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(58,27): warning C4022: “List_find”: 指针与实参 2 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(60,27): warning C4022: “List_find”: 指针与实参 2 不匹配
+D:\Yitek\FactPattern\VM\FactVM\main.c(61,49): warning C4311: “类型强制转换”: 从“Student *”到“long”的指针截断
+  FactVM.vcxproj -> D:\Yitek\FactPattern\x64\Debug\FactVM.exe

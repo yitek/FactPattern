@@ -15,27 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FactVM.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="algorithm.c">
+    <ClCompile Include="List.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Memory.c">
+    <ClCompile Include="MAllocator.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="String.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FactVM.h">
+    <ClInclude Include="List.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="algorithm.h">
+    <ClInclude Include="MAllocator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Memory.h">
+    <ClInclude Include="String.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

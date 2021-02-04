@@ -1,3 +1,5 @@
-﻿  Memory.c
-D:\Yitek\FactPattern\VM\FactVM\Memory.c(53,50): warning C4244: “return”: 从“__int64”转换到“HOST_DWORD”，可能丢失数据
+﻿  String.c
+  main.c
+D:\Yitek\FactPattern\VM\FactVM\main.c(75,1): warning C4090: “初始化”: 不同的“const”限定符
+  正在生成代码...
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe
