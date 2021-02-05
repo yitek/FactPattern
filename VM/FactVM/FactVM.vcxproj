@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -139,14 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GCAllocator.c" />
     <ClCompile Include="List.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MAllocator.c" />
     <ClCompile Include="String.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GCAllocator.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="MAllocator.h" />
+    <ClInclude Include="Type.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

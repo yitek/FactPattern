@@ -15,7 +15,8 @@ int main()
 {
     ListTest();
     StringTest();
-    printf("按任意键结束...");
+    unsigned char i = -1;
+    printf("按任意键结束%d...",i);
     return _getch();
 }
 typedef struct  {
