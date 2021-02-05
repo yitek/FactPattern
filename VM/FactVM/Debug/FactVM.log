@@ -1,3 +1,2 @@
-﻿  GCAllocator.c
-D:\Yitek\FactPattern\VM\FactVM\GCAllocator.c(110): warning C4716: “GCAllocator_allocateLarge”: 必须返回一个值
+﻿  AlignAllocator.c
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

@@ -4,8 +4,8 @@
 #include <string.h>
 #include <stdio.h>
 String* String_empty = 0;
-String* String_construct(String* self,const wchar_t* initString, size_t count) {
-	
+String* String_construct(String* self,const wchar_t* initString, size_t count,MAllocator* mallocator) {
+	if (!mallocator)mallocator = MAllocator_default();
 	if (initString) {
 		if (count == 0) {
 			const wchar_t* bf = initString;
@@ -16,7 +16,7 @@ String* String_construct(String* self,const wchar_t* initString, size_t count) {
 		self = String_empty;
 	}
 	else {
-		if(!self)self = (String*)MAllocator_allocate(MAllocator_default(), sizeof(struct TStr) + count * sizeof(wchar_t)+1);
+		if(!self)self = (String*)mallocator->require(mallocator, sizeof(struct TStr) + count * sizeof(wchar_t)+1);
 		self->length = count;
 		wchar_t* buffer = (void*)String_buffer(self);
 		if (initString) {
@@ -42,7 +42,7 @@ const String* String_concat(const String* left,const String* right) {
 	size_t count = leftLen + rightLen;
 	size_t concatedSize = sizeof(struct TStr) + (count+1) * sizeof(wchar_t);
 	//if (concatedSize < sizeof(String)) concatedSize = sizeof(String);
-	String* concatedString = (String*)MAllocator_allocate(MAllocator_default(), concatedSize);
+	String* concatedString = (String*)MAllocator_require(MAllocator_default(), concatedSize);
 	concatedString->length = count;
 	char* buffer = ((char*)concatedString) + sizeof(struct TStr);
 	memcpy(buffer,(char*)left + sizeof(struct TStr),leftLen * sizeof(wchar_t));
@@ -61,7 +61,7 @@ const String* String_substr(const String* str, const size_t start, const size_t 
 	if (c == 0)return String_empty;
 	size_t size = sizeof(struct TStr) +(c+1) * sizeof(wchar_t);
 	//if (size < sizeof(String)) size = sizeof(String);
-	String* substr = (String*)MAllocator_allocate(MAllocator_default(), size);
+	String* substr = (String*)MAllocator_require(MAllocator_default(), size);
 	substr->length = c;
 	const wchar_t* src = (const wchar_t*)((char*)str + sizeof(struct TStr)) + start;
 	wchar_t* dest =(wchar_t*) ((char*)substr + sizeof(struct TStr));
@@ -105,7 +105,7 @@ int String_search(const String* search, const String* pattern, size_t start) {
 	
 	// KMP算法
 	//分配next空间
-	size_t* next = (int*)MAllocator_allocate(MAllocator_default(), plength * sizeof(size_t));
+	size_t* next = (int*)MAllocator_require(MAllocator_default(), plength * sizeof(size_t));
 	getKMPNext(next,p,plength);
 	size_t i = 0; // 主串的位置
 	size_t j = 0; // 模式串的位置

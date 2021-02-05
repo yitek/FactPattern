@@ -7,7 +7,7 @@ typedef struct TStr {
 
 extern String* String_empty;
 
-String* String_construct(String* self, const wchar_t* buffer, size_t count);
+String* String_construct(String* self, const wchar_t* buffer, size_t count,MAllocator* mallocator);
 
 
 
