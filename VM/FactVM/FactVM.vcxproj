@@ -139,17 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AlignAllocator.c" />
-    <ClCompile Include="GCAllocator.c" />
+    <ClCompile Include="GCMemory.c" />
+    <ClCompile Include="List.c" />
+    <ClCompile Include="Memory.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="MAllocator.c" />
     <ClCompile Include="String.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlignAllocator.h" />
-    <ClInclude Include="GCAllocator.h" />
+    <ClInclude Include="GCMemory.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="List.h" />
-    <ClInclude Include="MAllocator.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>

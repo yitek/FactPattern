@@ -1,2 +1,11 @@
 ﻿  AlignAllocator.c
+  GCAllocator.c
+  main.c
+D:\Yitek\FactPattern\VM\FactVM\main.c(81,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\VM\FactVM\main.c(93,44): warning C4133: “函数”: 从“AlignAllocator *”到“TMAllocator *”的类型不兼容
+D:\Yitek\FactPattern\VM\FactVM\main.c(95,44): warning C4133: “函数”: 从“AlignAllocator *”到“TMAllocator *”的类型不兼容
+D:\Yitek\FactPattern\VM\FactVM\main.c(97,44): warning C4133: “函数”: 从“AlignAllocator *”到“TMAllocator *”的类型不兼容
+D:\Yitek\FactPattern\VM\FactVM\main.c(99,41): warning C4133: “函数”: 从“AlignAllocator *”到“TMAllocator *”的类型不兼容
+D:\Yitek\FactPattern\VM\FactVM\main.c(101,44): warning C4133: “函数”: 从“AlignAllocator *”到“TMAllocator *”的类型不兼容
+  正在生成代码...
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

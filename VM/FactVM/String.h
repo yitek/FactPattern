@@ -1,13 +1,13 @@
 #pragma once
-#include "MAllocator.h"
+#include "Memory.h"
 
 typedef struct TStr {
 	size_t length;
 } String;
 
-extern String* String_empty;
+extern const String* String_empty;
 
-String* String_construct(String* self, const wchar_t* buffer, size_t count,MAllocator* mallocator);
+const String* String_construct(String* self, const wchar_t* buffer, size_t count,Memory* mallocator);
 
 
 
@@ -24,4 +24,4 @@ const String* String_concat(const String* self, const String* right);
 const String* String_substr(const String* self, const size_t start,const size_t length);
 int String_search(const String* self, const String* token, size_t at);
 
-void String_print(String* self);
+void String_print(const String* self);

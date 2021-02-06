@@ -1,10 +1,18 @@
 #pragma once
 #include <stddef.h>
+
+#include "List.h"
+#include "String.h"
+
 struct TType;
 struct TTypeMember;
-struct TAny {
+struct TObject {
 	struct TType* type;
-};
+	size_t ref;
+} Object;
+
+
+
 typedef enum  {
 	AssignType_Unknwon,
 	AssignType_ByVal,
@@ -24,8 +32,14 @@ typedef struct  TType {
 	AssignTypes assignType;
 	size_t memberCount;
 	size_t size;
-	struct TAny;
+
+	// 后面接sizeof(MemberObject)*memberCount;
+	// 后面接字符串
 } Type;
+typedef struct TTypeObject {
+	struct TObject;
+	struct TType;
+} TypeObject;
 typedef enum  {
 	MemberType_Field,
 	MemberType_Property,
@@ -38,8 +52,13 @@ typedef struct TTypeMember {
 	size_t offset;
 	TypeMemberKinds kind;
 	struct TType* memberType;
-	struct TAny;
 } TypeMember;
+typedef struct TTypeMemberObject {
+	struct TObject;
+	struct TTypeMember;
+}TypeMemberObject;
+
+
 
 
 

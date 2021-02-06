@@ -18,16 +18,16 @@
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MAllocator.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="String.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GCAllocator.c">
+    <ClCompile Include="Memory.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AlignAllocator.c">
+    <ClCompile Include="GCMemory.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="List.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,19 +35,16 @@
     <ClInclude Include="List.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MAllocator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="String.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GCAllocator.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Type.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="AlignAllocator.h">
+    <ClInclude Include="Memory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GCMemory.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,10 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "MAllocator.h"
-#include "List.h"
-#include "String.h"
-#include "AlignAllocator.h"
+
+#include "GCMemory.h"
 
 void ListTest();
 void StringTest();
@@ -72,33 +70,35 @@ void ListTest() {
 
 void StringTest() {
     printf_s("=====test string====\n");
-    String* str = String_construct(0, L"hello kitty! how kit are you?", 0,0);
+    const String* str = String_construct(0, L"hello kitty! how kit are you?", 0,0);
     printf_s("创建字符串:%ls\n",String_buffer(str));
     String_print(str);
-    String* patten = String_construct(0, L"kit", 0,0);
+    const String* patten = String_construct(0, L"kit", 0,0);
     size_t at = String_search(str,patten,10);
     printf_s("\nsearch\"%ls\" in \"%ls\"\nfound at%d\n", String_buffer(patten), String_buffer(str),at);
-    String* substr = String_substr(str,at,-1);
+    const String* substr = String_substr(str,at,-1);
     printf_s("sub(%d)=%ls\n", at, String_buffer(substr));
 }
 
 void AlignAllocatorTest() {
     printf_s("=====test align Allocator====\n");
-    AlignAllocatorOptions opts;
-    opts.pageSize = 16;
+    GCMemoryOptions opts;
+    opts.pageSize = 24;
     opts.pageCount = 10;
     opts.enableGC = 0;
-    AlignAllocator* allocator = AlignAllocator_construct(0, &opts);
+    Memory* allocator = (Memory*)GCMemory_construct(0, &opts);
     printf_s("创建分配器\n");
-    void* p1 = allocator->require(allocator,4);
+    void* p1 = allocator->require(allocator,4,0);
     printf_s("Require一个单元\n");
-    void* p2 = allocator->require(allocator, 4);
+    void* p2 = allocator->require(allocator, 4, 0);
     printf_s("Require一个单元\n");
-    void* p3 = allocator->require(allocator, 4);
+    void* p3 = allocator->require(allocator, 4, 0);
+    printf_s("Require一个单元\n");
+    void* p4 = allocator->require(allocator, 4, 0);
     printf_s("Require一个单元\n");
     int ok= allocator->release(allocator,p2);
     printf_s("释放一个单元%d\n",ok);
-    void* p4 = allocator->require(allocator, 4);
-    printf_s("分配一个单元,same addr as first time:%d\n",p4==p2);
+    void* p5 = allocator->require(allocator, 4, 0);
+    printf_s("分配一个单元,same addr as first time:%d\n",p5==p2);
 
 }
