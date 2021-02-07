@@ -1,15 +1,16 @@
 #pragma once
-#include <stddef.h>
+#ifndef __TYPE_INCLUDED__ 
+#define __TYPE_INCLUDED__
 
 #include "List.h"
 #include "String.h"
 
 struct TType;
 struct TTypeMember;
-struct TObject {
+typedef struct TGCObject {
 	struct TType* type;
 	size_t ref;
-} Object;
+} GCObject;
 
 
 
@@ -20,24 +21,24 @@ typedef enum  {
 	AssignType_ConstRef
 }AssignTypes;
 typedef enum  {
-	Type_Struct,
-	Type_Class,
-	Type_Interface,
-	Type_Enum,
-	Type_Delegate
+	TypeKind_Struct,
+	TypeKind_Class,
+	TypeKind_Interface,
+	TypeKind_Enum,
+	TypeKind_Delegate
 } TypeKinds;
 typedef struct  TType {
 	void* name;
 	TypeKinds kind;
-	AssignTypes assignType;
-	size_t memberCount;
 	size_t size;
-
+	size_t memberCount;
+	size_t methodCount;
+	//接 methodCount个指针
 	// 后面接sizeof(MemberObject)*memberCount;
 	// 后面接字符串
 } Type;
 typedef struct TTypeObject {
-	struct TObject;
+	struct TGCObject;
 	struct TType;
 } TypeObject;
 typedef enum  {
@@ -54,9 +55,12 @@ typedef struct TTypeMember {
 	struct TType* memberType;
 } TypeMember;
 typedef struct TTypeMemberObject {
-	struct TObject;
+	struct TGCObject;
 	struct TTypeMember;
 }TypeMemberObject;
+
+
+#endif
 
 
 

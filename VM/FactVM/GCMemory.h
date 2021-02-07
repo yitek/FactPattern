@@ -1,12 +1,12 @@
 #pragma once
+#ifndef __GCMEMORY_INCLUDED__ 
+#define __GCMEMORY_INCLUDED__
+
 #include "Memory.h"
 #include "Type.h"
 
 
-typedef struct TGCObject {
-	struct TType* type;
-	size_t ref;
-} GCObject;
+
 
 inline GCObject* GCObject_fromObject(void* obj) {
 	return (GCObject*)((char*)obj - sizeof(GCObject));
@@ -84,3 +84,4 @@ typedef struct TMemoryPage {
 GCMemory* GCMemory_construct(GCMemory* self, const GCMemoryOptions* params);
 void* GCMemory_require(GCMemory* self, size_t size, Type* args);
 int GCMemory_release(GCMemory* self, void* p);
+#endif

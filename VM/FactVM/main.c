@@ -76,7 +76,7 @@ void StringTest() {
     const String* patten = String_construct(0, L"kit", 0,0);
     size_t at = String_search(str,patten,10);
     printf_s("\nsearch\"%ls\" in \"%ls\"\nfound at%d\n", String_buffer(patten), String_buffer(str),at);
-    const String* substr = String_substr(str,at,-1);
+    const String* substr = String_substr(str,at,-1,0);
     printf_s("sub(%d)=%ls\n", at, String_buffer(substr));
 }
 

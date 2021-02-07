@@ -1,14 +1,11 @@
+#include "Memory.h"
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "Memory.h"
-
 
 Memory* Memory_defaultInstance = 0;
 
-inline void* Memory_internalRequire(Memory* self, size_t size,void* args) { return malloc(size); }
+inline void* Memory_internalRequire(Memory* self, size_t size, void* args) { return malloc(size); }
 inline int Memory_internalRelease(Memory* self, void* p) { if (p) { free(p); return 1; } return 0; }
 
 Memory* Memory_construct(Memory* self) {
@@ -26,4 +23,8 @@ Memory* Memory_construct(Memory* self) {
 	self->release = Memory_internalRelease;
 	return self;
 }
+
+
+
+
 

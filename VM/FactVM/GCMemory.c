@@ -374,7 +374,7 @@ void AllignAllocator_markGCObject(GCObject* gcObj) {
 	struct TTypeMember* member = (struct TTypeMember*)((char*)type + sizeof(struct TType));
 	void* obj = GCObject_toObject(gcObj);
 	for (int i = 0, j = type->memberCount; i < j; i++) {
-		if (member->memberType->assignType == AssignType_GCRef) {
+		if (member->memberType->kind == TypeKind_Class) {
 			void* memberObj = (void*)((char*)obj + member->offset);
 			GCObject* memberGCObj = GCObject_fromObject(memberObj);
 			if (memberGCObj->ref == 0 || memberGCObj->ref & markNumber) continue;

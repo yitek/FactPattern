@@ -146,6 +146,7 @@
     <ClCompile Include="String.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="def.h" />
     <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="List.h" />
