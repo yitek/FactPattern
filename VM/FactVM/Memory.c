@@ -8,7 +8,7 @@ Memory* Memory_defaultInstance = 0;
 inline void* Memory_internalRequire(Memory* self, size_t size, void* args) { return malloc(size); }
 inline int Memory_internalRelease(Memory* self, void* p) { if (p) { free(p); return 1; } return 0; }
 
-Memory* Memory_construct(Memory* self) {
+Memory* Memory___construct__(Memory* self) {
 
 	if (!self) {
 		if (Memory_defaultInstance) return self = Memory_defaultInstance;

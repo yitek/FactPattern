@@ -49,16 +49,16 @@ inline size_t Link_count(Link* link) {
 }
 
 
-List* List_construct(List* self, size_t itemSize, Memory* mallocator) {
+List* List___construct__(List* self, void* mmArgs ,Memory* mallocator) {
 	if (!mallocator)mallocator = Memory_default();
-	if (!self) self = mallocator->require(mallocator, sizeof(List),0);
-	self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
+	if (!self) self = mallocator->require(mallocator, sizeof(List), mmArgs);
+	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
 	self->count = 0;
 	return self;
 }
 
-void List_destruct(List* self, Memory* mallocator) {
+void List___destruct__(List* self, Memory* mallocator) {
 	if (!mallocator)mallocator = Memory_default();
 	Link* node = self->head;
 	while (node) {
@@ -67,9 +67,9 @@ void List_destruct(List* self, Memory* mallocator) {
 		node = next;
 	}
 }
-void* List_append(List* self, Memory* mallocator) {
-	if (!mallocator)mallocator = Memory_default();
-	Link* node = (Link*)mallocator->require(mallocator, self->itemSize + sizeof(Link),0);
+void* List_append(List* self,size_t itemSize,void* mmArgs, Memory* memory) {
+	if (!memory)memory = Memory_default();
+	Link* node = (Link*)memory->require(memory, itemSize + sizeof(Link), mmArgs);
 	if (self->tail) self->tail = (self->tail->next = node);
 	else self->head = self->tail = node;
 	node->next = 0;
@@ -88,18 +88,18 @@ void* List_search(List* self, LinkPredicate predicate, void* args) {
 	}
 	return 0;
 }
-int List_remove(List* self, LinkPredicate predicate, void* args, Memory* mallocator) {
+int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory) {
 	Link* prev=0;
 	size_t index = 0;
 	Link* link = self->head;
-	if (args && predicate) {
+	if (param && predicate) {
 		size_t count = 0;
 		while (link) {
-			if (predicate((void*)(link + 1), index, args)) {
+			if (predicate((void*)(link + 1), index, param)) {
 				if (prev) prev->next = link->next;
 				else self->head = link->next;
-				if (!mallocator)mallocator = Memory_default();
-				mallocator->release(mallocator,link);
+				if (!memory)memory = Memory_default();
+				memory->release(memory,link);
 				self->count--;
 				count++;
 			}
@@ -113,8 +113,8 @@ int List_remove(List* self, LinkPredicate predicate, void* args, Memory* malloca
 			if ((size_t)predicate == index) {
 				if (prev) prev->next = link->next;
 				else self->head = link->next;
-				if (!mallocator)mallocator = Memory_default();
-				mallocator->release(mallocator, link);
+				if (!memory)memory = Memory_default();
+				memory->release(memory, link);
 				self->count--;
 				return 1;
 			}

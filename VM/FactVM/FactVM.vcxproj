@@ -139,17 +139,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Array.c" />
     <ClCompile Include="GCMemory.c" />
     <ClCompile Include="List.c" />
     <ClCompile Include="Memory.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="String.c" />
+    <ClCompile Include="TObject1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
     <ClInclude Include="def.h" />
     <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="TObject1.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>

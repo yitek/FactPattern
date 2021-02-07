@@ -1,12 +1,11 @@
 #pragma once
 #ifndef __DEF_INCLUDED__ 
 #define __DEF_INCLUDED__
-//#include <stddef.h>
+
+
 typedef char* addr_t;
 typedef char byte_t;
-typedef short char_t;
-
-
+typedef unsigned short char_t;
 #ifdef _WIN64
 typedef long word_t;
 typedef unsigned long size_t;
@@ -16,5 +15,6 @@ typedef int word_t;
 typedef unsigned int size_t;
 typedef int pointer_t;
 #endif
+
 
 #endif

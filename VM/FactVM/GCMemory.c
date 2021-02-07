@@ -17,7 +17,7 @@ int GCMemory_chunkRelease(MemoryChunk* chunk, GCObject* p, size_t pageSize);
 void AllignAllocator_chunkSweep(MemoryChunk* chunk);
 void AllignAllocator_chunkMark(MemoryChunk* chunk);
 
-GCObject* GCMemory_pageFindIdle(struct TMemoryPage* page, size_t capacity, size_t unitSize);
+GCObject* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize);
 
 void AllignAllocator_markGCObject(GCObject* gcObj);
 
@@ -32,8 +32,8 @@ GCMemory* GCMemory_construct(GCMemory* self, const GCMemoryOptions* params) {
 		exit(1);
 		return 0;
 	}
-	self->require = (void* (*)(struct TMemory* self, size_t size, void* args))GCMemory_require;
-	self->release = (int (*)(struct TMemory* self, void* p)) GCMemory_release;
+	self->require = (void* (*)(Memory* self, size_t size, void* args))GCMemory_require;
+	self->release = (int (*)(Memory* self, void* p)) GCMemory_release;
 	if (params) {
 		memcpy((char*)(&self->pageSize), params, sizeof(GCMemoryOptions));
 	}
@@ -47,11 +47,12 @@ GCMemory* GCMemory_construct(GCMemory* self, const GCMemoryOptions* params) {
 	return self;
 }
 
-
+ 
 void* GCMemory_require(GCMemory* self, size_t size, Type* type) {
 	MemoryChunk* chunk;
-	if (size > 128) chunk = (MemoryChunk*)GCMemory_resolveLargeChunk(self, type->size);
-	else chunk = GCMemory_resolveGeneralChunk(self, type->size);
+	size = (size ? size : type->size) + sizeof(GCObject);
+	if (size > 128) chunk = (MemoryChunk*)GCMemory_resolveLargeChunk(self, size);
+	else chunk = GCMemory_resolveGeneralChunk(self, size);
 
 	GCObject* alignObject = GCMemory_chunkRequire(self, chunk);
 	alignObject->ref = 1;
@@ -162,7 +163,7 @@ LargeMemoryChunk* GCMemory_createLargChunk(LargeMemoryChunk* nextChunk, size_t p
 }
 GCObject* GCMemory_chunkRequire(GCMemory* allocator, MemoryChunk* chunk) {
 	size_t unitSize = chunk->unitSize, pageSize = chunk->pageSize;
-	struct TMemoryPage* page = chunk->headPage;
+	struct stMemoryPage* page = chunk->headPage;
 	GCObject* unit = GCMemory_pageFindIdle(page, chunk->pageCapacity, unitSize);
 
 	if (!unit) {
@@ -182,7 +183,7 @@ GCObject* GCMemory_chunkRequire(GCMemory* allocator, MemoryChunk* chunk) {
 	return unit;
 }
 
-GCObject* GCMemory_pageFindIdle(struct TMemoryPage* page, size_t capacity, size_t unitSize) {
+GCObject* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize) {
 	while (page) {
 		GCObject* unit = (GCObject*)&page->first;
 		size_t c = 0;
@@ -200,7 +201,7 @@ GCObject* GCMemory_pageFindIdle(struct TMemoryPage* page, size_t capacity, size_
 }
 
 GCObject* GCMemory_chunkCreatePage(MemoryChunk* chunk) {
-	struct TMemoryPage* page = (struct TMemoryPage*)malloc(chunk->pageSize);
+	struct stMemoryPage* page = (struct stMemoryPage*)malloc(chunk->pageSize);
 	if (!page) {
 		printf_s("GCAllocator_AllocateChunkPage:无法分配内存");
 		exit(1);
