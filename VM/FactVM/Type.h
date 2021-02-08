@@ -9,12 +9,12 @@
 extern "C" {
 #endif
 
-	struct TType;
-	struct TTypeMember;
-	typedef struct TGCObject {
-		struct TType* type;
+	struct stType;
+	struct stTypeMember;
+	typedef struct stObject {
+		struct stType* type;
 		size_t ref;
-	} GCObject;
+	} Object;
 
 
 
@@ -31,19 +31,15 @@ extern "C" {
 		TypeKind_Enum,
 		TypeKind_Delegate
 	} TypeKinds;
-	typedef struct  TType {
+	typedef struct  stType {
 		void* name;
 		TypeKinds kind;
 		size_t size;
-		size_t memberCount;
-		size_t methodCount;
-		//接 methodCount个指针
-		// 后面接sizeof(MemberObject)*memberCount;
-		// 后面接字符串
+		Array* members;
 	} Type;
-	typedef struct TTypeObject {
-		struct TGCObject;
-		struct TType;
+	typedef struct stTypeObject {
+		struct stObject;
+		struct stType;
 	} TypeObject;
 	typedef enum {
 		MemberType_Field,
@@ -52,15 +48,15 @@ extern "C" {
 		MemberType_Constructor,
 		MemberType_Type
 	} TypeMemberKinds;
-	typedef struct TTypeMember {
+	typedef struct stTypeMember {
 		void* name;
 		size_t offset;
 		TypeMemberKinds kind;
-		struct TType* memberType;
+		struct stType* memberType;
 	} TypeMember;
-	typedef struct TTypeMemberObject {
-		struct TGCObject;
-		struct TTypeMember;
+	typedef struct stTypeMemberObject {
+		struct stObject;
+		struct stTypeMember;
 	}TypeMemberObject;
 
 #ifdef __cplusplus 

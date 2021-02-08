@@ -11,15 +11,15 @@ LargeMemoryChunk* GCMemory_resolveLargeChunk(GCMemory* self, size_t size);
 LargeMemoryChunk* GCMemory_createLargChunk(LargeMemoryChunk* nextChunk, size_t pageSize, size_t unitSize);
 void GCMemory_collectGarbages(GCMemory* self);
 
-GCObject* GCMemory_chunkCreatePage(MemoryChunk* chunk);
-GCObject* GCMemory_chunkRequire(GCMemory* self, MemoryChunk* chunk);
-int GCMemory_chunkRelease(MemoryChunk* chunk, GCObject* p, size_t pageSize);
+Object* GCMemory_chunkCreatePage(MemoryChunk* chunk);
+Object* GCMemory_chunkRequire(GCMemory* self, MemoryChunk* chunk);
+int GCMemory_chunkRelease(MemoryChunk* chunk, Object* p, size_t pageSize);
 void AllignAllocator_chunkSweep(MemoryChunk* chunk);
 void AllignAllocator_chunkMark(MemoryChunk* chunk);
 
-GCObject* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize);
+Object* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize);
 
-void AllignAllocator_markGCObject(GCObject* gcObj);
+void AllignAllocator_markGCObject(Object* gcObj);
 
 
 int GCMemory_printTrace = 1;
@@ -50,11 +50,11 @@ GCMemory* GCMemory_construct(GCMemory* self, const GCMemoryOptions* params) {
  
 void* GCMemory_require(GCMemory* self, size_t size, Type* type) {
 	MemoryChunk* chunk;
-	size = (size ? size : type->size) + sizeof(GCObject);
+	size = (size ? size : type->size) + sizeof(Object);
 	if (size > 128) chunk = (MemoryChunk*)GCMemory_resolveLargeChunk(self, size);
 	else chunk = GCMemory_resolveGeneralChunk(self, size);
 
-	GCObject* alignObject = GCMemory_chunkRequire(self, chunk);
+	Object* alignObject = GCMemory_chunkRequire(self, chunk);
 	alignObject->ref = 1;
 	alignObject->type = 0;
 	return (void*)(alignObject + 1);
@@ -161,10 +161,10 @@ LargeMemoryChunk* GCMemory_createLargChunk(LargeMemoryChunk* nextChunk, size_t p
 
 	return chk;
 }
-GCObject* GCMemory_chunkRequire(GCMemory* allocator, MemoryChunk* chunk) {
+Object* GCMemory_chunkRequire(GCMemory* allocator, MemoryChunk* chunk) {
 	size_t unitSize = chunk->unitSize, pageSize = chunk->pageSize;
 	struct stMemoryPage* page = chunk->headPage;
-	GCObject* unit = GCMemory_pageFindIdle(page, chunk->pageCapacity, unitSize);
+	Object* unit = GCMemory_pageFindIdle(page, chunk->pageCapacity, unitSize);
 
 	if (!unit) {
 		// 没有在已经存在的页中找到空闲单元
@@ -183,16 +183,16 @@ GCObject* GCMemory_chunkRequire(GCMemory* allocator, MemoryChunk* chunk) {
 	return unit;
 }
 
-GCObject* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize) {
+Object* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size_t unitSize) {
 	while (page) {
-		GCObject* unit = (GCObject*)&page->first;
+		Object* unit = (Object*)&page->first;
 		size_t c = 0;
 		while (c < capacity) {
 			if (unit->ref == 0) {
 				return unit;
 			}
 			c++;
-			unit = (GCObject*)((char*)unit + unitSize);
+			unit = (Object*)((char*)unit + unitSize);
 		}
 		//没找到空闲单元，找next 页
 		page = page->next;
@@ -200,18 +200,18 @@ GCObject* GCMemory_pageFindIdle(struct stMemoryPage* page, size_t capacity, size
 	return 0;
 }
 
-GCObject* GCMemory_chunkCreatePage(MemoryChunk* chunk) {
+Object* GCMemory_chunkCreatePage(MemoryChunk* chunk) {
 	struct stMemoryPage* page = (struct stMemoryPage*)malloc(chunk->pageSize);
 	if (!page) {
 		printf_s("GCAllocator_AllocateChunkPage:无法分配内存");
 		exit(1);
 		return 0;
 	}
-	GCObject* unit = (GCObject*)&page->first;
+	Object* unit = (Object*)&page->first;
 	//全部设置为0
 	for (size_t i = 0; i < chunk->pageCapacity; i++) {
 		unit->ref = 0;
-		unit = (GCObject*)((char*)unit + chunk->unitSize);
+		unit = (Object*)((char*)unit + chunk->unitSize);
 	}
 	if (chunk->tailPage) {
 		chunk->tailPage = chunk->tailPage->next = page;
@@ -223,12 +223,12 @@ GCObject* GCMemory_chunkCreatePage(MemoryChunk* chunk) {
 		printf_s("内存页已请求:unitsize=%ld,pagesize=%ld\n", chunk->pageSize, chunk->unitSize);
 	}
 
-	return (GCObject*)&page->first;
+	return (Object*)&page->first;
 
 }
 int GCMemory_release(GCMemory* self, void* obj) {
 	size_t pageSize = self->pageSize;
-	GCObject* p = ((GCObject*)obj) - 1;
+	Object* p = ((Object*)obj) - 1;
 	if (GCMemory_chunkRelease(self->chunk4, p, pageSize)) return 1;
 	if (GCMemory_chunkRelease(self->chunk6, p, pageSize)) return 1;
 	if (GCMemory_chunkRelease(self->chunk8, p, pageSize)) return 1;
@@ -257,7 +257,7 @@ int GCMemory_release(GCMemory* self, void* obj) {
 	}
 	return 0;
 }
-int GCMemory_chunkRelease(MemoryChunk* chunk, GCObject* p, size_t pageSize) {
+int GCMemory_chunkRelease(MemoryChunk* chunk, Object* p, size_t pageSize) {
 	size_t pageSize1 = pageSize - sizeof(MemoryPage);
 	MemoryPage* page = chunk->headPage;
 	while (page) {
@@ -337,7 +337,7 @@ void AllignAllocator_chunkMark(MemoryChunk* chunk) {
 	//mark阶段
 	MemoryPage* page = chunk->headPage;
 	while (page) {
-		GCObject* gcObj = (GCObject*)&page->first;
+		Object* gcObj = (Object*)&page->first;
 		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcObj->ref == 0 || gcObj->ref & markNumber) return;
 			AllignAllocator_markGCObject(gcObj);
@@ -351,7 +351,7 @@ void AllignAllocator_chunkMark(MemoryChunk* chunk) {
 void AllignAllocator_chunkSweep(MemoryChunk* chunk) {
 	MemoryPage* page = chunk->headPage;
 	while (page) {
-		GCObject* gcObj = (GCObject*)&page->first;
+		Object* gcObj = (Object*)&page->first;
 		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcObj->ref | markNumber) {
 				//标记过，有引用,还原引用计数
@@ -365,19 +365,19 @@ void AllignAllocator_chunkSweep(MemoryChunk* chunk) {
 
 	}
 }
-void AllignAllocator_markGCObject(GCObject* gcObj) {
+void AllignAllocator_markGCObject(Object* gcObj) {
 	// idle或已标记
 
 	// 标记可达性
 	gcObj->ref |= markNumber;
 	// 获取到类型
-	struct TType* type = gcObj->type;
-	struct TTypeMember* member = (struct TTypeMember*)((char*)type + sizeof(struct TType));
+	struct stType* type = gcObj->type;
+	struct stTypeMember* member = (struct stTypeMember*)((char*)type + sizeof(struct stType));
 	void* obj = GCObject_toObject(gcObj);
-	for (int i = 0, j = type->memberCount; i < j; i++) {
+	for (int i = 0, j = type->members->length; i < j; i++) {
 		if (member->memberType->kind == TypeKind_Class) {
 			void* memberObj = (void*)((char*)obj + member->offset);
-			GCObject* memberGCObj = GCObject_fromObject(memberObj);
+			Object* memberGCObj = GCObject_fromObject(memberObj);
 			if (memberGCObj->ref == 0 || memberGCObj->ref & markNumber) continue;
 			AllignAllocator_markGCObject(memberGCObj);
 		}

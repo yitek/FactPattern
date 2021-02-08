@@ -32,19 +32,19 @@ int lookupStudent(Student* student,size_t index,void* id) {
 void ListTest() {
     printf_s("=====test list====\n");
     List* list = List___construct__(0, 0,0);
-    printf_s("创建列表:count=%d\n",(int)list->count);
+    printf_s("创建列表:count=%d\n",(int)list->length);
     Student* stu = (Student*)List_append(list,sizeof(Student),0, 0);
-    printf_s("新添一个元素:count=%d\n", (int)list->count);
+    printf_s("新添一个元素:count=%d\n", (int)list->length);
     stu->id = 1;
     memcpy(stu->name, "jack", 5);
     
     stu = (Student*)List_append(list, sizeof(Student), 0, 0);
-    printf_s("新添一个元素:count=%d\n", (int)list->count);
+    printf_s("新添一个元素:count=%d\n", (int)list->length);
     stu->id = 2;
     memcpy(stu->name, "eva", 4);
 
     stu = (Student*)List_append(list, sizeof(Student), 0, 0);
-    printf_s("新添一个元素:count=%d\n", (int)list->count);
+    printf_s("新添一个元素:count=%d\n", (int)list->length);
     stu->id = 3;
     memcpy(stu->name, "rose", 5);
 
@@ -59,7 +59,7 @@ void ListTest() {
     printf_s("获取id=2的元素:id=%d,name=%s\n", stu->id, stu->name);
 
     int c = List_remove(list,(LinkPredicate)1,0,0);
-    printf_s("移除[1]元素:count=%d\n", (int)list->count);
+    printf_s("移除[1]元素:count=%d\n", (int)list->length);
     stu = (Student*)List_search(list, (LinkPredicate)0, 0);
     printf_s("获取0号元素:id=%d,name=%s\n", stu->id, stu->name);
     stu = (Student*)List_search(list, (LinkPredicate)1, 0);

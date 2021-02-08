@@ -1,3 +1,4 @@
+#include <string.h>
 #include "GCMemory.h"
 #include "List.h"
 
@@ -41,12 +42,17 @@ Link* Link_search(Link* link, LinkPredicate predicate, void* args) {
 	return 0;
 }
 
-
-inline size_t Link_count(Link* link) {
-	size_t c = 0;
-	while (link) { link = link->next; c++; }
-	return c;
+size_t Link_count(Link* link) {
+	size_t index = 0;
+	while (link) {
+		link = link->next;
+		index++;
+	}
+	return index;
 }
+
+
+
 
 
 List* List___construct__(List* self, void* mmArgs ,Memory* mallocator) {
@@ -54,7 +60,7 @@ List* List___construct__(List* self, void* mmArgs ,Memory* mallocator) {
 	if (!self) self = mallocator->require(mallocator, sizeof(List), mmArgs);
 	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
-	self->count = 0;
+	self->length = 0;
 	return self;
 }
 
@@ -73,7 +79,7 @@ void* List_append(List* self,size_t itemSize,void* mmArgs, Memory* memory) {
 	if (self->tail) self->tail = (self->tail->next = node);
 	else self->head = self->tail = node;
 	node->next = 0;
-	self->count++;
+	self->length++;
 	return node+1;
 }
 void* List_search(List* self, LinkPredicate predicate, void* args) {
@@ -100,7 +106,7 @@ int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory
 				else self->head = link->next;
 				if (!memory)memory = Memory_default();
 				memory->release(memory,link);
-				self->count--;
+				self->length--;
 				count++;
 			}
 			link = (prev = link)->next;
@@ -115,7 +121,7 @@ int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory
 				else self->head = link->next;
 				if (!memory)memory = Memory_default();
 				memory->release(memory, link);
-				self->count--;
+				self->length--;
 				return 1;
 			}
 			link = (prev = link)->next;
@@ -124,8 +130,20 @@ int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory
 		return 0;
 	}
 }
-inline int List_count(List* self) {
-	return Link_count(self->head);
+
+Array* List_toArray(List* self, Array* target, size_t itemSize, void* mmArgs, Memory* memory) {
+	if (!target) {
+		target = Array___construct__(0, 0, self->length, itemSize, mmArgs, memory);
+	}
+	char* item = (char*)self->head;
+	char* dest = (char*)(target + 1);
+	while (item) {
+		memcpy(dest,item + sizeof(Link),itemSize);
+		item = (char*)(((Link*)item)->next);
+	}
+	return target;
+
 }
+
 
 
