@@ -1,7 +1,9 @@
 #pragma once
+
+#include "Array.h"
 #ifndef __LIST_INCLUDED__ 
 #define __LIST_INCLUDED__
-#include "Array.h"
+
 
 #ifdef __cplusplus 
 extern "C" {

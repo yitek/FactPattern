@@ -6,6 +6,8 @@ inline const TArray* TArray___construct__(TArray* self, const void* buffer, cons
 	return (TArray*)Array___construct__((Array*)self, buffer, count, (const size_t)itemSize, arrType, arrType->memory);
 }
 
+
+
 const TArray* TArray_concat(const TArray* left, const TArray* right) {
 	Type* leftItemType;
 	Type* arrType;
@@ -31,6 +33,42 @@ const TArray* TArray_clip(const TArray* arr, const size_t start, const size_t le
 	Type* arrType = objectInstance(arr)->type;
 	Type* itemType = ((Type*)Array___INDEX__(arrType->generics, 0, sizeof(void*)));
 	return (TArray*)Array_clip((Array*)arr,start,length,itemType->size,arrType,arrType->memory);
+}
+
+const void* TArray___INDEX__(const TArray* self, size_t index) {
+	Type* itemType = ((Type*)Array___INDEX__(objectInstance(self)->type->generics, 0, sizeof(void*)));
+	return (index >= self->length) ? 0 : ((char*)self + sizeof(TArray) + index * itemType->size);
+}
+
+const TString* TString___construct__(TString* self, const char_t* buffer, const size_t count) {
+	Type* strType = objectInstance(self)->type;
+	return (TString*)String___construct__((String*)self, buffer, count, strType,strType->memory);
+}
+
+
+
+const TString* TString_concat(const TString* left, const TString* right) {
+	Type* arrType;
+	if (left) {
+		arrType = objectInstance((void*)left)->type;
+	}
+	else return right;
+	if (right) {
+		arrType = objectInstance(left)->type;
+	}
+	else return left;
+	return (TString*)String_concat((const String*)left, (const String*)right, arrType, arrType->memory);
+
+
+}
+
+const TString* TString_clip(const TString* arr, const size_t start, const size_t length) {
+	Type* arrType = objectInstance(arr)->type;
+	return (TString*)String_clip((String*)arr, start, length, arrType, arrType->memory);
+}
+
+const char_t* TString___INDEX__(const TString* self, size_t index) {
+	return (char_t*)((index >= self->length) ? 0 : ((char*)self + sizeof(TString) + index * sizeof(char_t)));
 }
 
 inline TList* TList___construct__(List* self) {

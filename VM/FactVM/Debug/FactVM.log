@@ -1,2 +1,6 @@
-﻿  List.c
+﻿  GCMemory.c
+  List.c
+  Type.c
+  正在生成代码...
+  main.cpp
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

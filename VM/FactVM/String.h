@@ -18,7 +18,6 @@ extern "C" {
 		size_t c = 0;
 		if (count = -1 && buffer) {while (buffer[c])c++;}
 		return (String*)Array___construct__((Array*)self,buffer,count,sizeof(char_t),mmArgs,memory);
-
 	}
 
 	inline const String* String_concat(const String* left, const String* right, void* mmArgs, Memory* memory) {

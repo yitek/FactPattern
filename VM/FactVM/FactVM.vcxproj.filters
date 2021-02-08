@@ -65,5 +65,11 @@
     <ClInclude Include="Array.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TypeBuilder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

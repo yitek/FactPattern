@@ -152,11 +152,13 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="def.h" />
     <ClInclude Include="GCMemory.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="TObject1.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="TypeBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

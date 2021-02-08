@@ -107,6 +107,20 @@ extern "C" {
 	const TArray* TArray___construct__(TArray* self, const void* buffer, const size_t count);
 	const TArray* TArray_concat(const TArray* left, const TArray* right);
 	const TArray* TArray_clip(const TArray* arr, const size_t start, const size_t length);
+	inline const void* TArray___INDEX__(const TArray* self, size_t index);
+	inline const void* TArray_buffer(const TArray* self) { return (char*)self + sizeof(TArray); }
+
+	typedef struct{
+		struct stString;
+	} TString;
+
+	const TString* TString___construct__(TString* self, const char_t* buffer, size_t count);
+	const TString* TString_concat(const TString* left, const TString* right);
+	const TString* TString_clip(const TString* arr, const size_t start, const size_t length);
+	inline const TString* TString_substr(const TString* arr, const size_t start, const size_t length) { return TString_clip(arr,start,length); }
+	inline int TString_search(const TString* self, const TString* token, size_t at) { return String_search((const String*)self,(const String*)token,at); }
+	const char_t* TString___INDEX__(const TString* self, size_t index);
+	inline const char_t* TString_buffer(const TString* self) { return (const char_t*)((char*)self + sizeof(String)); }
 
 	typedef struct {
 		struct stList;
