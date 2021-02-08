@@ -31,7 +31,7 @@ extern "C" {
 	void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* mallocator);
 	void* List_search(List* self, LinkPredicate predicate, void* param);
 	int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory);
-	Array* toArray(List* self, Array* target, size_t itemSize);
+	Array* List_toArray(List* self, Array* target, const size_t itemSize,void* mmArgs, Memory* mallocator);
 	inline int List_length(List* self) { return self->length; }
 
 #ifdef __cplusplus 

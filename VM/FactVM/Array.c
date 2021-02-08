@@ -29,7 +29,7 @@ const Array* Array_concat(const Array* left, const Array* right, const size_t un
 
 	// 构造一个新数组
 	if (!memory)memory = Memory_default();
-	Array* concatedArray = memory->require(memory, concatedSize, 0);
+	Array* concatedArray = memory->require(memory, concatedSize, mmArgs);
 	concatedArray->length = count;
 
 	// 获取到数组元素的开始位置

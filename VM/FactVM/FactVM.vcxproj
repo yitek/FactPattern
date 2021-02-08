@@ -146,6 +146,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="String.c" />
     <ClCompile Include="TObject1.cpp" />
+    <ClCompile Include="Type.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />

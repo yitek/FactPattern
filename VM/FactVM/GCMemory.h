@@ -8,11 +8,11 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	inline Object* GCObject_fromObject(void* obj) {
-		return (Object*)((char*)obj - sizeof(Object));
+	inline ObjectInstance* GCObject_fromObject(void* obj) {
+		return (ObjectInstance*)((char*)obj - sizeof(ObjectInstance));
 	}
-	inline void* GCObject_toObject(Object* gcObj) {
-		return (void*)((char*)gcObj + sizeof(Object));
+	inline void* GCObject_toObject(ObjectInstance* gcObj) {
+		return (void*)((char*)gcObj + sizeof(ObjectInstance));
 	}
 
 
@@ -79,7 +79,7 @@ extern "C" {
 
 	typedef struct stMemoryPage {
 		struct stMemoryPage* next;
-		Object first;
+		ObjectInstance first;
 	}MemoryPage;
 	GCMemory* GCMemory_construct(GCMemory* self, const GCMemoryOptions* params);
 	void* GCMemory_require(GCMemory* self, size_t size, Type* args);
