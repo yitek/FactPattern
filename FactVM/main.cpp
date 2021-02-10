@@ -3,11 +3,15 @@
 
 #include <iostream>
 #include "tests/TestMemory.h"
+#include "tests/TestArray.h"
+#include "tests/TestString.h"
  
 int main()
 {
     testMemory();
-    std::cout << "press any key to continue...!\n";
+    testArray();
+    testString();
+    std::cout << "press any key to continue...\n";
     std::getchar();
 }
 

@@ -25,7 +25,7 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self, size_t size);
+		void* (*require)(struct stMemory* self, size_t size,void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
@@ -51,7 +51,7 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self, size_t size);
+		void* (*require)(struct stMemory* self, size_t size,void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
@@ -86,7 +86,7 @@ extern "C" {
 	/// <param name="self"></param>
 	inline void Memory___destruct__(Memory* self) { if (self->destruct) self->destruct(self); }
 
-	inline void* Memory_require(Memory* self, size_t size) { return self->require(self, size); }
+	inline void* Memory_require(Memory* self, size_t size,void* type) { return self->require(self, size,type); }
 	inline bool_t Memory_release(Memory* self, void* obj) { return self->release(self, obj); }
 	inline bool_t Memory_weekRelease(Memory* self, void* obj) { return self->release(self, obj); }
 

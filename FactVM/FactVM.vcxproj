@@ -141,12 +141,20 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\Memory.c" />
-    <ClCompile Include="tests\testMemroy.c" />
+    <ClCompile Include="tests\TestArray.c" />
+    <ClCompile Include="tests\TestMemory.c" />
+    <ClCompile Include="tests\TestString.c" />
+    <ClCompile Include="types\Array.c" />
+    <ClCompile Include="types\String.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
-    <ClInclude Include="memories\memory.h" />
+    <ClInclude Include="memories\Memory.h" />
+    <ClInclude Include="tests\TestArray.h" />
     <ClInclude Include="tests\TestMemory.h" />
+    <ClInclude Include="tests\TestString.h" />
+    <ClInclude Include="types\Array.h" />
+    <ClInclude Include="types\String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
