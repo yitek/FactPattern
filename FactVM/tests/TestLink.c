@@ -46,13 +46,13 @@ void testLink() {
 	stu0 = (LinkStudent*)Link_searchByPredicate((Link*)stu, fnLinkPredicate,(void*)15);
 	printf_s("按项(stu2 Jess)搜索: { no: %d, name: %ls, age: %d }\n", stu0->no, stu0->name, stu0->age);
 
-	stu0 = (LinkStudent*)Link_removeByIndex((Link*)stu,1);
+	stu0 = (LinkStudent*)Link_removeByIndex((Link*)stu,1).link;
 	printf_s("链[1]被移除(len=%d): { no: %d, name: %ls, age: %d }\n",Link_length((Link*)stu), stu0->no, stu0->name, stu0->age);
-	stu0 = (LinkStudent*)Link_removeByPredicate((Link*)stu, fnLinkPredicate,(void*)14);
+	stu0 = (LinkStudent*)Link_removeByPredicate((Link*)stu, fnLinkPredicate,(void*)14).link;
 	printf_s("链[age=14]被移除(len=%d): { no: %d, name: %ls, age: %d }\n", Link_length((Link*)stu), stu0->no, stu0->name, stu0->age);
-	stu0 = (LinkStudent*)Link_removeByValue((Link*)stu, 1);
+	stu0 = (LinkStudent*)Link_removeByValue((Link*)stu, 1).link;
 	printf_s("链[value=1]被移除(len=%d)(表头无法被移除..): { no: %d, name: %ls, age: %d }\n", Link_length((Link*)stu), stu0->no, stu0->name, stu0->age);
-	stu0 = (LinkStudent*)Link_removeByItem((Link*)stu,&stu3->no,sizeof(LinkStudent) -sizeof(Link));
+	stu0 = (LinkStudent*)Link_removeByItem((Link*)stu,&stu3->no,sizeof(LinkStudent) -sizeof(Link)).link;
 	printf_s("链[item=4]被移除(len=%d): { no: %d, name: %ls, age: %d }\n", Link_length((Link*)stu), stu0->no, stu0->name, stu0->age);
 
 	mm->release(mm,stu);

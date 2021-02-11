@@ -40,11 +40,13 @@ extern "C" {
 	
 	inline char_t String___INDEXGETER__(const String* self, size_t index) { return index >= self->length ? 0 : *((char_t*)((char*)self + sizeof(String)) + index); }
 
-	int String___EQ__(const String* left, const String* right);
-	int String___GT__(const String* left, const String* right);
-	int String___LT__(const String* left, const String* right);
-	int String___GTE__(const String* left, const String* right);
-	int String___LTE__(const String* left, const String* right);
+	int String_compare(const String* left, const String* right);
+
+	inline bool_t String___EQ__(const String* left, const String* right) { return String_compare(left, right) == 0; }
+	inline bool_t String___GT__(const String* left, const String* right) { return String_compare(left, right) > 0; }
+	inline bool_t String___LT__(const String* left, const String* right) { return String_compare(left, right) < 0; }
+	inline bool_t String___GTE__(const String* left, const String* right) { return String_compare(left, right) >= 0; }
+	inline bool_t String___LTE__(const String* left, const String* right) { return String_compare(left, right) <= 0; }
 
 	void String_cout(const String* self);
 	void String_coutln(const String* self);

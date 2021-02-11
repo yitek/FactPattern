@@ -19,7 +19,7 @@ void List___destruct__(List* self, Memory* mallocator) {
 	Link* node = self->head;
 	while (node) {
 		Link* next = node->next;
-		mallocator->release(mallocator, node);
+		mallocator->weekRelease(mallocator, node);
 		node = next;
 	}
 }
@@ -32,53 +32,48 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	self->length++;
 	return node + 1;
 }
-void* List_search(List* self, LinkPredicate predicate, void* args) {
-	size_t index = 0;
-	Link* link = self->head;
-	while (link) {
-		if ((args && predicate && predicate((void*)(link + 1), index, args)) || (size_t)predicate == index) {
-			return link + 1;
+
+bool_t List_remove(List* self, LinkRemoveResult rrs,Memory* memory) {
+	if (rrs.link) {
+		if (rrs.link == self->head) {
+			self->head = rrs.link->next;
 		}
-		link = link->next;
-		index++;
+		if (rrs.link == self->tail) {
+			self->tail = rrs.prev;
+		}
+		if (!memory) memory = Memory_default();
+		memory->weekRelease(memory, rrs.link);
+		self->length--;
+		return 1;
 	}
 	return 0;
 }
-int List_remove(List* self, LinkPredicate predicate, void* param, Memory* memory) {
-	Link* prev = 0;
-	size_t index = 0;
-	Link* link = self->head;
-	if (param && predicate) {
-		size_t count = 0;
-		while (link) {
-			if (predicate((void*)(link + 1), index, param)) {
-				if (prev) prev->next = link->next;
-				else self->head = link->next;
-				if (!memory)memory = Memory_default();
-				memory->release(memory, link);
-				self->length--;
-				count++;
-			}
-			link = (prev = link)->next;
-			index++;
-		}
-		return count;
+
+bool_t List_removeByIndex(List* self, size_t index, Memory* memory) {
+	if (self->head) {
+		return List_remove(self, Link_removeByIndex((Link*)self,index),memory);
 	}
-	else {
-		while (link) {
-			if ((size_t)predicate == index) {
-				if (prev) prev->next = link->next;
-				else self->head = link->next;
-				if (!memory)memory = Memory_default();
-				memory->release(memory, link);
-				self->length--;
-				return 1;
-			}
-			link = (prev = link)->next;
-			index++;
-		}
-		return 0;
+	return 0;
+}
+bool_t List_removeByValue(List* self, word_t value, Memory* memory) {
+	if (self->head) {
+		return List_remove(self, Link_removeByIndex((Link*)self, value), memory);
 	}
+	return 0;
+}
+
+bool_t List_removeByItem(List* self, void* item,size_t itemSize, Memory* memory) {
+	if (self->head) {
+		return List_remove(self, Link_removeByItem((Link*)self, item,itemSize), memory);
+	}
+	return 0;
+}
+
+bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* searchArgs, Memory* memory) {
+	if (self->head) {
+		return List_remove(self, Link_removeByPredicate((Link*)self, predicate, searchArgs), memory);
+	}
+	return 0;
 }
 
 Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* memory) {

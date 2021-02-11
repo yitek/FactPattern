@@ -74,78 +74,29 @@ void String_coutln(const String* self) {
 	putwchar(L'\n');
 }
 
-int String___EQ__(const String* left, const String* right) {
-	if (left == right) return 1;
-	if (left) {
-		if (right) {
-			if (left->length != right->length) return 0;
-			if (left->length == 0) return 1;
-			char_t* leftBuffer = (char_t*)((char*)left + sizeof(String));
-			char_t* rightBuffer = (char_t*)((char*)right + sizeof(String));
-			for (size_t i = 0, j = left->length; i < j; i++) {
-				if (*leftBuffer != *rightBuffer) return 0;
-				leftBuffer++; rightBuffer++;
-			}
-			return 1;
-		}
-		else return 0;
-	}
-	else {
-		if (right) return 0;
-		return 0;
-	}
-}
 
-int String_GreaterThan(const String* left, const String* right, int eq) {
+int String_compare(const String* left, const String* right) {
+	if (left == right) return 0;
 	if (left) {
 		if (right) {
-			if (eq && left == right) return 1;
 			size_t c = left->length;
 			if (c > right->length) c = right->length;
 			char_t* leftBuffer = (char_t*)((char*)left + sizeof(String));
 			char_t* rightBuffer = (char_t*)((char*)right + sizeof(String));
 			for (int i = 0, j = c; i < j; i++) {
 				if (*leftBuffer > * rightBuffer) return 1;
-				if (*leftBuffer < *rightBuffer) return 0;
+				if (*leftBuffer < *rightBuffer) return -1;
 				leftBuffer++; rightBuffer++;
 			}
-			if (eq && left->length == right->length) return 1;
-			return left->length > right->length;
+			if (left->length == right->length) return 0;
+			return left->length > right->length?1:-1;
 		}
 		else return 1;
 	}
 	else {
-		if (eq) return left == right;
-		return 0;
+		return -1;
 	}
 }
 
-int String_LessThan(const String* left, const String* right, int eq) {
-	if (left) {
-		if (right) {
-			if (eq && left == right) return 1;
-			size_t c = left->length;
-			if (c > right->length) c = right->length;
-			char_t* leftBuffer = (char_t*)((char*)left + sizeof(String));
-			char_t* rightBuffer = (char_t*)((char*)right + sizeof(String));
-			for (int i = 0, j = c; i < j; i++) {
-				if (*leftBuffer < *rightBuffer) return 1;
-				if (*leftBuffer > * rightBuffer) return 0;
-				leftBuffer++; rightBuffer++;
-			}
-			if (eq && left->length == right->length) return 1;
-			return left->length < right->length;
-		}
-		else return 0;
-	}
-	else {
-		if (eq) return left == right;
-		return right ? 1 : 0;
-	}
-}
 
-int String___GT__(const String* left, const String* right) { return String_GreaterThan(left, right, 0); }
-int String___LT__(const String* left, const String* right) { return String_LessThan(left, right, 0); }
-int String___GTE__(const String* left, const String* right) { return String_GreaterThan(left, right, 1); }
-int String___LTE__(const String* left, const String* right) { return String_LessThan(left, right, 1); }
 

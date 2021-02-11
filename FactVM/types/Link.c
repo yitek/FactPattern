@@ -65,32 +65,40 @@ Link* Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam) 
 }
 
 
-Link* Link_removeByIndex(Link* link, size_t index) {
+LinkRemoveResult Link_removeByIndex(Link* link, size_t index) {
+	LinkRemoveResult rs;
 	Link* prev = 0;
 	size_t c = 0;
 	while (link) {
 		if (c == index) {
 			if (prev) prev->next = link->next;
-			return link;
+			rs.link = link;
+			rs.prev = prev;
+			return rs;
 		}
 		link = (prev = link)->next;
 		c++;
 	}
-	return 0;
+	rs.prev = rs.link = 0;
+	return rs;
 }
-Link* Link_removeByValue(Link* link, word_t value) {
+LinkRemoveResult Link_removeByValue(Link* link, word_t value) {
+	LinkRemoveResult rs;
 	Link* prev = 0;
 	while (link) {
 		if (*((word_t*)(link + 1)) == value) {
 			if (prev) prev->next = link->next;
-			return link;
+			rs.link = link; rs.prev = prev;
+			return rs;
 		}
 		link = (prev = link)->next;
 	}
-	return 0;
+	rs.link = rs.prev = 0;
+	return rs;
 }
 
-Link* Link_removeByItem(Link* link, void* compareItem, size_t itemSize) {
+LinkRemoveResult Link_removeByItem(Link* link, void* compareItem, size_t itemSize) {
+	LinkRemoveResult rs;
 	Link* prev = 0;
 	while (link) {
 		bool_t matched = 1;
@@ -102,25 +110,30 @@ Link* Link_removeByItem(Link* link, void* compareItem, size_t itemSize) {
 		}
 		if (matched) {
 			if (prev) prev->next = link->next;
-			return link;
+			rs.prev = prev; rs.link = link;
+			return rs;
 		}
 		link = (prev = link)->next;
 	}
-	return 0;
+	rs.link = rs.prev = 0;
+	return rs;
 }
 
-Link* Link_removeByPredicate(Link* link, LinkPredicate predicate, void* pParam) {
+LinkRemoveResult Link_removeByPredicate(Link* link, LinkPredicate predicate, void* pParam) {
+	LinkRemoveResult rs;
 	size_t c = 0;
 	Link* prev = 0;
 	while (link) {
 		if (predicate(link + 1, c, pParam)) {
 			if (prev) prev->next = link->next;
-			return link;
+			rs.link = link; rs.prev = prev;
+			return rs;
 		}
 		link = (prev = link)->next;
 		c++;
 	}
-	return 0;
+	rs.link = rs.prev = 0;
+	return rs;
 }
 
 
