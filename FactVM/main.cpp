@@ -5,12 +5,14 @@
 #include "tests/TestMemory.h"
 #include "tests/TestArray.h"
 #include "tests/TestString.h"
+#include "tests/TestLink.h"
  
 int main()
 {
     testMemory();
     testArray();
     testString();
+    testLink();
     std::cout << "press any key to continue...\n";
     std::getchar();
 }

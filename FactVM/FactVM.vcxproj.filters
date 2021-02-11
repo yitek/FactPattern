@@ -45,6 +45,15 @@
     <ClInclude Include="tests\TestString.h">
       <Filter>tests</Filter>
     </ClInclude>
+    <ClInclude Include="types\List.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\Link.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\TestLink.h">
+      <Filter>tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +75,15 @@
       <Filter>types</Filter>
     </ClCompile>
     <ClCompile Include="tests\TestString.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="types\List.c">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="types\Link.c">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\TestLink.c">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
