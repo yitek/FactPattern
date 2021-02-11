@@ -83,11 +83,23 @@ Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmAr
 	char* item = (char*)self->head;
 	char* dest = (char*)(target + 1);
 	while (item) {
-		memcpy(dest, item + sizeof(Link), itemSize);
+		Memory_copy(dest, item + sizeof(Link), itemSize);
 		item = (char*)(((Link*)item)->next);
 	}
 	return target;
 
+}
+
+bool_t List___INDEX_value__(List* self, size_t index, word_t value) {
+	void* p = List___INDEXGETER__(self, index);
+	if (!p) return 0;
+	*((word_t*)p) = value;
+	return 1;
+}
+
+bool_t  List___INDEXSETTER__(List* self, size_t index, void* item, size_t itemSize) {
+	void* p = List___INDEXGETER__(self,index);
+	return Memory_copy(p,item,itemSize);
 }
 
 

@@ -90,6 +90,8 @@ extern "C" {
 	inline bool_t Memory_release(Memory* self, void* obj) { return self->release(self, obj); }
 	inline bool_t Memory_weekRelease(Memory* self, void* obj) { return self->release(self, obj); }
 
+	bool_t Memory_copy(void* dest, const void* src, size_t size);
+
 	inline Memory* Memory_default() {
 		return Memory_defaultInstance ? Memory_defaultInstance : (Memory_defaultInstance = Memory___construct__(Memory_defaultInstance));
 

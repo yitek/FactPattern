@@ -1,4 +1,3 @@
-#include <string.h>
 #include "Array.h"
 const Array* Array___construct__(Array* self, const void* buffer, const size_t count, const size_t unitSize, void* mmArgs, Memory* memory) {
 	//如果未分配，就自己申请一片内存
@@ -10,7 +9,7 @@ const Array* Array___construct__(Array* self, const void* buffer, const size_t c
 	self->length = count;
 	// 拷贝原始数据到目标内存
 	if (count && buffer) {
-		memcpy((char*)self + sizeof(Array), buffer, unitSize * count);
+		Memory_copy((char*)self + sizeof(Array), buffer, unitSize * count);
 	}
 	return self;
 }
@@ -35,11 +34,11 @@ const Array* Array_concat(const Array* left, const Array* right, const size_t un
 	// 获取到数组元素的开始位置
 	char* buffer = ((char*)concatedArray) + sizeof(Array);
 	//拷贝左边的数组的元素
-	memcpy(buffer, (char*)left + sizeof(Array), leftLen * unitSize);
+	Memory_copy(buffer, (char*)left + sizeof(Array), leftLen * unitSize);
 	// 移动缓存指针到尾部
 	buffer += leftLen * unitSize;
 	// 拷贝右边的元素
-	memcpy(buffer, (char*)right + sizeof(Array), rightLen * unitSize);
+	Memory_copy(buffer, (char*)right + sizeof(Array), rightLen * unitSize);
 	// 返回连接后的数组
 	return (const Array*)concatedArray;
 }
@@ -63,7 +62,7 @@ const Array* Array_clip(const Array* arr, const size_t start, const size_t count
 	subArray->length = clipCount;
 	const void* src = ((char*)arr + sizeof(Array)) + start * unitSize;
 	void* dest = (char*)subArray + sizeof(Array);
-	memcpy(dest, src, clipCount * unitSize);
+	Memory_copy(dest, src, clipCount * unitSize);
 	return (Array*)subArray;
 }
 

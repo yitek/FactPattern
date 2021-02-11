@@ -1,5 +1,11 @@
 ﻿  main.cpp
+  Memory.c
+  TestArray.c
+  TestLink.c
+  TestMemory.c
   TestString.c
+  Array.c
+  List.c
   String.c
   正在生成代码...
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

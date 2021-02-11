@@ -43,6 +43,8 @@ extern "C" {
 		return self->head && self->length>index ? (void*)(Link_searchByIndex(self->head, index) + 1) : 0;
 	}
 
+	bool_t List___INDEXSETTER__(List* self, size_t index, void* item, size_t itemSize);
+	bool_t List___INDEX_value__(List* self, size_t index, word_t value);
 	Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* mallocator);
 	inline int List_length(List* self) { return self->length; };
 
