@@ -18,6 +18,8 @@
 #ifndef __DEF_INCLUDED__ 
 #define __DEF_INCLUDED__
 
+//是否是开发过程
+#define __DEVALOPMENT__
 
 typedef char* addr_t;
 typedef char byte_t;
@@ -28,11 +30,14 @@ typedef unsigned int bool_t;
 #ifdef _WIN64
 typedef long word_t;
 typedef unsigned long size_t;
-typedef long pointer_t;
+typedef unsigned long pointer_t;
 #else // else _WIN64
 typedef int word_t;
 typedef unsigned int size_t;
-typedef int pointer_t;
+typedef unsigned int pointer_t;
 #endif // endif _WIN64
+
+inline word_t invalidWordValue() { return !((word_t)0); }
+
 
 #endif // end ifndef __DEF_INCLUDED__

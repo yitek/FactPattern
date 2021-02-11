@@ -29,7 +29,7 @@ extern "C" {
 	List* List___construct__(List* self, void* mmArgs, Memory* memory);
 	void List___destruct__(List* self, Memory* memory);
 	void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory);
-	void* List_push(List* self, size_t itemSize, void* mmArgs, Memory* memory);
+	inline void* List_push(List* self, size_t itemSize, void* mmArgs, Memory* memory) { return List_append(self,itemSize,mmArgs,memory); }
 	void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory);
 	inline void* List_searchByIndex(List* self, size_t index) {
 		return self->head && index<self->length ? (void*)(Link_searchByIndex(self->head, index)+1) : 0;
@@ -44,12 +44,41 @@ extern "C" {
 		return self->head ? (void*)(Link_searchByPredicate(self->head, predicate, predicateArgs) + 1) : 0;
 	}
 	
-	bool_t List_removeByIndex(List* self, size_t index,Memory* memory);
-	bool_t List_removeByValue(List* self, word_t value, Memory* memory);
-	bool_t List_removeByItem(List* self, void* item, size_t itemSize, Memory* memory);
-	bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* predicateArgs, Memory* memory);
-	void* List_pop(List* self, Memory* mallocator);
-	void* List_shift(List* self,Memory* memory);
+
+	inline bool_t List_internalRemove(List* self, LinkRemoveResult rrs, Memory* memory) {
+		if (rrs.link) {
+			if (rrs.link == self->head) {
+				self->head = rrs.link->next;
+			}
+			if (rrs.link == self->tail) {
+				self->tail = rrs.prev;
+			}
+			if (!memory) memory = Memory_default();
+			memory->weekRelease(memory, rrs.link);
+			self->length--;
+			return 1;
+		}
+		return 0;
+	}
+
+	inline bool_t List_removeByIndex(List* self, size_t index, Memory* memory) {
+		return (self->head) ? List_internalRemove(self, Link_removeByIndex((Link*)self, index), memory) : 0;
+	}
+	inline bool_t List_removeByValue(List* self, word_t value, Memory* memory) {
+		return(self->head) ? List_internalRemove(self, Link_removeByIndex((Link*)self, value), memory) : 0;
+	}
+
+	inline bool_t List_removeByItem(List* self, void* item, size_t itemSize, Memory* memory) {
+		return (self->head) ? List_internalRemove(self, Link_removeByItem((Link*)self, item, itemSize), memory) : 0;
+	}
+
+	inline bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* searchArgs, Memory* memory) {
+		return (self->head) ? List_internalRemove(self, Link_removeByPredicate((Link*)self, predicate, searchArgs), memory) : 0;
+	}
+	bool_t List_pop(List* self,void* item,size_t itemSize, Memory* memory);
+	bool_t List_shift(List* self, void* item, size_t itemSize, Memory* memory);
+	word_t List_popValue(List* self, Memory* memory);
+	word_t List_shiftValue(List* self, Memory* memory);
 	
 
 	inline void* List___INDEXGETER__(List* self, size_t index) {

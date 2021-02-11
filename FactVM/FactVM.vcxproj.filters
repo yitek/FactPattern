@@ -89,5 +89,8 @@
     <ClCompile Include="tests\TestLink.c">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\TestList.c">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@ void testArray() {
 	students1[2].name = L"Caro";
 	students1[2].age = 11;
 	const Array* first = Array___construct__(0, &students, 3, sizeof(ArrayStudent), 0, 0);
-	printf_s("生成第二个数组(length=%d)\n",Array_length(first));
+	printf_s("生成第1个数组(length=%d)\n",Array_length(first));
 	
 	ArrayStudent* stu = Array_buffer(first);
 	printf_s("获取缓冲区(指向第一个元素的指针): { no: %d, name: %ls, age: %d }\n", stu->no, stu->name, stu->age);

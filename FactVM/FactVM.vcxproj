@@ -143,6 +143,7 @@
     <ClCompile Include="memories\Memory.c" />
     <ClCompile Include="tests\TestLink.c" />
     <ClCompile Include="tests\TestArray.c" />
+    <ClCompile Include="tests\TestList.c" />
     <ClCompile Include="tests\TestMemory.c" />
     <ClCompile Include="tests\TestString.c" />
     <ClCompile Include="types\Array.c" />

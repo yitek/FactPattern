@@ -8,10 +8,9 @@
 ******************************************************/
 
 #pragma once
-#include "../types/Array.h"
-#ifndef __TESTARRAY_INCLUDED__ 
-#define __TESTARRAY_INCLUDED__
-// c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生
+#include "../types/List.h"
+#ifndef __TESTLIST_INCLUDED__ 
+#define __TESTLIST_INCLUDED__
 #ifdef __cplusplus 
 extern "C" {
 #endif
@@ -20,14 +19,14 @@ extern "C" {
 		int no;
 		char_t* name;
 		int age;
-	}ArrayStudent;
+	}ListStudent;
 
-	void testArray();
+	void testList();
 
 #ifdef __cplusplus 
 }//end extern c
 #endif
-#endif //endif __TESTARRAY_INCLUDED__
+#endif //endif __TESTLIST_INCLUDED__
 
 
 

@@ -6,6 +6,7 @@
 #include "tests/TestArray.h"
 #include "tests/TestString.h"
 #include "tests/TestLink.h"
+#include "tests/TestList.h"
  
 int main()
 {
@@ -13,6 +14,7 @@ int main()
     testArray();
     testString();
     testLink();
+    testList();
     std::cout << "press any key to continue...\n";
     std::getchar();
 }
