@@ -155,6 +155,7 @@
     <ClInclude Include="memories\Memory.h" />
     <ClInclude Include="tests\TestArray.h" />
     <ClInclude Include="tests\TestLink.h" />
+    <ClInclude Include="tests\TestList.h" />
     <ClInclude Include="tests\TestMemory.h" />
     <ClInclude Include="tests\TestString.h" />
     <ClInclude Include="types\Array.h" />

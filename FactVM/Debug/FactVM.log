@@ -1,11 +1,3 @@
-﻿  main.cpp
-  Memory.c
-  TestArray.c
-  TestLink.c
-  TestMemory.c
-  TestString.c
-  Array.c
-  List.c
-  String.c
-  正在生成代码...
+﻿  List.c
+D:\Yitek\FactPattern\FactVM\types\List.c(121): warning C4715: “List_pop”: 不是所有的控件路径都返回值
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

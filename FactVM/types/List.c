@@ -32,8 +32,29 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	self->length++;
 	return node + 1;
 }
+void* List_push(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
+	if (!memory)memory = Memory_default();
+	Link* node = (Link*)memory->require(memory, itemSize + sizeof(Link), mmArgs);
+	if (self->tail) {
+		self->tail = (self->tail->next = node);
+	}
+	else self->head = self->tail = node;
+	self->length++;
+	return node;
+}
+void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
+	if (!memory)memory = Memory_default();
+	Link* node = (Link*)memory->require(memory, itemSize + sizeof(Link), mmArgs);
+	if (self->head) {
+		node->next = self->head;
+		self->head = node;
+	}
+	else self->head = self->tail = node;
+	self->length++;
+	return node;
+}
 
-bool_t List_remove(List* self, LinkRemoveResult rrs,Memory* memory) {
+inline bool_t List_remove(List* self, LinkRemoveResult rrs,Memory* memory) {
 	if (rrs.link) {
 		if (rrs.link == self->head) {
 			self->head = rrs.link->next;
@@ -74,6 +95,38 @@ bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* searchA
 		return List_remove(self, Link_removeByPredicate((Link*)self, predicate, searchArgs), memory);
 	}
 	return 0;
+}
+
+void* List_pop(List* self, Memory* memory) {
+	if (!self->tail) return 0;
+	Link* node;
+	if (self->tail == self->head) {
+		node = self->head;
+		self->head = self->tail = 0;
+		self->length--;
+	}
+	else if (self->head->next == self->tail) {
+		node = self->tail;
+		self->tail = self->head;
+		self->length--;
+	}
+	else {
+		LinkRemoveResult rrs = Link_removeByIndex((Link*)self, self->length - 1);
+		node = rrs.link;
+		self->tail = rrs.prev;
+		self->length--;
+	}
+	memory->weekRelease(memory,node);
+	
+}
+void* List_shift(List* self, Memory* memory) {
+	if (!self->head) return 0;
+	Link* node = self->head;
+	if (!(self->head = node->next)) self->tail = 0;
+	memory->weekRelease(memory,node);
+	self->length--;
+	return (void*)(node + 1);
+
 }
 
 Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* memory) {

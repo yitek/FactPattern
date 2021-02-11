@@ -54,6 +54,9 @@
     <ClInclude Include="tests\TestLink.h">
       <Filter>tests</Filter>
     </ClInclude>
+    <ClInclude Include="tests\TestList.h">
+      <Filter>tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
