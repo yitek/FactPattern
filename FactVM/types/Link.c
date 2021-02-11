@@ -25,17 +25,19 @@ Link* Link_searchByIndex(Link* link, size_t index) {
 	}
 	return 0;
 }
-Link* Link_searchByValue(Link* link, word_t value) {
+size_t Link_searchByValue(Link* link, word_t value) {
+	size_t c = 0;
 	while (link) {
 		if (*((word_t*)(link + 1)) == value) {
-			return link;
+			return c;
 		}
-		link = (link)->next;
+		link = (link)->next;c++;
 	}
-	return 0;
+	return -1;
 }
 
-Link* Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
+size_t Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
+	size_t c = 0;
 	while (link) {
 		bool_t matched = 1;
 		word_t* p = (word_t*)compareItem;
@@ -45,23 +47,26 @@ Link* Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
 			p++; lp++;
 		}
 		if (matched) {
-			return link;
+			return c;
 		}
-		link = link->next;
+		link = link->next; c++;
 	}
-	return 0;
+	return -1;
 }
 
-Link* Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam) {
+LinkSearchResult Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam) {
 	size_t c = 0;
+	LinkSearchResult rs;
 	while (link) {
 		if (predicate(link + 1, c, pParam)) {
-			return link;
+			rs.index = c; rs.item = link;
+			return rs;
 		}
 		link = (link)->next;
 		c++;
 	}
-	return 0;
+	rs.index = -1; rs.item = 0;
+	return rs;
 }
 
 

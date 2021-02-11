@@ -25,6 +25,11 @@ extern "C" {
 		Link* link;
 	}LinkRemoveResult;
 
+	typedef struct stLinkSearchResult {
+		size_t index;
+		void* item;
+	}LinkSearchResult;
+
 	typedef bool_t (*LinkPredicate)(void* item, size_t index, void* args);
 
 	size_t Link_length(Link* link);
@@ -33,9 +38,9 @@ extern "C" {
 	Link* Link_append(Link* head, Link* item, Link* tail);
 
 	Link* Link_searchByIndex(Link* link, size_t index);
-	Link* Link_searchByValue(Link* link, word_t value);
-	Link* Link_searchByItem(Link* link, void* compareItem, size_t itemSize);
-	Link* Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam);
+	size_t Link_searchByValue(Link* link, word_t value);
+	size_t Link_searchByItem(Link* link, void* compareItem, size_t itemSize);
+	LinkSearchResult Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam);
 
 
 	LinkRemoveResult Link_removeByIndex(Link* link, size_t index);
