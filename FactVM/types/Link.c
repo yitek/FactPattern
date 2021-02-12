@@ -1,43 +1,28 @@
 #include "Link.h"
 
-inline Link* Link_last(Link* link) {
-	Link* result = 0;
-	while (link) { link = (result = link)->next; }
-	return result;
-}
-Link* Link_append(Link* head, Link* item, Link* tail) {
-	item->next = 0;
-	if (!head) return 0;
-	if (!tail) tail = Link_last(head);
-	tail->next = item;
-	return 0;
-}
 
 
-Link* Link_searchByIndex(Link* link, size_t index) {
-	size_t c = 0;
-	while (link) {
-		if (c == index) {
-			return link;
-		}
-		link = (link)->next;
-		c++;
-	}
-	return 0;
-}
-size_t Link_searchByValue(Link* link, word_t value) {
+
+
+LinkSearchResult Link_searchByValue(Link* link, word_t value) {
+	LinkSearchResult rs;
 	size_t c = 0;
 	while (link) {
 		if (*((word_t*)(link + 1)) == value) {
-			return c;
+			rs.index = c;
+			rs.item = link;
+			return rs;
 		}
 		link = (link)->next;c++;
 	}
-	return -1;
+	rs.index = -1;
+	rs.item = 0;
+	return rs;
 }
 
-size_t Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
+LinkSearchResult Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
 	size_t c = 0;
+	LinkSearchResult rs;
 	while (link) {
 		bool_t matched = 1;
 		word_t* p = (word_t*)compareItem;
@@ -47,11 +32,14 @@ size_t Link_searchByItem(Link* link, void* compareItem, size_t itemSize) {
 			p++; lp++;
 		}
 		if (matched) {
-			return c;
+			rs.item = link;
+			rs.index = c;
+			return rs;
 		}
 		link = link->next; c++;
 	}
-	return -1;
+	rs.item = 0; rs.index = -1;
+	return rs;
 }
 
 LinkSearchResult Link_searchByPredicate(Link* link, LinkPredicate predicate, void* pParam) {

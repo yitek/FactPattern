@@ -90,7 +90,30 @@ extern "C" {
 	inline bool_t Memory_release(Memory* self, void* obj) { return self->release(self, obj); }
 	inline bool_t Memory_weekRelease(Memory* self, void* obj) { return self->release(self, obj); }
 
-	bool_t Memory_copy(void* dest, const void* src, size_t size);
+
+	inline bool_t Memory_copy(void* dest, const void* src, size_t size) {
+
+		if (dest && src && size) {
+			if (size == sizeof(word_t)) {
+				*((word_t*)dest) = *(word_t*)src;
+				return 1;
+			}
+			size_t wordc = size / sizeof(word_t);
+			size_t bytec = size % sizeof(word_t);
+
+			if (wordc)for (size_t i = 0; i < wordc; i++) {
+				*((word_t*)dest) = *((word_t*)src);
+				dest =((word_t*)dest)+1; src = ((word_t*)src)+1;
+			}
+			if (bytec) for (size_t i = 0; i < bytec; i++) {
+				*((byte_t*)dest) = *((byte_t*)src);
+				dest =((byte_t*)dest)+1; src = ((byte_t*)src)+1;
+			}
+			return 1;
+		}
+		return 0;
+
+	}
 
 	inline Memory* Memory_default() {
 		return Memory_defaultInstance ? Memory_defaultInstance : (Memory_defaultInstance = Memory___construct__(Memory_defaultInstance));

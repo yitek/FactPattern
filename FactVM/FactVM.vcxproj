@@ -149,6 +149,7 @@
     <ClCompile Include="types\Array.c" />
     <ClCompile Include="types\Link.c" />
     <ClCompile Include="types\List.c" />
+    <ClCompile Include="types\Set.c" />
     <ClCompile Include="types\String.c" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="types\Array.h" />
     <ClInclude Include="types\Link.h" />
     <ClInclude Include="types\List.h" />
+    <ClInclude Include="types\Set.h" />
     <ClInclude Include="types\String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

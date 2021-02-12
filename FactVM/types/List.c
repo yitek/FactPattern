@@ -5,9 +5,9 @@
 
 
 
-List* List___construct__(List* self, void* mmArgs, Memory* mallocator) {
-	if (!mallocator)mallocator = Memory_default();
-	if (!self) self = mallocator->require(mallocator, sizeof(List), mmArgs);
+List* List___construct__(List* self, void* mmArgs, Memory* memory) {
+	if (!memory)memory = Memory_default();
+	if (!self) self = memory->require(memory, sizeof(List), mmArgs);
 	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
 	self->length = 0;

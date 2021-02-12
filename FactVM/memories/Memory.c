@@ -37,27 +37,3 @@ Memory* Memory___construct__(Memory* self) {
 	self->destruct = Memory_internalDestruct;
 	return self;
 }
-
-bool_t Memory_copy(void* dest, const void* src, size_t size) {
-	
-	if (dest && src && size) {
-		if (size == sizeof(word_t)) {
-			*((word_t*)dest) = *(word_t*)src;
-			return 1;
-		}
-		size_t wordc = size / sizeof(word_t);
-		size_t bytec = size % sizeof(word_t);
-		
-		if (wordc)for (size_t i = 0; i < wordc; i++) {
-			*((word_t*)dest) = *((word_t*)src);
-			((word_t*)dest)++; ((word_t*)src)++;
-		}
-		if (bytec) for (size_t i = 0; i < bytec; i++) {
-			*((byte_t*)dest) = *((byte_t*)src);
-			((byte_t*)dest)++; ((byte_t*)src)++;
-		}
-		return 1;
-	}
-	return 0;
-
-}

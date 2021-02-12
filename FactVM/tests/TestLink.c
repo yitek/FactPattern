@@ -16,7 +16,7 @@ void testLink() {
 	stu->name = L"Jack";
 	stu->age = 12;
 	printf_s("链长:%d\n",Link_length((Link*)stu));
-	size_t index = Link_searchByItem((Link*)stu, &stu->no, sizeof(LinkStudent) - sizeof(Link));
+	size_t index = Link_searchByItem((Link*)stu, &stu->no, sizeof(LinkStudent) - sizeof(Link)).index;
 	printf_s("按item搜索:index=%d,item= { no: %d, name: %ls, age: %d }\n",index ,stu->no, stu->name, stu->age);
 
 
@@ -26,8 +26,8 @@ void testLink() {
 	stu1->age = 13;
 	Link_append((Link*)stu, (Link*)stu1,0);
 	printf_s("链表添加节点(len=%d)\n", Link_length((Link*)stu));
-	index = Link_searchByValue((Link*)stu, 2);
-	printf_s("按值(no=2)搜索: index= %d \n", index);
+	LinkStudent*  stu0 = (LinkStudent*)Link_searchByValue((Link*)stu, 2).item;
+	printf_s("按值(value=2)搜索: { no: %d, name: %ls, age: %d }\n", stu0->no, stu0->name, stu0->age);
 
 	LinkStudent* stu2 = mm->require(mm, sizeof(LinkStudent), 0);
 	stu2->no = 3;
@@ -35,7 +35,7 @@ void testLink() {
 	stu2->age = 14;
 	Link_append((Link*)stu, (Link*)stu2, (Link*)stu1);
 	printf_s("链表添加节点(len=%d)\n", Link_length((Link*)stu));
-	LinkStudent* stu0 = (LinkStudent*)Link_searchByIndex((Link*)stu, 2);
+	 stu0 = (LinkStudent*)Link_searchByIndex((Link*)stu, 2);
 	printf_s("按项(stu2 Petter)搜索: { no: %d, name: %ls, age: %d }\n", stu0->no, stu0->name, stu0->age);
 	LinkStudent* stu3 = mm->require(mm, sizeof(LinkStudent), 0);
 	stu3->no = 4;

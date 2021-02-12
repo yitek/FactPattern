@@ -34,11 +34,17 @@ extern "C" {
 	inline void* List_searchByIndex(List* self, size_t index) {
 		return self->head && index<self->length ? (void*)(Link_searchByIndex(self->head, index)+1) : 0;
 	}
-	inline size_t List_searchByValue(List* self, word_t value) {
-		return self->head ? Link_searchByValue(self->head, value) : -1;
+	inline LinkSearchResult List_searchByValue(List* self, word_t value) {
+		if (self->head) return Link_searchByValue(self->head, value);
+		LinkSearchResult rs;
+		rs.index = -1; rs.item = 0;
+		return rs; 
 	}
-	inline size_t List_searchByItem(List* self, void* item,size_t itemSize) {
-		return self->head ? Link_searchByItem(self->head, item,itemSize) : -1;
+	inline LinkSearchResult List_searchByItem(List* self, void* item,size_t itemSize) {
+		if (self->head) return Link_searchByItem(self->head, item,itemSize);
+		LinkSearchResult rs;
+		rs.index = -1; rs.item = 0;
+		return rs;
 	}
 	inline LinkSearchResult List_searchByPredicate(List* self, LinkPredicate predicate, void* predicateArgs) {
 		LinkSearchResult rs;
