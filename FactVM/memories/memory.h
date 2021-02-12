@@ -25,18 +25,24 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self, size_t size,void* type);
+		void* (*require)(size_t size,void* type);
+		void* (*require1)(size_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
 		/// </summary>
-		bool_t (*release)(struct stMemory* self, void* p);
+		bool_t (*release)(void* p);
+
 		/// <summary>
-		/// 弱释放内存
-		/// 在malloc时，跟强释放release是一致的
-		/// 但在垃圾回收内存分配时，弱释放只是减少了引用计数
+		/// 增加引用
+		/// 在malloc时，是个空函数
 		/// </summary>
-		bool_t (*weekRelease)(struct stMemory* self, void* p);
+		bool_t(*increase)(void* p);
+		/// <summary>
+		/// 减少引用
+		/// 在malloc时，是个空函数
+		/// </summary>
+		bool_t (*decrease)(void* p);
 		/// <summary>
 		///  析构函数，内存管理器撤销时调用
 		/// </summary>
@@ -51,18 +57,24 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self, size_t size,void* type);
+		void* (*require)(size_t size,void* type);
+		void* (*require1)(size_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
 		/// </summary>
-		bool_t(*release)(struct stMemory* self, void* p);
+		bool_t(*release)(void* p);
+		/// <summary>
+		/// 增加引用
+		/// 在malloc时，是个空函数
+		/// </summary>
+		bool_t(*increase)(void* p);
 		/// <summary>
 		/// 弱释放内存
 		/// 在malloc时，跟强释放release是一致的
 		/// 但在垃圾回收内存分配时，弱释放只是减少了引用计数
 		/// </summary>
-		bool_t(*weekRelease)(struct stMemory* self, void* p);
+		bool_t(*decrease)(void* p);
 		/// <summary>
 		///  析构函数，内存管理器撤销时调用
 		/// </summary>
@@ -85,10 +97,6 @@ extern "C" {
 	/// </summary>
 	/// <param name="self"></param>
 	inline void Memory___destruct__(Memory* self) { if (self->destruct) self->destruct(self); }
-
-	inline void* Memory_require(Memory* self, size_t size,void* type) { return self->require(self, size,type); }
-	inline bool_t Memory_release(Memory* self, void* obj) { return self->release(self, obj); }
-	inline bool_t Memory_weekRelease(Memory* self, void* obj) { return self->release(self, obj); }
 
 
 	inline bool_t Memory_copy(void* dest, const void* src, size_t size) {

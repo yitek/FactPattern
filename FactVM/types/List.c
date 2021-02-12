@@ -7,7 +7,7 @@
 
 List* List___construct__(List* self, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	if (!self) self = memory->require(memory, sizeof(List), mmArgs);
+	if (!self) self = memory->require(sizeof(List), mmArgs);
 	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
 	self->length = 0;
@@ -19,13 +19,14 @@ void List___destruct__(List* self, Memory* mallocator) {
 	Link* node = self->head;
 	while (node) {
 		Link* next = node->next;
-		mallocator->weekRelease(mallocator, node);
+		mallocator->decrease(node);
 		node = next;
 	}
+	mallocator->release(self);
 }
 void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require(memory, itemSize + sizeof(Link), mmArgs);
+	Link* node = (Link*)memory->require1(itemSize + sizeof(Link), mmArgs);
 	if (self->tail) self->tail = (self->tail->next = node);
 	else self->head = self->tail = node;
 	node->next = 0;
@@ -35,7 +36,7 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 
  void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require(memory, itemSize + sizeof(Link), mmArgs);
+	Link* node = (Link*)memory->require1(itemSize + sizeof(Link), mmArgs);
 	if (self->head) {
 		node->next = self->head;
 		self->head = node;
@@ -76,7 +77,7 @@ bool_t List_pop(List* self, void* item, size_t itemSize, Memory* memory) {
 	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
 	else return 0;
 	if (!memory)memory = Memory_default();
-	memory->weekRelease(memory,link);
+	memory->decrease(link);
 	return 1;
 	
 }
@@ -85,7 +86,7 @@ word_t List_popValue(List* self, Memory* memory) {
 	Link* link = List_popLink(self);
 	word_t rs = *((word_t*)(link + 1));
 	if (!memory)memory = Memory_default();
-	memory->weekRelease(memory, link);
+	memory->decrease(link);
 	return rs;
 
 }
@@ -96,7 +97,7 @@ bool_t List_shift(List* self, void* item, size_t itemSize, Memory* memory) {
 	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
 	else return 0;
 	if (!memory)memory = Memory_default();
-	memory->weekRelease(memory, link);
+	memory->decrease(link);
 	self->length--;
 	return 1;
 
@@ -107,7 +108,7 @@ word_t List_shiftValue(List* self, Memory* memory) {
 	if (!(self->head = link->next)) self->tail = 0;
 	word_t rs = *((word_t*)(link + 1));
 	if (!memory)memory = Memory_default();
-	memory->weekRelease(memory, link);
+	memory->decrease(link);
 	self->length--;
 	return rs;
 

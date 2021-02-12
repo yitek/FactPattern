@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
+    <ClInclude Include="memories\AlignedMemory.h" />
     <ClInclude Include="memories\Memory.h" />
     <ClInclude Include="tests\TestArray.h" />
     <ClInclude Include="tests\TestLink.h" />

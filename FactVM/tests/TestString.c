@@ -17,11 +17,11 @@ void testString() {
 
 	const String* token = String___construct__(0,L"Yi",-1,0,0);
 
-	size_t firstAt = String_search(str3,token,0);
+	size_t firstAt = String_search(str3,token,0,0);
 	printf_s("拼接字符串中查找'yi'子串:%d\n", firstAt);
-	size_t at = String_search(str3,token, firstAt+1);
+	size_t at = String_search(str3,token, firstAt+1, 0);
 	printf_s("拼接字符串中,以下标%d开始查找'yi'子串:%d\n", firstAt+1, at);
-	size_t at1 = String_search(str3, token, at+1);
+	size_t at1 = String_search(str3, token, at+1, 0);
 	printf_s("拼接字符串中,以下标%d开始查找'yi'子串:%d\n", at+1, at1 );
 
 	const String* substr = String_substr(str3,at,-1,0,0);

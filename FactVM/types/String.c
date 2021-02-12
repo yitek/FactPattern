@@ -31,7 +31,7 @@ void getKMPNext(size_t* next, const char_t* p, size_t length) {
 	}
 }
 
-int String_search(const String* search, const String* pattern, size_t start) {
+int String_search(const String* search, const String* pattern, size_t start,Memory* memory) {
 	const size_t slength = search->length;
 	if (pattern == 0 || slength == 0 || start >= slength) return -1;
 	const size_t plength = pattern->length;
@@ -43,7 +43,8 @@ int String_search(const String* search, const String* pattern, size_t start) {
 
 	// KMP算法
 	//分配next空间
-	size_t* next = (int*)Memory_require(Memory_default(), plength * sizeof(size_t), 0);
+	if (!memory) memory = Memory_default();
+	size_t* next = (size_t*)memory->require( plength * sizeof(size_t), 0);
 	getKMPNext(next, p, plength);
 	size_t i = 0; // 主串的位置
 	size_t j = 0; // 模式串的位置
@@ -59,6 +60,7 @@ int String_search(const String* search, const String* pattern, size_t start) {
 			j = next[j];
 		}
 	}
+	memory->release(next);
 	return j == plength ? i - j + start : -1;
 
 }

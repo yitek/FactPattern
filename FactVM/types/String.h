@@ -35,7 +35,7 @@ extern "C" {
 	}
 
 
-	int String_search(const String* self, const String* token, size_t at);
+	int String_search(const String* self, const String* token, size_t at, Memory* memory);
 
 	
 	inline char_t String___INDEXGETER__(const String* self, size_t index) { return index >= self->length ? 0 : *((char_t*)((char*)self + sizeof(String)) + index); }

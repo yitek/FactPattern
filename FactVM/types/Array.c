@@ -3,7 +3,7 @@ const Array* Array___construct__(Array* self, const void* buffer, const size_t c
 	//如果未分配，就自己申请一片内存
 	if (self == 0) {
 		if (!memory)memory = Memory_default();
-		if (!self)self = (Array*)memory->require(memory, sizeof(Array) + count * unitSize, mmArgs);
+		if (!self)self = (Array*)memory->require(sizeof(Array) + count * unitSize, mmArgs);
 	}
 	// 写入长度
 	self->length = count;
@@ -28,7 +28,7 @@ const Array* Array_concat(const Array* left, const Array* right, const size_t un
 
 	// 构造一个新数组
 	if (!memory)memory = Memory_default();
-	Array* concatedArray = memory->require(memory, concatedSize, mmArgs);
+	Array* concatedArray = memory->require(concatedSize, mmArgs);
 	concatedArray->length = count;
 
 	// 获取到数组元素的开始位置
@@ -58,7 +58,7 @@ const Array* Array_clip(const Array* arr, const size_t start, const size_t count
 	// 构造子数组
 	size_t size = sizeof(Array) + clipCount * unitSize;
 	if (!memory)memory = Memory_default();
-	Array* subArray = (Array*)memory->require(memory, size, mmArgs);
+	Array* subArray = (Array*)memory->require( size, mmArgs);
 	subArray->length = clipCount;
 	const void* src = ((char*)arr + sizeof(Array)) + start * unitSize;
 	void* dest = (char*)subArray + sizeof(Array);

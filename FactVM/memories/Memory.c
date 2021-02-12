@@ -7,9 +7,9 @@
 
 Memory* Memory_defaultInstance = NULL;
 
-inline void* Memory_internalRequire(Memory* self, size_t size,void* type) { return malloc(size); }
-inline bool_t Memory_internalRelease(Memory* self, void* obj) { free(obj); return 1; }
-inline bool_t Memory_mockWeakRelease(Memory* self, void* obj) { printf_s("mock weak release:%p",obj); return 1; }
+inline void* Memory_internalRequire(size_t size,void* type) { return malloc(size); }
+inline bool_t Memory_internalRelease(void* obj) { free(obj); return 1; }
+inline bool_t Memory_internalEmptyFn(void* obj) { return 1; }
 inline void Memory_internalDestruct(Memory* self) {}
 
 Memory* Memory___construct__(Memory* self) {
@@ -22,18 +22,9 @@ Memory* Memory___construct__(Memory* self) {
 		}
 	}
 	self->vptr = (struct stMemoryVTBL*)((char*)self + sizeof(struct stMemoryVTBL*));
-	self->require = Memory_internalRequire;
-
-#ifndef __DEVALOPMENT__
-	self->release = self->weekRelease = Memory_internalRelease;
-#endif // !__DEVALOPMENT__
-#ifdef __DEVALOPMENT__
-	self->release =  Memory_internalRelease;
-	self->weekRelease = 
-#endif // __DEVALOPMENT__
-
-
-	
+	self->require = self->require1 = Memory_internalRequire;	
+	self->release = Memory_internalRelease;
+	self->increase = self->decrease = Memory_internalEmptyFn;
 	self->destruct = Memory_internalDestruct;
 	return self;
 }
