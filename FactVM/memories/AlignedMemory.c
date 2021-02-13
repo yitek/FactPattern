@@ -176,7 +176,7 @@ void AlignedMemory___destruct__(AlignedMemory* self,bool_t existed) {
 }
 
 
-AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, const AlignedMemoryOptions* opts) {
+AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, AlignedMemoryOptions* opts,MemoryLogger* logger) {
 	if (!self) {
 		self = (AlignedMemory*)malloc(sizeof(Memory));
 		if (!self) {
@@ -192,6 +192,7 @@ AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, const AlignedMem
 	self->increase = (bool_t(*)(Memory*, void*))AlignedMemory_increase;
 	self->decrease = (bool_t(*)(Memory*, void*))AlignedMemory_decrease;
 	self->destruct =(void(*)(Memory*,bool_t)) AlignedMemory___destruct__;
+	self->logger = logger;
 
 	
 	void* cfg = ((&self->destruct) + 1);

@@ -11,7 +11,7 @@ inline void* Memory_require(Memory* self, size_t size,void* type) { return mallo
 inline bool_t Memory_release(Memory* self, void* obj) { free(obj); return 1; }
 inline void Memory___destruct__(Memory* self, bool_t existed) { if (!existed) free(self); }
 
-Memory* Memory___construct__(Memory* self) {
+Memory* Memory___construct__(Memory* self, MemoryLogger* logger) {
 	if (!self) {
 		self = (Memory*)malloc(sizeof(Memory));
 		if (!self) {
@@ -26,5 +26,6 @@ Memory* Memory___construct__(Memory* self) {
 	self->increase = Memory_increase;
 	self->decrease = Memory_decrease;
 	self->destruct = Memory___destruct__;
+	self->logger = logger;
 	return self;
 }

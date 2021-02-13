@@ -1,2 +1,4 @@
-﻿  GCMemory.c
+﻿  AlignedMemory.c
+  GCMemory.c
+  正在生成代码...
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts) {
+GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,MemoryLogger* logger) {
 	if (!self) {
 		self = malloc(sizeof(GCMemory));
 		if (!self) {
@@ -13,7 +13,7 @@ GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferen
 			return NULL;
 		}
 	}
-	AlignedMemory___construct__((AlignedMemory*)self,opts);   
+	AlignedMemory___construct__((AlignedMemory*)self,opts,logger);   
 	self->unitMetaSize = sizeof(GCObject);
 	self->beforeAllocatePage = GCMemory_beforeAllocatePage;
 	self->findReferenceObject = findReferenceObject;

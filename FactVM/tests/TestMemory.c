@@ -3,7 +3,7 @@
 
 void testMemory() {
 	printf_s("\n== START TEST: Memory.h ==\n");
-	Memory* mm = Memory___construct__(0);
+	Memory* mm = Memory___construct__(0,0);
 	void* obj4 = mm->require(mm,4,0);
 	printf_s("ÇëÇó4bytesÄÚ´æ%p\n", obj4);
 

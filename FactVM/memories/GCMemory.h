@@ -35,7 +35,7 @@ extern "C" {
 		return AllocatePageDirective_RecheckOrNewPage;
 	}
 
-	GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts);
+	GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,MemoryLogger* logger);
 
 	inline void GCMemory___destruct__(GCMemory* self, bool_t existed) {
 		AlignedMemory___destruct__((AlignedMemory*)self,existed);

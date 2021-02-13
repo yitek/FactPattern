@@ -17,6 +17,10 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
+	typedef struct stMemoryLogger {
+		void(*allocated)(size_t size,const char_t* reason,const char_t* message);
+		void(*free)(size_t size, const char_t* reason, const char_t* message);
+	}MemoryLogger;
 	struct stMemory;
 	/// <summary>
 	/// 内存管理器的虚函数表结构(命名表)
@@ -79,6 +83,7 @@ extern "C" {
 		///  析构函数，内存管理器撤销时调用
 		/// </summary>
 		void (*destruct)(struct stMemory* memory,bool_t autoFree);
+		MemoryLogger* logger;
 	} Memory;
 
 	/// <summary>
@@ -91,7 +96,7 @@ extern "C" {
 	/// </summary>
 	/// <param name="self"></param>
 	/// <returns></returns>
-	Memory* Memory___construct__(Memory* self);
+	Memory* Memory___construct__(Memory* self, MemoryLogger* logger);
 	void* Memory_require(Memory* self, size_t size, void* type);
 	bool_t Memory_release(Memory* self, void* obj);
 	inline bool_t Memory_increase(Memory* self, void* obj) { return 1; }
@@ -148,7 +153,7 @@ extern "C" {
 	}
 
 	inline Memory* Memory_default() {
-		return Memory_defaultInstance ? Memory_defaultInstance : (Memory_defaultInstance = Memory___construct__(Memory_defaultInstance));
+		return Memory_defaultInstance ? Memory_defaultInstance : (Memory_defaultInstance = Memory___construct__(Memory_defaultInstance,0));
 
 	}
 #ifdef __cplusplus 
