@@ -7,8 +7,8 @@
 
 Memory* Memory_defaultInstance = NULL;
 
-inline void* Memory_internalRequire(size_t size,void* type) { return malloc(size); }
-inline bool_t Memory_internalRelease(void* obj) { free(obj); return 1; }
+inline void* Memory_internalRequire(Memory* self, size_t size,void* type) { return malloc(size); }
+inline bool_t Memory_internalRelease(Memory* self, void* obj) { free(obj); return 1; }
 inline bool_t Memory_internalEmptyFn(void* obj) { return 1; }
 inline void Memory_internalDestruct(Memory* self) {}
 

@@ -25,13 +25,13 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(size_t size,void* type);
-		void* (*require1)(size_t size, void* type);
+		void* (*require)(struct stMemory* self,size_t size,void* type);
+		void* (*require1)(struct stMemory* self, size_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
 		/// </summary>
-		bool_t (*release)(void* p);
+		bool_t (*release)(struct stMemory* self, void* p);
 
 		/// <summary>
 		/// 增加引用
@@ -57,18 +57,18 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(size_t size,void* type);
-		void* (*require1)(size_t size, void* type);
+		void* (*require)(struct stMemory* self, size_t size,void* type);
+		void* (*require1)(struct stMemory* self, size_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
 		/// </summary>
-		bool_t(*release)(void* p);
+		bool_t(*release)(struct stMemory* self, void* p);
 		/// <summary>
 		/// 增加引用
 		/// 在malloc时，是个空函数
 		/// </summary>
-		bool_t(*increase)(void* p);
+		bool_t(*increase)( void* p);
 		/// <summary>
 		/// 弱释放内存
 		/// 在malloc时，跟强释放release是一致的
@@ -116,6 +116,30 @@ extern "C" {
 			if (bytec) for (size_t i = 0; i < bytec; i++) {
 				*((byte_t*)dest) = *((byte_t*)src);
 				dest =((byte_t*)dest)+1; src = ((byte_t*)src)+1;
+			}
+			return 1;
+		}
+		return 0;
+
+	}
+
+	inline bool_t Memory_clear(void* dest,  size_t size) {
+
+		if (dest && size) {
+			if (size == sizeof(word_t)) {
+				*((word_t*)dest) = (word_t)0;
+				return 1;
+			}
+			size_t wordc = size / sizeof(word_t);
+			size_t bytec = size % sizeof(word_t);
+
+			if (wordc)for (size_t i = 0; i < wordc; i++) {
+				*((word_t*)dest) = (word_t)0;
+				dest = ((word_t*)dest) + 1;
+			}
+			if (bytec) for (size_t i = 0; i < bytec; i++) {
+				*((byte_t*)dest) = (byte_t)0;
+				dest = ((byte_t*)dest) + 1;
 			}
 			return 1;
 		}

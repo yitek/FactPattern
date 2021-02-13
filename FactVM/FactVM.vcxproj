@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="memories\AlignedMemory.c" />
     <ClCompile Include="memories\Memory.c" />
     <ClCompile Include="tests\TestLink.c" />
     <ClCompile Include="tests\TestArray.c" />

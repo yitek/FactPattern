@@ -29,10 +29,14 @@ typedef unsigned int bool_t;
 
 #ifdef _WIN64
 typedef long word_t;
+typedef long long dword_t;
+typedef long long  lword_t[2];
 typedef unsigned long size_t;
 typedef unsigned long pointer_t;
 #else // else _WIN64
 typedef int word_t;
+typedef long dword_t;
+typedef long long lword_t;
 typedef unsigned int size_t;
 typedef unsigned int pointer_t;
 #endif // endif _WIN64

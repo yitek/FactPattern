@@ -8,14 +8,49 @@
 ******************************************************/
 
 #pragma once
-#include "../def.h"
+#include "Memory.h"
 #ifndef __ALIGNEDMEMORY_INCLUDED__ 
 #define __ALIGNEDMEMORY_INCLUDED__
-// c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生
 #ifdef __cplusplus 
 extern "C" {
 #endif
+	struct stAlignedMemory;
+	struct stAlignedMemoryChunk;
+	struct stAlignedMemoryPage;
+	typedef void* (*SearchIdleUnit)(void* page,size_t unitSize);
+	typedef struct stAlignedMemoryPage {
+		size_t usedUnitCount;
+		void* idle;
+
+	}AlignedMemoryPage;
+	typedef struct stAlignedMemoryChunk {
+		void* firstPage;
+		void* lastPage;
+		struct stAlignedMemory* memory;
+		size_t unitSize;
+		size_t pageCapacity;
+		size_t pageSize;
+		struct stAlignedMemoryChunk* nextChunk;
+	}AlignedMemoryChunk;
+
+	typedef struct stAlignedMemoryOptions {
+		size_t pageSize;
+		size_t pageCount;
+		size_t pagePaddingSize;
+		SearchIdleUnit searchIdleUnit;
+	}AlignedMemoryOptions;
+
+	typedef struct stAlignedMemory {
+		struct stMemory;
+		struct stAlignedMemoryOptions;
+		AlignedMemoryChunk* large;
+		AlignedMemoryChunk* chunks[32];
+
+	}AlignedMemory;
+
 	
+
+
 #ifdef __cplusplus 
 }//end extern c
 #endif

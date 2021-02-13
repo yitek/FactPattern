@@ -7,26 +7,26 @@
 
 List* List___construct__(List* self, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	if (!self) self = memory->require(sizeof(List), mmArgs);
+	if (!self) self = memory->require(memory, sizeof(List), mmArgs);
 	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
 	self->length = 0;
 	return self;
 }
 
-void List___destruct__(List* self, Memory* mallocator) {
-	if (!mallocator)mallocator = Memory_default();
+void List___destruct__(List* self, Memory* memory) {
+	if (!memory)memory = Memory_default();
 	Link* node = self->head;
 	while (node) {
 		Link* next = node->next;
-		mallocator->decrease(node);
+		memory->decrease(node);
 		node = next;
 	}
-	mallocator->release(self);
+	//memory->release(memory, self);
 }
 void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require1(itemSize + sizeof(Link), mmArgs);
+	Link* node = (Link*)memory->require1(memory,itemSize + sizeof(Link), mmArgs);
 	if (self->tail) self->tail = (self->tail->next = node);
 	else self->head = self->tail = node;
 	node->next = 0;
@@ -36,7 +36,7 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 
  void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require1(itemSize + sizeof(Link), mmArgs);
+	Link* node = (Link*)memory->require1(memory, itemSize + sizeof(Link), mmArgs);
 	if (self->head) {
 		node->next = self->head;
 		self->head = node;

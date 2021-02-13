@@ -4,26 +4,26 @@
 void testMemory() {
 	printf_s("\n== START TEST: Memory.h ==\n");
 	Memory* mm = Memory___construct__(0);
-	void* obj4 = mm->require(4,0);
+	void* obj4 = mm->require(mm,4,0);
 	printf_s("请求4bytes内存%p\n", obj4);
 
-	void* obj8 = mm->require(8,0);
+	void* obj8 = mm->require(mm, 8,0);
 	printf_s("请求8bytes内存%p\n", obj8);
 
-	void* obj12 = mm->require( 12,0);
+	void* obj12 = mm->require(mm, 12,0);
 	printf_s("请求12bytes内存%p\n", obj12);
 
-	void* obj16 = mm->require( 16,0);
+	void* obj16 = mm->require(mm, 16,0);
 	printf_s("请求16bytes内存%p\n", obj16);
 
 
-	mm->release(obj4);
+	mm->release(mm, obj4);
 	printf_s("强释放4bytes内存\n");
 
-	mm->release( obj8);
+	mm->release(mm, obj8);
 	printf_s("弱释放8bytes内存\n");
 
-	mm->release( obj12);
+	mm->release(mm, obj12);
 	printf_s("弱释放12bytes内存\n");
 
 	mm->decrease(obj16);

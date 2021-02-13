@@ -101,5 +101,8 @@
     <ClCompile Include="types\Set.c">
       <Filter>types</Filter>
     </ClCompile>
+    <ClCompile Include="memories\AlignedMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

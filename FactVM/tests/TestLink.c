@@ -10,7 +10,7 @@ bool_t fnLinkPredicate(void* item, size_t index, void* args) {
 void testLink() {
 	printf_s("\n== START TEST: Link.h ==\n");
 	Memory* mm = Memory_default();
-	LinkStudent* stu = mm->require(sizeof(LinkStudent), 0);
+	LinkStudent* stu = mm->require(mm, sizeof(LinkStudent), 0);
 	stu->next = 0;
 	stu->no = 1;
 	stu->name = L"Jack";
@@ -20,7 +20,7 @@ void testLink() {
 	printf_s("按item搜索:index=%d,item= { no: %d, name: %ls, age: %d }\n",index ,stu->no, stu->name, stu->age);
 
 
-	LinkStudent* stu1 = mm->require(sizeof(LinkStudent), 0);
+	LinkStudent* stu1 = mm->require(mm, sizeof(LinkStudent), 0);
 	stu1->no = 2;
 	stu1->name = L"Rose";
 	stu1->age = 13;
@@ -29,7 +29,7 @@ void testLink() {
 	LinkStudent*  stu0 = (LinkStudent*)Link_searchByValue((Link*)stu, 2).item;
 	printf_s("按值(value=2)搜索: { no: %d, name: %ls, age: %d }\n", stu0->no, stu0->name, stu0->age);
 
-	LinkStudent* stu2 = mm->require( sizeof(LinkStudent), 0);
+	LinkStudent* stu2 = mm->require(mm, sizeof(LinkStudent), 0);
 	stu2->no = 3;
 	stu2->name = L"Petter";
 	stu2->age = 14;
@@ -37,7 +37,7 @@ void testLink() {
 	printf_s("链表添加节点(len=%d)\n", Link_length((Link*)stu));
 	 stu0 = (LinkStudent*)Link_searchByIndex((Link*)stu, 2);
 	printf_s("按项(stu2 Petter)搜索: { no: %d, name: %ls, age: %d }\n", stu0->no, stu0->name, stu0->age);
-	LinkStudent* stu3 = mm->require( sizeof(LinkStudent), 0);
+	LinkStudent* stu3 = mm->require(mm, sizeof(LinkStudent), 0);
 	stu3->no = 4;
 	stu3->name = L"Jess";
 	stu3->age = 15;
@@ -55,9 +55,9 @@ void testLink() {
 	stu0 = (LinkStudent*)Link_removeByItem((Link*)stu,&stu3->no,sizeof(LinkStudent) -sizeof(Link)).link;
 	printf_s("链[item=4]被移除(len=%d): { no: %d, name: %ls, age: %d }\n", Link_length((Link*)stu), stu0->no, stu0->name, stu0->age);
 
-	mm->release(stu);
-	mm->release(stu1);
-	mm->release(stu2);
-	mm->release(stu3);
+	mm->release(mm, stu);
+	mm->release(mm, stu1);
+	mm->release(mm, stu2);
+	mm->release(mm, stu3);
 	printf_s("== END TEST: Link.h ==\n");
 } 
