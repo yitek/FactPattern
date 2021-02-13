@@ -91,12 +91,28 @@ void* AlignedMemoryChunk_resolveIdleUnit(AlignedMemoryChunk* chunk,size_t unitSi
 			else unit += unitSize;
 		}
 		existed = (prev= existed)->next;
-		
+	}
+	if (chunk->memory->beforeAllocatePage ) {
+		AllocatePageDirectives directive = chunk->memory->beforeAllocatePage(chunk);
+		if (directive == AllocatePageDirective_Fail) return 0;
+		if (directive == AllocatePageDirective_Recheck || directive == AllocatePageDirective_RecheckOrNewPage) {
+			existed = chunk->page;
+			prev = 0;
+			while (existed) {
+				byte_t* unit = ((byte_t*)existed) + sizeof(AlignedMemoryPage);
+				for (size_t i = 0; i < chunk->pageCapacity; i++) {
+					if (((AlignedUnitMeta*)unit)->ref_count == 0) return unit;
+					else unit += unitSize;
+				}
+				existed = (prev = existed)->next;
+			}
+		}
+		if (directive == AllocatePageDirective_Recheck) return 0;
 	}
 
 	AlignedMemoryPage* page= (AlignedMemoryPage*)malloc(chunk->pageSize);
 	if (!page) {
-		printf_s("[ERR00001]:Memory___construct__:无法分配内存");
+		printf_s("[ERR00001]:AlignedMemoryChunk_resolveIdleUnit:无法分配内存");
 		exit(1);
 		return NULL;
 	}
@@ -177,10 +193,19 @@ AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, const AlignedMem
 	self->decrease = (bool_t(*)(Memory*, void*))AlignedMemory_decrease;
 	self->destruct =(void(*)(Memory*,bool_t)) AlignedMemory___destruct__;
 
-	if (!self->unitMetaSize) self->unitMetaSize = sizeof(AlignedUnitMeta);
+	
 	void* cfg = ((&self->destruct) + 1);
 	//拷贝配置
-	Memory_copy(cfg, opts, sizeof(AlignedMemoryOptions));
+	if (!opts) {
+		AlignedMemoryOptions dftOpts;
+		dftOpts.pageSize = 1024*2;
+		dftOpts.pageCount = 0;
+		dftOpts.unitMetaSize = sizeof(AlignedUnitMeta);
+		Memory_copy(cfg, &dftOpts, sizeof(AlignedMemoryOptions));
+	}else Memory_copy(cfg, opts, sizeof(AlignedMemoryOptions));
+
+	if (!self->unitMetaSize) self->unitMetaSize = sizeof(AlignedUnitMeta);
+
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
 	self->large = 0;
 	return self;

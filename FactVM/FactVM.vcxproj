@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\AlignedMemory.c" />
+    <ClCompile Include="memories\GCMemory.c" />
     <ClCompile Include="memories\Memory.c" />
     <ClCompile Include="tests\TestLink.c" />
     <ClCompile Include="tests\TestArray.c" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="def.h" />
     <ClInclude Include="memories\AlignedMemory.h" />
+    <ClInclude Include="memories\GCMemory.h" />
     <ClInclude Include="memories\Memory.h" />
     <ClInclude Include="tests\TestArray.h" />
     <ClInclude Include="tests\TestLink.h" />

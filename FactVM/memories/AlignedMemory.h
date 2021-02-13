@@ -22,11 +22,19 @@ extern "C" {
 	struct stAlignedMemoryChunk;
 	struct stAlignedMemoryPage;
 
+	typedef enum {
+		AllocatePageDirective_Fail,
+		AllocatePageDirective_Recheck,
+		AllocatePageDirective_NewPage,
+		AllocatePageDirective_RecheckOrNewPage,
+	} AllocatePageDirectives;
 
+	typedef AllocatePageDirectives(*BeforeAllocatePage)(struct stAlignedMemoryChunk* chunk);
 
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
 	}AlignedMemoryPage;
+
 	typedef struct stAlignedMemoryChunk {
 		AlignedMemoryPage* page;
 		struct stAlignedMemory* memory;
@@ -40,6 +48,7 @@ extern "C" {
 		size_t pageSize;
 		size_t pageCount;
 		size_t unitMetaSize;
+		BeforeAllocatePage beforeAllocatePage;
 	}AlignedMemoryOptions;
 
 	typedef struct stAlignedMemory {

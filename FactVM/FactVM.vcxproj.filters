@@ -63,6 +63,9 @@
     <ClInclude Include="memories\AlignedMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
+    <ClInclude Include="memories\GCMemory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -102,6 +105,9 @@
       <Filter>types</Filter>
     </ClCompile>
     <ClCompile Include="memories\AlignedMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>
