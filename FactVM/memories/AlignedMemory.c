@@ -3,27 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-AlignedMemory* AlignedMemory___construct__(AlignedMemory* self,const AlignedMemoryOptions* opts) {
-	if (!self) {
-		self = (AlignedMemory*)malloc(sizeof(Memory));
-		if (!self) {
-			printf_s("[ERR00001]:Memory___construct__:无法分配内存");
-			exit(1);
-			return NULL;
-		}
-	}
-	self->vptr = (struct stMemoryVTBL*)((char*)self + sizeof(struct stMemoryVTBL*));
-	//self->require = self->require1 = Memory_internalRequire;
-	//self->release = Memory_internalRelease;
-	//self->increase = self->decrease = Memory_internalEmptyFn;
-	//self->destruct = Memory_internalDestruct;
-	void* cfg = ((&self->destruct) + 1);
-	//拷贝配置
-	Memory_copy(cfg,opts,sizeof(AlignedMemoryOptions));
-	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
-	self->large = 0;
-	return self;
-}
+
 
 
 
@@ -46,12 +26,12 @@ AlignedMemoryChunk* AlignedMemory_getNormalChunk(AlignedMemory* self, size_t chu
 		exit(1);
 		return NULL;
 	}
-	chunk->firstPage = chunk->lastPage = 0;
+	chunk->page = 0;
 	chunk->memory = self;
 	chunk->nextChunk = 0;
 	chunk->pageSize = self->pageSize;
 	chunk->unitSize = unitSize;
-	chunk->pageCapacity = (self->pageSize - self->pagePaddingSize) / unitSize;
+	chunk->pageCapacity = (self->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 	return chunk;
 }
 
@@ -69,18 +49,18 @@ AlignedMemoryChunk* AlignedMemory_getLargeChunk(AlignedMemory* self, size_t size
 		else break;
 	}
 	size_t pageSize = self->pageSize;
-	size_t pageUsableSize = (pageSize - self->pagePaddingSize);
+	size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
 	size_t pageCapacity = pageUsableSize / size;
 	// 一页都无法装下一个
 	if (pageCapacity == 0) {
-		pageSize = size + self->pagePaddingSize;
+		pageSize = size + sizeof(AlignedMemoryPage);
 		pageCapacity = 1;
 	}
 	// 一页只能装一个
 	else if (pageCapacity < 2) {
 		//剩余的太多
 		if (pageUsableSize % size > pageUsableSize / 4) {
-			pageSize = size + self->pagePaddingSize;
+			pageSize = size + sizeof(AlignedMemoryPage);
 			pageCapacity = 1;
 		}
 	}
@@ -90,7 +70,7 @@ AlignedMemoryChunk* AlignedMemory_getLargeChunk(AlignedMemory* self, size_t size
 		exit(1);
 		return NULL;
 	}
-	chunk->firstPage = chunk->lastPage = 0;
+	chunk->page = 0;
 	chunk->memory = self;
 	chunk->nextChunk = existed;
 	chunk->pageSize = pageSize;
@@ -101,8 +81,38 @@ AlignedMemoryChunk* AlignedMemory_getLargeChunk(AlignedMemory* self, size_t size
 	return chunk;
 }
 
+void* AlignedMemoryChunk_resolveIdleUnit(AlignedMemoryChunk* chunk,size_t unitSize) {
+	AlignedMemoryPage* existed = chunk->page;
+	AlignedMemoryPage* prev = 0;
+	while (existed) {
+		byte_t* unit = ((byte_t*)existed) + sizeof(AlignedMemoryPage);
+		for (size_t i = 0; i < chunk->pageCapacity; i++) {
+			if (((AlignedUnitMeta*)unit)->ref_count == 0) return unit;
+			else unit += unitSize;
+		}
+		existed = (prev= existed)->next;
+		
+	}
+
+	AlignedMemoryPage* page= (AlignedMemoryPage*)malloc(chunk->pageSize);
+	if (!page) {
+		printf_s("[ERR00001]:Memory___construct__:无法分配内存");
+		exit(1);
+		return NULL;
+	}
+	byte_t* unit = ((byte_t*)page) + sizeof(AlignedMemoryPage);
+	for (size_t i = 0; i < chunk->pageCapacity; i++) {
+		((AlignedUnitMeta*)unit)->ref_count =0;
+		unit += unitSize;
+	}
+	if (prev) prev->next = page;
+	else chunk->page = page;
+	return ((byte_t*)page) + sizeof(AlignedMemoryPage);
+}
+
 void* AlignedMemory_require(AlignedMemory* self, size_t size, void* type) {
 	size_t chunkIndex;
+	size += self->unitMetaSize;
 	AlignedMemoryChunk* chunk;
 	if (size <= 16 * sizeof(word_t)) {// 16 个 1word 增加的 最大的是 16word, 0-15
 		chunkIndex = size / sizeof(word_t);
@@ -121,6 +131,57 @@ void* AlignedMemory_require(AlignedMemory* self, size_t size, void* type) {
 	}else {
 		chunk = AlignedMemory_getLargeChunk(self, size);
 	}
-	return 0;
+	return AlignedMemoryChunk_resolveIdleUnit(chunk,size);
+}
+void AlignedMemoryChunk___destruct__(AlignedMemoryChunk* chunk) {
+	AlignedMemoryPage* page = chunk->page;
+	while (page) {
+		AlignedMemoryPage* next = page->next;
+		free(page);
+		page = next;
+	}
+	free(chunk);
+}
+void AlignedMemory___destruct__(AlignedMemory* self,bool_t existed) {
+	for (size_t i = 0; i < 32; i++) {
+		if (self->chunks[i]) {
+			AlignedMemoryChunk___destruct__(self->chunks[i]);
+			self->chunks[i] = 0;
+		}
+	}
+	AlignedMemoryChunk* chunk = self->large;
+	while (chunk) {
+		AlignedMemoryChunk* next = chunk->nextChunk;
+		AlignedMemoryChunk___destruct__(chunk);
+		chunk = next;
+	}
+	self->large = 0;
+	if (!existed) free(self);
 }
 
+
+AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, const AlignedMemoryOptions* opts) {
+	if (!self) {
+		self = (AlignedMemory*)malloc(sizeof(Memory));
+		if (!self) {
+			printf_s("[ERR00001]:Memory___construct__:无法分配内存");
+			exit(1);
+			return NULL;
+		}
+	}
+	self->vptr = (struct stMemoryVTBL*)((char*)self + sizeof(struct stMemoryVTBL*));
+	self->require = (void*(*)(Memory*,size_t ,void*))AlignedMemory_require;
+	self->require1 = (void* (*)(Memory*, size_t, void*))AlignedMemory_require1;
+	self->release = (bool_t(*)(Memory*, void*)) AlignedMemory_release;
+	self->increase = (bool_t(*)(Memory*, void*))AlignedMemory_increase;
+	self->decrease = (bool_t(*)(Memory*, void*))AlignedMemory_decrease;
+	self->destruct =(void(*)(Memory*,bool_t)) AlignedMemory___destruct__;
+
+	if (!self->unitMetaSize) self->unitMetaSize = sizeof(AlignedUnitMeta);
+	void* cfg = ((&self->destruct) + 1);
+	//拷贝配置
+	Memory_copy(cfg, opts, sizeof(AlignedMemoryOptions));
+	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
+	self->large = 0;
+	return self;
+}

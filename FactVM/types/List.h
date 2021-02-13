@@ -66,7 +66,7 @@ extern "C" {
 				self->tail = rrs.prev;
 			}
 			if (!memory) memory = Memory_default();
-			memory->decrease(rrs.link);
+			memory->decrease(memory,rrs.link);
 			self->length--;
 			return 1;
 		}

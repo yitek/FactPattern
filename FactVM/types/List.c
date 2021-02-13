@@ -19,7 +19,7 @@ void List___destruct__(List* self, Memory* memory) {
 	Link* node = self->head;
 	while (node) {
 		Link* next = node->next;
-		memory->decrease(node);
+		memory->decrease(memory,node);
 		node = next;
 	}
 	//memory->release(memory, self);
@@ -77,7 +77,7 @@ bool_t List_pop(List* self, void* item, size_t itemSize, Memory* memory) {
 	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
 	else return 0;
 	if (!memory)memory = Memory_default();
-	memory->decrease(link);
+	memory->decrease(memory, link);
 	return 1;
 	
 }
@@ -86,7 +86,7 @@ word_t List_popValue(List* self, Memory* memory) {
 	Link* link = List_popLink(self);
 	word_t rs = *((word_t*)(link + 1));
 	if (!memory)memory = Memory_default();
-	memory->decrease(link);
+	memory->decrease(memory, link);
 	return rs;
 
 }
@@ -97,7 +97,7 @@ bool_t List_shift(List* self, void* item, size_t itemSize, Memory* memory) {
 	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
 	else return 0;
 	if (!memory)memory = Memory_default();
-	memory->decrease(link);
+	memory->decrease(memory, link);
 	self->length--;
 	return 1;
 
@@ -108,7 +108,7 @@ word_t List_shiftValue(List* self, Memory* memory) {
 	if (!(self->head = link->next)) self->tail = 0;
 	word_t rs = *((word_t*)(link + 1));
 	if (!memory)memory = Memory_default();
-	memory->decrease(link);
+	memory->decrease(memory, link);
 	self->length--;
 	return rs;
 

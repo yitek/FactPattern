@@ -7,10 +7,9 @@
 
 Memory* Memory_defaultInstance = NULL;
 
-inline void* Memory_internalRequire(Memory* self, size_t size,void* type) { return malloc(size); }
-inline bool_t Memory_internalRelease(Memory* self, void* obj) { free(obj); return 1; }
-inline bool_t Memory_internalEmptyFn(void* obj) { return 1; }
-inline void Memory_internalDestruct(Memory* self) {}
+inline void* Memory_require(Memory* self, size_t size,void* type) { return malloc(size); }
+inline bool_t Memory_release(Memory* self, void* obj) { free(obj); return 1; }
+inline void Memory___destruct__(Memory* self, bool_t existed) { if (!existed) free(self); }
 
 Memory* Memory___construct__(Memory* self) {
 	if (!self) {
@@ -22,9 +21,10 @@ Memory* Memory___construct__(Memory* self) {
 		}
 	}
 	self->vptr = (struct stMemoryVTBL*)((char*)self + sizeof(struct stMemoryVTBL*));
-	self->require = self->require1 = Memory_internalRequire;	
-	self->release = Memory_internalRelease;
-	self->increase = self->decrease = Memory_internalEmptyFn;
-	self->destruct = Memory_internalDestruct;
+	self->require = self->require1 = Memory_require;
+	self->release = Memory_release;
+	self->increase = Memory_increase;
+	self->decrease = Memory_decrease;
+	self->destruct = Memory___destruct__;
 	return self;
 }

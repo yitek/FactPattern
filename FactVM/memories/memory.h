@@ -68,17 +68,17 @@ extern "C" {
 		/// 增加引用
 		/// 在malloc时，是个空函数
 		/// </summary>
-		bool_t(*increase)( void* p);
+		bool_t(*increase)(struct stMemory* self, void* p);
 		/// <summary>
 		/// 弱释放内存
 		/// 在malloc时，跟强释放release是一致的
 		/// 但在垃圾回收内存分配时，弱释放只是减少了引用计数
 		/// </summary>
-		bool_t(*decrease)(void* p);
+		bool_t(*decrease)(struct stMemory* self, void* p);
 		/// <summary>
 		///  析构函数，内存管理器撤销时调用
 		/// </summary>
-		void (*destruct)(struct stMemory* allocator);
+		void (*destruct)(struct stMemory* memory,bool_t autoFree);
 	} Memory;
 
 	/// <summary>
@@ -92,11 +92,11 @@ extern "C" {
 	/// <param name="self"></param>
 	/// <returns></returns>
 	Memory* Memory___construct__(Memory* self);
-	/// <summary>
-	/// 析构函数
-	/// </summary>
-	/// <param name="self"></param>
-	inline void Memory___destruct__(Memory* self) { if (self->destruct) self->destruct(self); }
+	void* Memory_require(Memory* self, size_t size, void* type);
+	bool_t Memory_release(Memory* self, void* obj);
+	inline bool_t Memory_increase(Memory* self, void* obj) { return 1; }
+	inline bool_t Memory_decrease(Memory* self, void* obj) { return 1; }
+	void Memory___destruct__(Memory* self, bool_t existed);
 
 
 	inline bool_t Memory_copy(void* dest, const void* src, size_t size) {

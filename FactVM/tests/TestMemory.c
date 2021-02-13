@@ -26,15 +26,15 @@ void testMemory() {
 	mm->release(mm, obj12);
 	printf_s("弱释放12bytes内存\n");
 
-	mm->decrease(obj16);
+	mm->decrease(mm,obj16);
 	printf_s("弱释放16bytes内存\n");
 
-	Memory___destruct__(mm);
+	Memory___destruct__(mm,0);
 	printf_s("析构内存管理器\n");
 
 	mm = Memory_default();
 	printf_s("获取到默认的内存管理器%p\n",mm);
-	mm->destruct(mm);
+	mm->destruct(mm,0);
 	printf_s("析构内存管理器\n");
 
 	printf_s("== END TEST: Memory.h ==\n");
