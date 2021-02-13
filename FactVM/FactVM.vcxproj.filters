@@ -66,6 +66,9 @@
     <ClInclude Include="memories\GCMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
+    <ClInclude Include="types\Type.h">
+      <Filter>types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
