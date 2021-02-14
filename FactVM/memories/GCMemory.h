@@ -14,10 +14,11 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	typedef struct stGCObject {
+
+	typedef struct stGCUnit {
+		size_t ref;
 		void* type;
-		size_t ref_count;
-	} GCObject;
+	} GCUnit;
 
 	typedef void* (*FindReferenceObject)(void* obj, size_t memberIndex);
 
@@ -35,6 +36,9 @@ extern "C" {
 		return AllocatePageDirective_RecheckOrNewPage;
 	}
 
+	inline GCUnit* getGCUnit(void* p) { return (GCUnit*)(((byte_t*)p) - sizeof(GCUnit)); }
+	inline void* getGCObject(void* p) { return (void*)(((byte_t*)p) + sizeof(GCUnit)); }
+
 	GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,MemoryLogger* logger);
 
 	inline void GCMemory___destruct__(GCMemory* self, bool_t existed) {
@@ -42,29 +46,29 @@ extern "C" {
 	}
 
 	inline void* GCMemory_require(AlignedMemory* self, size_t size, void* type) {
-		void* p = AlignedMemory_require(self, size, type);
-		((GCObject*)(((byte_t*)p) - sizeof(GCObject)))->type = type;
+		byte_t* p = (byte_t*)AlignedMemory_require(self, size, type);
+		((GCUnit*)(p - sizeof(GCUnit)))->type = type;
 		return p;
 	}
 
 	inline void* GCMemory_require1(AlignedMemory* self, size_t size, void* type) {
 		void* p = AlignedMemory_require(self, size, type);
-		GCObject* obj =(GCObject*)(((byte_t*)p) - sizeof(GCObject));
-		obj->type = type; obj->ref_count = 1;
-		return p;
+		GCUnit* obj =(GCUnit*)(((byte_t*)p) - sizeof(GCUnit));
+		obj->type = type; obj->ref = 1;
+		return (byte_t*)p + sizeof(GCUnit);
 	}
 
 	inline bool_t GCMemory_release(AlignedMemory* self, void* p) {
-		((AlignedUnitMeta*)(((byte_t*)p) - sizeof(GCObject)))->ref_count = 0;
+		((AlignedUnit*)(((byte_t*)p) - sizeof(GCUnit)))->ref = 0;
 		return 1;
 	}
 
 	inline bool_t GCMemory_increase(AlignedMemory* self, void* p) {
-		((GCObject*)(((byte_t*)p) - sizeof(GCObject)))->ref_count++;
+		((GCUnit*)(((byte_t*)p) - sizeof(GCUnit)))->ref++;
 		return 1;
 	}
 	inline bool_t GCMemory_decrease(AlignedMemory* self, void* p) {
-		((GCObject*)(((byte_t*)p) - sizeof(GCObject)))->ref_count--;
+		((GCUnit*)(((byte_t*)p) - sizeof(GCUnit)))->ref--;
 		return 1;
 	}
 

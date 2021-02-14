@@ -5,11 +5,17 @@
 
 
 
-Memory* Memory_defaultInstance = NULL;
+Memory* Memory_defaultInstance = 0;
 
-inline void* Memory_require(Memory* self, size_t size,void* type) { return malloc(size); }
-inline bool_t Memory_release(Memory* self, void* obj) { free(obj); return 1; }
-inline void Memory___destruct__(Memory* self, bool_t existed) { if (!existed) free(self); }
+void* Memory_require(Memory* self, size_t size,void* type) { return malloc(size); }
+bool_t Memory_release(Memory* self, void* obj) { free(obj); return 1; }
+void Memory___destruct__(Memory* self, bool_t existed) {
+	if (!existed) {
+		if (self == Memory_defaultInstance)
+			Memory_defaultInstance = 0;
+		free(self);
+	}
+}
 
 Memory* Memory___construct__(Memory* self, MemoryLogger* logger) {
 	if (!self) {

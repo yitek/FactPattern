@@ -9,7 +9,7 @@
 ******************************************************/
 
 #pragma once
-#include "../types/String.h"
+#include "../ads/String.h"
 #ifndef __TESTSTRING_INCLUDED__ 
 #define __TESTSTRING_INCLUDED__
 

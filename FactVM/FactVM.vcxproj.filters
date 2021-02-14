@@ -19,8 +19,14 @@
     <Filter Include="memories">
       <UniqueIdentifier>{db374308-5947-4ac1-91be-9900f3fea8eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="types">
+    <Filter Include="ads">
       <UniqueIdentifier>{530a5504-b467-42f3-9392-ae9d32f14287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="types">
+      <UniqueIdentifier>{25569a37-92dd-4831-94d6-45d4b4804ba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="refections">
+      <UniqueIdentifier>{28001cc6-5133-4cca-8344-bb71ae7b530a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,14 +36,8 @@
     <ClInclude Include="tests\TestMemory.h">
       <Filter>tests</Filter>
     </ClInclude>
-    <ClInclude Include="types\Array.h">
-      <Filter>types</Filter>
-    </ClInclude>
     <ClInclude Include="tests\TestArray.h">
       <Filter>tests</Filter>
-    </ClInclude>
-    <ClInclude Include="types\String.h">
-      <Filter>types</Filter>
     </ClInclude>
     <ClInclude Include="memories\Memory.h">
       <Filter>memories</Filter>
@@ -45,20 +45,11 @@
     <ClInclude Include="tests\TestString.h">
       <Filter>tests</Filter>
     </ClInclude>
-    <ClInclude Include="types\List.h">
-      <Filter>types</Filter>
-    </ClInclude>
-    <ClInclude Include="types\Link.h">
-      <Filter>types</Filter>
-    </ClInclude>
     <ClInclude Include="tests\TestLink.h">
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="tests\TestList.h">
       <Filter>tests</Filter>
-    </ClInclude>
-    <ClInclude Include="types\Set.h">
-      <Filter>types</Filter>
     </ClInclude>
     <ClInclude Include="memories\AlignedMemory.h">
       <Filter>memories</Filter>
@@ -66,8 +57,50 @@
     <ClInclude Include="memories\GCMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="types\Type.h">
+    <ClInclude Include="ads\Array.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="ads\Link.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="ads\List.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="ads\Set.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="ads\String.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TObject.h">
       <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TArray.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TString.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TList.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TType.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TSet.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="refections\Struct.h">
+      <Filter>refections</Filter>
+    </ClInclude>
+    <ClInclude Include="refections\Class.h">
+      <Filter>refections</Filter>
+    </ClInclude>
+    <ClInclude Include="refections\Module.h">
+      <Filter>refections</Filter>
+    </ClInclude>
+    <ClInclude Include="refections\Function.h">
+      <Filter>refections</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,26 +110,14 @@
     <ClCompile Include="memories\Memory.c">
       <Filter>memories</Filter>
     </ClCompile>
-    <ClCompile Include="types\Array.c">
-      <Filter>types</Filter>
-    </ClCompile>
     <ClCompile Include="tests\TestArray.c">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="tests\TestMemory.c">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="types\String.c">
-      <Filter>types</Filter>
-    </ClCompile>
     <ClCompile Include="tests\TestString.c">
       <Filter>tests</Filter>
-    </ClCompile>
-    <ClCompile Include="types\List.c">
-      <Filter>types</Filter>
-    </ClCompile>
-    <ClCompile Include="types\Link.c">
-      <Filter>types</Filter>
     </ClCompile>
     <ClCompile Include="tests\TestLink.c">
       <Filter>tests</Filter>
@@ -104,14 +125,26 @@
     <ClCompile Include="tests\TestList.c">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="types\Set.c">
-      <Filter>types</Filter>
-    </ClCompile>
     <ClCompile Include="memories\AlignedMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="ads\Array.c">
+      <Filter>ads</Filter>
+    </ClCompile>
+    <ClCompile Include="ads\Link.c">
+      <Filter>ads</Filter>
+    </ClCompile>
+    <ClCompile Include="ads\List.c">
+      <Filter>ads</Filter>
+    </ClCompile>
+    <ClCompile Include="ads\Set.c">
+      <Filter>ads</Filter>
+    </ClCompile>
+    <ClCompile Include="ads\String.c">
+      <Filter>ads</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

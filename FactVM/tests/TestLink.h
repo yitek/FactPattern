@@ -9,7 +9,7 @@
 ******************************************************/
 
 #pragma once
-#include "../types/Link.h"
+#include "../ads/Link.h"
 #ifndef __TESTLINK_INCLUDED__ 
 #define __TESTLINK_INCLUDED__
 // c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生

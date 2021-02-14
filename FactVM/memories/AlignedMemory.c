@@ -87,7 +87,7 @@ void* AlignedMemoryChunk_resolveIdleUnit(AlignedMemoryChunk* chunk,size_t unitSi
 	while (existed) {
 		byte_t* unit = ((byte_t*)existed) + sizeof(AlignedMemoryPage);
 		for (size_t i = 0; i < chunk->pageCapacity; i++) {
-			if (((AlignedUnitMeta*)unit)->ref_count == 0) return unit;
+			if (((AlignedUnit*)unit)->ref == 0) return unit;
 			else unit += unitSize;
 		}
 		existed = (prev= existed)->next;
@@ -101,7 +101,7 @@ void* AlignedMemoryChunk_resolveIdleUnit(AlignedMemoryChunk* chunk,size_t unitSi
 			while (existed) {
 				byte_t* unit = ((byte_t*)existed) + sizeof(AlignedMemoryPage);
 				for (size_t i = 0; i < chunk->pageCapacity; i++) {
-					if (((AlignedUnitMeta*)unit)->ref_count == 0) return unit;
+					if (((AlignedUnit*)unit)->ref == 0) return unit;
 					else unit += unitSize;
 				}
 				existed = (prev = existed)->next;
@@ -118,7 +118,7 @@ void* AlignedMemoryChunk_resolveIdleUnit(AlignedMemoryChunk* chunk,size_t unitSi
 	}
 	byte_t* unit = ((byte_t*)page) + sizeof(AlignedMemoryPage);
 	for (size_t i = 0; i < chunk->pageCapacity; i++) {
-		((AlignedUnitMeta*)unit)->ref_count =0;
+		((AlignedUnit*)unit)->ref =0;
 		unit += unitSize;
 	}
 	if (prev) prev->next = page;
@@ -147,7 +147,7 @@ void* AlignedMemory_require(AlignedMemory* self, size_t size, void* type) {
 	}else {
 		chunk = AlignedMemory_getLargeChunk(self, size);
 	}
-	return AlignedMemoryChunk_resolveIdleUnit(chunk,size);
+	return (byte_t*)AlignedMemoryChunk_resolveIdleUnit(chunk,size) + self->unitMetaSize;
 }
 void AlignedMemoryChunk___destruct__(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
@@ -201,11 +201,8 @@ AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, AlignedMemoryOpt
 		AlignedMemoryOptions dftOpts;
 		dftOpts.pageSize = 1024*2;
 		dftOpts.pageCount = 0;
-		dftOpts.unitMetaSize = sizeof(AlignedUnitMeta);
 		Memory_copy(cfg, &dftOpts, sizeof(AlignedMemoryOptions));
 	}else Memory_copy(cfg, opts, sizeof(AlignedMemoryOptions));
-
-	if (!self->unitMetaSize) self->unitMetaSize = sizeof(AlignedUnitMeta);
 
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
 	self->large = 0;

@@ -14,9 +14,9 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	typedef struct stAlignedUnitMeta {
-		size_t ref_count;
-	} AlignedUnitMeta;
+	typedef struct stAlignedUnit {
+		size_t ref;
+	} AlignedUnit;
 
 	struct stAlignedMemory;
 	struct stAlignedMemoryChunk;
@@ -29,7 +29,7 @@ extern "C" {
 		AllocatePageDirective_RecheckOrNewPage,
 	} AllocatePageDirectives;
 
-	typedef AllocatePageDirectives(*BeforeAllocatePage)(struct stAlignedMemoryChunk* chunk);
+	typedef AllocatePageDirectives (*BeforeAllocatePage)(struct stAlignedMemoryChunk* chunk);
 
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
@@ -67,21 +67,21 @@ extern "C" {
 
 	inline void* AlignedMemory_require1(AlignedMemory* self, size_t size, void* type) {
 		void* p = AlignedMemory_require(self,size,type);
-		((AlignedUnitMeta*)(((byte_t*)p) - self->unitMetaSize))->ref_count = 1;
+		((AlignedUnit*)((byte_t*)p-self->unitMetaSize))->ref = 1;
 		return p;
 	}
 	
 	inline bool_t AlignedMemory_release(AlignedMemory* self, void* p) {
-		((AlignedUnitMeta*)(((byte_t*)p) - self->unitMetaSize))->ref_count = 0;
+		((AlignedUnit*)((byte_t*)p))->ref = 0;
 		return 1;
 	}
 	 
 	inline bool_t AlignedMemory_increase(AlignedMemory* self, void* p) {
-		((AlignedUnitMeta*)(((byte_t*)p) - self->unitMetaSize))->ref_count++;
+		((AlignedUnit*)((byte_t*)p))->ref++;
 		return 1;
 	}
 	inline bool_t AlignedMemory_decrease(AlignedMemory* self, void* p) {
-		((AlignedUnitMeta*)(((byte_t*)p) - self->unitMetaSize))->ref_count--;
+		((AlignedUnit*)((byte_t*)p))->ref--;
 		return 1;
 	}
 
