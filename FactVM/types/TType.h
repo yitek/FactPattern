@@ -44,7 +44,7 @@ extern "C" {
 
 
 	inline Type* TType_getGenericType(Type* self, size_t index) {
-		return (Type*)Array___INDEXGETER__(self->generics, index, sizeof(Type*));
+		return (Type*)Array_get(self->generics, index, sizeof(Type*));
 	}
 
 

@@ -80,7 +80,7 @@ void Logger_printf(char_t* p, void* args) {
 				continue;
 			}
 			if (ch == 's') {
-				printf_s("%s", va_arg((*(va_list*)args), char*));
+				printf_s("%ls", va_arg((*(va_list*)args), char_t*));
 				hasPlaceholder = 0;
 				continue;
 			}

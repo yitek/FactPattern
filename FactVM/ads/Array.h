@@ -24,7 +24,7 @@ extern "C" {
 
 
 	const Array* Array___construct__(Array* self, const void* buffer, const size_t count, const size_t unitSize, void* mmArgs, Memory* memory);
-
+	void Array___destruct__(const Array* self, bool_t existed);
 
 	inline size_t Array_length(const Array* self) { return self ? self->length : 0; }
 
@@ -34,8 +34,8 @@ extern "C" {
 
 	inline void* Array_buffer(const Array* self) { return (char*)self + sizeof(Array); }
 
-	inline void* Array___INDEXGETER__(const Array* self, size_t index, size_t unitSize) {
-		return  self?((index >= self->length) ? 0 : ((char*)self + sizeof(Array) + index * unitSize)):0;
+	inline void* Array_get(const Array* self, size_t index, size_t unitSize) {
+		return  (self &&index < self->length) ?  ((char*)self + sizeof(Array) + index * unitSize):0;
 	}
 	
 

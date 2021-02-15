@@ -11,6 +11,7 @@
  
 int main()
 {
+    setlocale(LC_ALL, "chs");
     testLogger();
     testMemory();
     testArray();

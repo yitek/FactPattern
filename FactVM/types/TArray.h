@@ -35,7 +35,7 @@ extern "C" {
 	const Array* TArray_clip(const Array* arr, const size_t start, const size_t length) {
 		if (!arr) return 0;
 		const Type* type = TObject_getType((void*)(arr));
-		Type* itemType = (Type*)Array___INDEXGETER__(type->generics, 0, sizeof(Type*));
+		Type* itemType = (Type*)Array_get(type->generics, 0, sizeof(Type*));
 		return Array_clip(arr, start, length, itemType->size, (void*)type, type->memory);
 	}
 

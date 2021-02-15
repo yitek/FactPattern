@@ -27,7 +27,7 @@ extern "C" {
 
 
 	inline Type* TObject_getIndexType(void* obj,size_t index) {
-		return obj?(index==-1?TObject_getType(obj):(Type*)Array___INDEXGETER__(TObject_getType(obj)->generics, index, sizeof(Type*))):0;
+		return obj?(index==-1?TObject_getType(obj):(Type*)Array_get(TObject_getType(obj)->generics, index, sizeof(Type*))):0;
 	}
 
 

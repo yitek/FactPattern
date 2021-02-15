@@ -27,7 +27,7 @@ void testList() {
 	Array* arr = List_toArray(list,0,sizeof(ListStudent),0,0);
 	printf_s("转数组(len=%d)\n", Array_length(arr));
 	for (size_t i = 0, j = Array_length(arr); i < j; i++) {
-		stu = Array___INDEXGETER__(arr, i, sizeof(ListStudent));
+		stu = Array_get(arr, i, sizeof(ListStudent));
 		printf_s("\t数组元素[%d]: { no: %d, name: %ls, age: %d }\n", i, stu->no, stu->name, stu->age);
 
 	}

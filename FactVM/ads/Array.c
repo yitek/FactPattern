@@ -14,17 +14,23 @@ const Array* Array___construct__(Array* self, const void* buffer, const size_t c
 	return self;
 }
 
+const size_t endlMask = 1 << (sizeof(size_t)*8 - 1);
 
-const Array* Array_concat(const Array* left, const Array* right, const size_t unitSize, void* mmArgs, Memory* memory) {
+
+const Array* Array_concat(const Array* left, const Array* right, const size_t unitSize,void* mmArgs, Memory* memory) {
 	// 右边的没有，返回左边的
 	if (right == 0 || right->length == 0) return left;
 	// 左边的没有，返回右边的
 	if (!left || !left->length) return right;
 	size_t leftLen = left->length, rightLen = right->length;
 	// 总长度等于左边长度+右边长度
-	size_t count = leftLen + rightLen;
+	size_t count = leftLen + rightLen ;
+	bool_t hasEndl = unitSize & endlMask;
+	size_t concatedSize;
+	if (hasEndl) {
+		concatedSize = (count + 1) * (unitSize - endlMask) + sizeof(Array);
+	}else concatedSize = count  * unitSize + sizeof(Array);
 	// 内存大小等于长度乘单元大小
-	size_t concatedSize = count * unitSize;
 
 	// 构造一个新数组
 	if (!memory)memory = Memory_default();
@@ -57,7 +63,12 @@ const Array* Array_clip(const Array* arr, const size_t start, const size_t count
 		else clipCount = count;
 	}
 	// 构造子数组
-	size_t size = sizeof(Array) + clipCount * unitSize;
+	bool_t hasEndl = unitSize & endlMask;
+	size_t size;
+	if (hasEndl) {
+		size = (clipCount + 1) * (unitSize - endlMask);
+	}
+	else size = sizeof(Array) + clipCount * unitSize;
 	if (!memory)memory = Memory_default();
 	Array* subArray = (Array*)memory->require(memory, size, mmArgs);
 	subArray->length = clipCount;
@@ -67,3 +78,9 @@ const Array* Array_clip(const Array* arr, const size_t start, const size_t count
 	return (Array*)subArray;
 }
 
+void Array___destruct__(const Array* self, bool_t existed) {
+	if (!existed) {
+		Memory* mm = Memory_default();
+		mm->release(mm,self);
+	}
+}
