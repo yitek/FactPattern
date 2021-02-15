@@ -43,5 +43,39 @@ typedef unsigned int pointer_t;
 
 inline word_t invalidWordValue() { return !((word_t)0); }
 
+typedef union stByte {
+	byte_t value;
+	byte_t bytes[1];
+}Byte;
+
+typedef union stShort {
+	short value;
+	byte_t bytes[2];
+}Short;
+
+typedef union stInt {
+	int value;
+	byte_t bytes[4];
+}Int;
+
+typedef union stLong {
+	long value;
+	byte_t bytes[8];
+}Long;
+
+typedef union stLarge {
+	long long value;
+	byte_t bytes[16];
+}Large;
+
+typedef union stChar {
+	char_t value;
+	byte_t bytes[2];
+}Char;
+
+typedef union stFloat {
+	char_t value;
+	byte_t bytes[2];
+}Float;
 
 #endif // end ifndef __DEF_INCLUDED__

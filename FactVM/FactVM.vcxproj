@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="loggers\Logger.c" />
     <ClCompile Include="memories\Memory.c" />
     <ClCompile Include="memories\AlignedMemory.c" />
     <ClCompile Include="memories\GCMemory.c" />
@@ -147,15 +148,19 @@
     <ClCompile Include="ads\Link.c" />
     <ClCompile Include="ads\List.c" />
     <ClCompile Include="ads\Set.c" />
+    <ClCompile Include="tests\TestLogger.c" />
     <ClCompile Include="tests\TestMemory.c" />
     <ClCompile Include="tests\TestArray.c" />
     <ClCompile Include="tests\TestString.c" />
     <ClCompile Include="tests\TestLink.c" />
     <ClCompile Include="tests\TestList.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vms\VMachine.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
+    <ClInclude Include="expressions\Expression.h" />
+    <ClInclude Include="loggers\Logger.h" />
     <ClInclude Include="memories\Memory.h" />
     <ClInclude Include="memories\AlignedMemory.h" />
     <ClInclude Include="memories\GCMemory.h" />
@@ -164,10 +169,11 @@
     <ClInclude Include="ads\List.h" />
     <ClInclude Include="ads\Set.h" />
     <ClInclude Include="ads\String.h" />
-    <ClInclude Include="refections\Class.h" />
-    <ClInclude Include="refections\Function.h" />
-    <ClInclude Include="refections\Module.h" />
-    <ClInclude Include="refections\Struct.h" />
+    <ClInclude Include="reflections\Class.h" />
+    <ClInclude Include="reflections\Function.h" />
+    <ClInclude Include="reflections\Module.h" />
+    <ClInclude Include="reflections\Struct.h" />
+    <ClInclude Include="tests\TestLogger.h" />
     <ClInclude Include="tests\TestMemory.h" />
     <ClInclude Include="tests\TestArray.h" />
     <ClInclude Include="tests\TestString.h" />
@@ -179,6 +185,7 @@
     <ClInclude Include="types\TSet.h" />
     <ClInclude Include="types\TString.h" />
     <ClInclude Include="types\TType.h" />
+    <ClInclude Include="vms\VMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

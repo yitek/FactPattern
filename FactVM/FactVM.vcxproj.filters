@@ -25,8 +25,17 @@
     <Filter Include="types">
       <UniqueIdentifier>{25569a37-92dd-4831-94d6-45d4b4804ba1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="refections">
+    <Filter Include="expressions">
+      <UniqueIdentifier>{30904082-1a38-4b4b-b6ad-c16ed8c74b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reflections">
       <UniqueIdentifier>{28001cc6-5133-4cca-8344-bb71ae7b530a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vms">
+      <UniqueIdentifier>{5ad65fab-96e2-4254-829c-4ef5ed963ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="loggers">
+      <UniqueIdentifier>{b9feace3-89ff-4236-a7b9-aefe323bd6e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,17 +99,29 @@
     <ClInclude Include="types\TSet.h">
       <Filter>types</Filter>
     </ClInclude>
-    <ClInclude Include="refections\Struct.h">
-      <Filter>refections</Filter>
+    <ClInclude Include="reflections\Class.h">
+      <Filter>reflections</Filter>
     </ClInclude>
-    <ClInclude Include="refections\Class.h">
-      <Filter>refections</Filter>
+    <ClInclude Include="reflections\Function.h">
+      <Filter>reflections</Filter>
     </ClInclude>
-    <ClInclude Include="refections\Module.h">
-      <Filter>refections</Filter>
+    <ClInclude Include="reflections\Module.h">
+      <Filter>reflections</Filter>
     </ClInclude>
-    <ClInclude Include="refections\Function.h">
-      <Filter>refections</Filter>
+    <ClInclude Include="reflections\Struct.h">
+      <Filter>reflections</Filter>
+    </ClInclude>
+    <ClInclude Include="expressions\Expression.h">
+      <Filter>expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="vms\VMachine.h">
+      <Filter>vms</Filter>
+    </ClInclude>
+    <ClInclude Include="loggers\Logger.h">
+      <Filter>loggers</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\TestLogger.h">
+      <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +166,15 @@
     </ClCompile>
     <ClCompile Include="ads\String.c">
       <Filter>ads</Filter>
+    </ClCompile>
+    <ClCompile Include="vms\VMachine.c">
+      <Filter>vms</Filter>
+    </ClCompile>
+    <ClCompile Include="loggers\Logger.c">
+      <Filter>loggers</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\TestLogger.c">
+      <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

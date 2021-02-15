@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include "tests/TestLogger.h"
 #include "tests/TestMemory.h"
 #include "tests/TestArray.h"
 #include "tests/TestString.h"
@@ -10,6 +11,7 @@
  
 int main()
 {
+    testLogger();
     testMemory();
     testArray();
     testString();
