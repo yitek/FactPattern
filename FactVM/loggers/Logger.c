@@ -9,11 +9,16 @@
 
 Logger* defaultLoggerInstance;
 
-void textColor(LogLevels level);
+void setLevelColor(LogLevels level);
 
-void textColor(LogLevels level){
+
+void setLevelColor(LogLevels level){
+	
+	
 	WORD color = 7;
-	if (level == LogLevel_Error) color= 4; // 红色
+	if (level == LogLevel_SectionEnd) color = 8 << 4 | 15; // 灰底白字
+	if (level == LogLevel_SectionBegin) color = 14 << 4 | 9; // 黄底蓝字
+	if (level == LogLevel_Error) color = 4; // 浅红色
 	if (level == LogLevel_Exception) color=12; // 浅红色
 	if (level == LogLevel_Warn)color = 6; //黄色
 	if (level == LogLevel_Notice)color = 1; //蓝色
@@ -21,17 +26,12 @@ void textColor(LogLevels level){
 	if (level == LogLevel_Info) color=15; //白色
 	if (level == LogLevel_Message) color = 8; //灰色 7 = 白色
 	if (level == LogLevel_Trace) color=5; //紫色
-
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
-	if (level) {
-		SetConsoleTextAttribute(handle, color | FOREGROUND_INTENSITY);//设置颜色
-	}
-	else {
-		SetConsoleTextAttribute(handle, color);//设置颜色
-	}
+	SetConsoleTextAttribute(handle, color);//设置颜色
 	
-
 }
+
+
 
 
 void Logger_printf(char_t* p, void* args) {
@@ -105,7 +105,7 @@ void Logger_printf(char_t* p, void* args) {
 	if (ch != '\n')putchar('\n');
 }
 void terminate(word_t code, const char_t* message, ...) {
-	textColor(LogLevel_Error);
+	setLevelColor(LogLevel_Error);
 	if (message) {
 		va_list valist;
 		va_start(valist, message);
@@ -119,31 +119,40 @@ void terminate(word_t code, const char_t* message, ...) {
 
 void Logger_output(struct stLogger* self, LogLevels lv, const char_t* category ,const char_t* message,void* args) {
 	if (lv < self->level) return;
-	textColor(LogLevel_Info);
-	putchar('[');
-	textColor(lv);
+	if (lv >=LogLevel_Error) {
+		if(lv==LogLevel_SectionBegin) putchar('\n');
+		setLevelColor(lv);
+	}
+	else {
+		setLevelColor(LogLevel_Info);
+		putchar('[');
+		setLevelColor(lv);
+	}
+	
 	
 	if (category) printf_s("%ls",category);
 	else printf_s("LOG");
-	textColor(LogLevel_Info);
+	if(lv<LogLevel_Error)setLevelColor(LogLevel_Info);
 	putchar(']'); putchar(':');
-	textColor(0);
+	if (lv < LogLevel_Error)setLevelColor(0);
 	//
 	if (args == 0) {
 		printf_s("%ls\n", message);
 		return;
 	}
 	Logger_printf((char_t*)message,args);
+	setLevelColor(0);
 	
 }
-void Logger_Log(Logger* self, LogLevels level, const char_t* category, const char_t* message, ...) {
+
+void Logger_log(Logger* self, LogLevels level, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, level, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Trace(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_trace(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
@@ -152,28 +161,28 @@ void Logger_Trace(Logger* self, const char_t* category, const char_t* message, .
 }
 
 
-void Logger_Message(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_message(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Message, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Info(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_info(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Info, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Success(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_success(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Success, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Notice(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_notice(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
@@ -181,25 +190,40 @@ void Logger_Notice(Logger* self, const char_t* category, const char_t* message, 
 	va_end(valist);
 }
 
-void Logger_Warn(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_warn(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Warn, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Exception(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_exception(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Exception, category, message, &valist);
 	va_end(valist);
 }
-void Logger_Error(Logger* self, const char_t* category, const char_t* message, ...) {
+void Logger_error(Logger* self, const char_t* category, const char_t* message, ...) {
 	if (!self) self = Logger_default();
 	va_list valist;
 	va_start(valist, message);
 	self->output(self, LogLevel_Error, category, message, &valist);
+	va_end(valist);
+}
+void Logger_sectionBegin(Logger* self, const char_t* category, const char_t* message, ...) {
+	if (!self) self = Logger_default();
+	va_list valist;
+	va_start(valist, message);
+	self->output(self, LogLevel_SectionBegin, category, message, &valist);
+	va_end(valist);
+}
+
+void Logger_sectionEnd(Logger* self, const char_t* category, const char_t* message, ...) {
+	if (!self) self = Logger_default();
+	va_list valist;
+	va_start(valist, message);
+	self->output(self, LogLevel_SectionEnd, category, message, &valist);
 	va_end(valist);
 }
 
