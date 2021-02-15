@@ -10,7 +10,7 @@
 ******************************************************/
 
 #pragma once
-#include "../def.h"
+#include "../loggers/Logger.h"
 #ifndef __MEMORY_INCLUDED__ 
 #define __MEMORY_INCLUDED__
 // c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生
@@ -83,7 +83,7 @@ extern "C" {
 		///  析构函数，内存管理器撤销时调用
 		/// </summary>
 		void (*destruct)(struct stMemory* memory,bool_t autoFree);
-		MemoryLogger* logger;
+		Logger* logger;
 	} Memory;
 
 	/// <summary>
@@ -96,7 +96,7 @@ extern "C" {
 	/// </summary>
 	/// <param name="self"></param>
 	/// <returns></returns>
-	Memory* Memory___construct__(Memory* self, MemoryLogger* logger);
+	Memory* Memory___construct__(Memory* self,Logger* logger);
 	void* Memory_require(Memory* self, size_t size, void* type);
 	bool_t Memory_release(Memory* self, void* obj);
 	inline bool_t Memory_increase(Memory* self, void* obj) { return 1; }

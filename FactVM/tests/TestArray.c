@@ -1,7 +1,8 @@
 #include "TestArray.h"
+#include "../loggers/Logger.h"
 #include <stdio.h>
 void testArray() {
-	printf_s("\n== START TEST: Array.h ==\n");
+	Logger_sectionBegin(0,L"Array",L"Test start...");
 	ArrayStudent students[3];
 	students[0].no = 1;
 	students[0].name = L"Jack";
@@ -24,7 +25,7 @@ void testArray() {
 	students1[2].name = L"Caro";
 	students1[2].age = 11;
 	const Array* first = Array___construct__(0, &students, 3, sizeof(ArrayStudent), 0, 0);
-	printf_s("生成第1个数组(length=%d)\n",Array_length(first));
+	assert(L"Array.__construct__",first!=0,L"生成第1个数组(length=%d)\n",Array_length(first));
 	
 	ArrayStudent* stu = Array_buffer(first);
 	printf_s("获取缓冲区(指向第一个元素的指针): { no: %d, name: %ls, age: %d }\n", stu->no, stu->name, stu->age);
@@ -44,5 +45,5 @@ void testArray() {
 	printf_s("获取[1]的学生: { no: %d, name: %ls, age: %d}\n", stu->no, stu->name, stu->age);
 
 
-	printf_s("== END TEST: Array.h ==\n");
+	Logger_sectionEnd(0,L"Array",L"Test done!");
 }

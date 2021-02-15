@@ -11,7 +11,7 @@ void testMemory() {
 	assert(L"Memory.require", (bool_t)obj4,L"请求4bytes内存obj4[%p]=%d\n", obj4,*obj4);
 
 	long* obj8 = (long*)mm->require1(mm, 8,0);
-	*obj8 = 1234567890123456789;
+	*obj8 = 9876543210;
 	assert(L"Memory.require1", (bool_t)obj8,L"请求8bytes内存obj8[%p]=%ld\n", obj8,*obj8);
 
 	void* obj12 = mm->require(mm, 12,0);

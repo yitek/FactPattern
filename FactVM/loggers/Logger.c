@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <stdarg.h>
-
+#include <time.h>
 #include <windows.h>
 
 
@@ -104,26 +104,43 @@ void Logger_printf(char_t* p, void* args) {
 	}
 	if (ch != '\n')putchar('\n');
 }
+
+inline void printNow() {
+	time_t  t;
+	time(&t);
+	char tbuffer[32];
+	ctime_s(tbuffer, 32, &t);
+	char* p = tbuffer;
+	while (*p != '\n') { putchar(*p); p++; }
+}
 void terminate(word_t code, const char_t* message, ...) {
 	setLevelColor(LogLevel_Error);
+	printNow();
+	printf_s(" [Terminate] with code:%d\n", code);
 	if (message) {
 		va_list valist;
 		va_start(valist, message);
 		Logger_printf((char_t*)message, &valist);
 		va_end(valist);
 	}
-	printf_s("\nterminate with code:%d\n",code);
+	
+	
 	exit(code);
 	
 }
 
 void Logger_output(struct stLogger* self, LogLevels lv, const char_t* category ,const char_t* message,void* args) {
 	if (lv < self->level) return;
+	
 	if (lv >=LogLevel_Error) {
 		if(lv==LogLevel_SectionBegin) putchar('\n');
+		setLevelColor(LogLevel_Message);
+		printNow(); putchar(' ');
 		setLevelColor(lv);
 	}
 	else {
+		setLevelColor(LogLevel_Message);
+		printNow(); putchar(' ');
 		setLevelColor(LogLevel_Info);
 		putchar('[');
 		setLevelColor(lv);
@@ -133,7 +150,7 @@ void Logger_output(struct stLogger* self, LogLevels lv, const char_t* category ,
 	if (category) printf_s("%ls",category);
 	else printf_s("LOG");
 	if(lv<LogLevel_Error)setLevelColor(LogLevel_Info);
-	putchar(']'); putchar(':');
+	putchar(']');putchar(':'); putchar(' ');
 	if (lv < LogLevel_Error)setLevelColor(0);
 	//
 	if (args == 0) {

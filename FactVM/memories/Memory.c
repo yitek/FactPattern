@@ -17,7 +17,7 @@ void Memory___destruct__(Memory* self, bool_t existed) {
 	}
 }
 
-Memory* Memory___construct__(Memory* self, MemoryLogger* logger) {
+Memory* Memory___construct__(Memory* self, Logger* logger) {
 	if (!self) {
 		self = (Memory*)malloc(sizeof(Memory));
 		if (!self) {
