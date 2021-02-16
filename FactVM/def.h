@@ -23,7 +23,11 @@
 
 typedef char* addr_t;
 typedef char byte_t;
+typedef char utf8char_t;
+typedef unsigned short utf16char_t;
+typedef unsigned int utf32char_t;
 typedef unsigned short char_t;
+typedef unsigned int lchar_t;
 typedef unsigned int bool_t;
 
 

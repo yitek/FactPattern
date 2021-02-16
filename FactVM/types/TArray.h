@@ -19,7 +19,7 @@ extern "C" {
 
 
 	inline const Array* TArray___construct__(Array* self, const void* buffer, const size_t count) {
-		return Array___construct__(self, buffer, count, TObject_getIndexType(self,0)->size, 0, 0);
+		return Array_construct(self, buffer, count, TObject_getIndexType(self,0)->size, 0, 0);
 	}
 
 

@@ -22,21 +22,24 @@ extern "C" {
 		size_t length;
 	} Array;
 
+	extern const size_t Array_EndlMask;
 
-	const Array* Array___construct__(Array* self, const void* buffer, const size_t count, const size_t unitSize, void* mmArgs, Memory* memory);
-	void Array___destruct__(const Array* self, bool_t existed);
+
+	const Array* Array_construct(Array* self, const void* buffer, const size_t count, size_t unitSize, void* mmArgs, Memory* memory);
+	void Array_destruct(Array* self, bool_t existed);
 
 	inline size_t Array_length(const Array* self) { return self ? self->length : 0; }
 
-	const Array* Array_concat(const Array* left, const Array* right, size_t unitSize, void* mmArgs, Memory* memory);
+	const Array* Array_concat(const Array* left, const Array* right, size_t unitSize,const Array* empty, void* mmArgs, Memory* memory);
 
-	const Array* Array_clip(const Array* arr, const size_t start, const size_t length, const size_t unitSize, void* mmArgs, Memory* memory);
+	const Array* Array_clip(const Array* arr, const size_t start, const size_t length, const size_t unitSize,const Array* empty, void* mmArgs, Memory* memory);
 
 	inline void* Array_buffer(const Array* self) { return (char*)self + sizeof(Array); }
 
 	inline void* Array_get(const Array* self, size_t index, size_t unitSize) {
 		return  (self &&index < self->length) ?  ((char*)self + sizeof(Array) + index * unitSize):0;
 	}
+	size_t Array_index(const Array* self, void* item, size_t unitSize,size_t start);
 	
 
 #ifdef __cplusplus 

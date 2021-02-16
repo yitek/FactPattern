@@ -2,8 +2,8 @@
 #include "../memories/GCMemory.h"
 
 VMachine* VMachine_initialize(VMachine* self, VMachineOptions* opts) {
-	self->rw_memory = GCMemory___construct__(0, 0, opts, 0);
-	self->r_memory = AlignedMemory___construct__(0, opts, 0);
+	self->rw_memory = GCMemory___construct__(0, 0, (AlignedMemoryOptions*)opts, 0);
+	self->r_memory = AlignedMemory___construct__(0, (AlignedMemoryOptions*)opts, 0);
 	self->cores = self->sys_memory->require(self->sys_memory,sizeof(VCore*)* opts->coreCount,0);
 	return self;
 }

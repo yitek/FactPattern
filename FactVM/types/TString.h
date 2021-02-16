@@ -22,7 +22,7 @@ extern "C" {
 		size_t c = count;
 		if (count == -1 && buffer) { c = 0; while (buffer[c])c++; }
 		const Type* type = TObject_getType(self);
-		return (String*)Array___construct__((Array*)self, buffer, c, sizeof(char_t), (void*)type, type->memory);
+		return (String*)Array_construct((Array*)self, buffer, c, sizeof(char_t), (void*)type, type->memory);
 	}
 	inline size_t TString_length(const String* self) { return self?self->length:0; }
 	inline char_t* TString_buffer(const String* self) { return self?(char_t*)(self + 1):0; }

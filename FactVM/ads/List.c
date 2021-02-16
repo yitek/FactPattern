@@ -116,7 +116,7 @@ word_t List_shiftValue(List* self, Memory* memory) {
 
 Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* memory) {
 	if (!target) {
-		target = (Array*)Array___construct__(0, 0, self->length, itemSize, mmArgs, memory);
+		target = (Array*)Array_construct(0, 0, self->length, itemSize, mmArgs, memory);
 	}
 	char* item = (char*)self->head;
 	char* dest = (char*)(target + 1);
