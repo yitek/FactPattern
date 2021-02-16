@@ -52,7 +52,7 @@ void testArray() {
 
 	clip = Array_clip(concated, 1, -1, sizeof(ArrayStudent), 0, 0);
 	assert(L"Array.clip", clip->length == 4, L"不指定长度(-1),会自动截取到最后[%p](length=%d)\n", clip, Array_length(clip));
-	Array___destruct__(clip,0);
+	Array___destruct__(clip,0); 
 
 	clip = Array_clip(concated,2,2,sizeof(ArrayStudent),0,0);
 	assert(L"Array.clip",clip->length==2,L"将连接后的数组[%p]切片，从[2]元素开始，取2个元素[%p](length=%d)\n",clip, Array_length(clip));
