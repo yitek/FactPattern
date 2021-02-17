@@ -5,108 +5,201 @@
 
 const String* String_emptyInstance = 0;
 
-
-const String* String_construct(String* self, const byte_t* buffer, size_t byteCount, void* mmArgs, Memory* memory) {
+const String* UTF32String_construct(String* self, const UTF32* buffer, size_t byteCount, void* mmArgs, Memory* memory) {
 	size_t charCount = -1;
-	if (!byteCount) {
+	if (byteCount == 0) {
 		if (buffer) {
-			StringCountResult c = String_countUtf8((const byte_t*const)buffer);
+			EncodingCountResult c = UTF32_count((const byte_t*const)buffer);
 			byteCount = c.byteCount;
 			charCount = c.charCount;
 		}
 	}
 	if (!self) {
 		if (!memory) memory = Memory_default();
-		self = memory->require(memory, byteCount + sizeof(String), mmArgs);
+		self = memory->require(memory, byteCount + sizeof(UTF32) + sizeof(String), mmArgs);
 	}
-	if (byteCount != 0 && byteCount != -1) {
+	if (buffer&& byteCount) {
 		Memory_copy(self + 1, buffer, byteCount);
 		self->bytes = byteCount;
 	}
+	else {
+		Memory_clear(self + 1, buffer, byteCount);
+	}
+	UTF32* p = (((UTF32*)(self + 1)) + byteCount);
+	*p = 0;
+	if (charCount != -1) self->length = charCount;
+	return self;
+}
+const String* UTF16String_construct(String* self, const UTF16* buffer, size_t byteCount, void* mmArgs, Memory* memory) {
+	size_t charCount = -1;
+	if (byteCount == 0) {
+		if (buffer) {
+			EncodingCountResult c = UTF16_count((const byte_t* const)buffer);
+			byteCount = c.byteCount;
+			charCount = c.charCount;
+		}
+	}
+	if (!self) {
+		if (!memory) memory = Memory_default();
+		self = memory->require(memory, byteCount + sizeof(UTF16) + sizeof(String), mmArgs);
+	}
+	if (buffer && byteCount) {
+		Memory_copy(self + 1, buffer, byteCount);
+		self->bytes = byteCount;
+	}
+	else {
+		Memory_clear(self + 1, buffer, byteCount);
+	}
+	UTF16* p = (((UTF16*)(self + 1)) + byteCount);
+	*p = 0;
 	if (charCount != -1) self->length = charCount;
 	return self;
 }
 
-const String* String_concat(const String* left, const String* right, void* mmArgs, Memory* memory) {
-	// ÓÒ±ßµÄÃ»ÓĞ£¬·µ»Ø×ó±ßµÄ
-	if (right == 0 || right->length == 0) return left;
-	// ×ó±ßµÄÃ»ÓĞ£¬·µ»ØÓÒ±ßµÄ
-	if (!left || !left->length) return right;
-	size_t leftLen = left->bytes, rightLen = right->bytes;
-	// ×Ü³¤¶ÈµÈÓÚ×ó±ß³¤¶È+ÓÒ±ß³¤¶È
-	size_t count = leftLen + rightLen;
-	if (count == 0 && String_emptyInstance) return String_emptyInstance;
-	size_t concatedSize = count + sizeof(String);
-	// ÄÚ´æ´óĞ¡µÈÓÚ³¤¶È³Ëµ¥Ôª´óĞ¡
 
-	// ¹¹ÔìÒ»¸öĞÂÊı×é
-	if (!memory)memory = Memory_default();
-	String* concatedArray = memory->require(memory, concatedSize+1, mmArgs);
-	concatedArray->length = left->length + right->length;
-	concatedArray->bytes = left->bytes + right->bytes;
-
-	// »ñÈ¡µ½Êı×éÔªËØµÄ¿ªÊ¼Î»ÖÃ
-	char* buffer = ((char*)concatedArray) + sizeof(Array);
-	//¿½±´×ó±ßµÄÊı×éµÄÔªËØ
-	Memory_copy(buffer, (char*)left + sizeof(Array), leftLen);
-	// ÒÆ¶¯»º´æÖ¸Õëµ½Î²²¿
-	buffer += leftLen ;
-	// ¿½±´ÓÒ±ßµÄÔªËØ
-	Memory_copy(buffer, (char*)right + sizeof(Array), rightLen);
-	buffer += rightLen;
-	*buffer = 0;
-	// ·µ»ØÁ¬½ÓºóµÄÊı×é
-	return (const String*)concatedArray;
+const String* UTF8String_construct(String* self, const UTF8* buffer, size_t byteCount, void* mmArgs, Memory* memory) {
+	size_t charCount = -1;
+	if (byteCount == 0) {
+		if (buffer) {
+			EncodingCountResult c = UTF8_count((const byte_t* const)buffer);
+			byteCount = c.byteCount;
+			charCount = c.charCount;
+		}
+	}
+	if (!self) {
+		if (!memory) memory = Memory_default();
+		self = memory->require(memory, byteCount + sizeof(UTF8) + sizeof(String), mmArgs);
+	}
+	if (buffer && byteCount) {
+		Memory_copy(self + 1, buffer, byteCount);
+		self->bytes = byteCount;
+	}
+	else {
+		Memory_clear(self + 1, buffer, byteCount);
+	}
+	UTF8* p = (((UTF8*)(self + 1)) + byteCount);
+	*p = 0;
+	if (charCount != -1) self->length = charCount;
+	return self;
 }
 
-const String* String_substr(const String* arr, const size_t start, size_t length, void* mmArgs, Memory* memory) {
+const String* UTF8String_substr(const String* arr, const size_t start, size_t length, void* mmArgs, Memory* memory) {
 	if (!arr || arr->length <= start)return 0;
 	if (length == 0) {
-		if(String_emptyInstance)return String_emptyInstance;
-		return String_construct(0, 0, 0, mmArgs, memory);
-
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF8String_construct(0, 0, 0, mmArgs, memory);
 	}
-	size_t indexEnd = start + length;
-	if (indexEnd >= arr->length) { indexEnd = arr->length; length = arr->length - start; }
-	const utf8char_t* p = ( const utf8char_t*)(arr + 1);
-	wchar_t c = 0;
-	utf8char_t* pstart = 0; size_t byteCount = 0; size_t byteCost = 0;
-	while (byteCost = String_convertUtf8To32(p, (utf32char_t* const)&c)) {
-		if (c == start) {
-			pstart = (utf8char_t*)p;
-		}
-		else if (pstart) {
-			byteCount += byteCost;
-		}
-		p += byteCost;
-		c++;
-		if (c == indexEnd)break;
+	size_t end = start + length;
+	if (end >= arr->length) { end = arr->length-1; length = end - start; }
+	if (length == 0) {
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF8String_construct(0, 0, 0, mmArgs, memory);
 	}
+	const UTF8* buffer = (const UTF8*)(arr + 1);
+	UTF8* startp;
+	size_t bytes;
+	if (arr->length == arr->length) {
+		startp = buffer + start;
+		bytes = length;
+	}
+	else {
+		startp =(UTF8*) UTF8_get(buffer, start);
+		const UTF8* endp = UTF8_get(startp, length);
+		bytes = endp - startp;
+	}
+	
 	if (!memory) memory = Memory_default();
-	String* sub = (String*)memory->require(memory, sizeof(String) + byteCount + 1,mmArgs);
+	String* sub = (String*)memory->require(memory, sizeof(String) + bytes + 1, mmArgs);
 	sub->length = length;
-	sub->bytes = byteCount;
-	Memory_copy(sub+1,pstart,byteCount);
-	pstart += byteCount;
-	if(pstart)*pstart = 0;
+	sub->bytes = bytes;
+	Memory_copy(sub + 1, startp, bytes);
+	startp += bytes;
+	*startp = 0;
 	return sub;
 }
-size_t String_search(const String* self, const String* token, size_t start, Memory* memory) {
-	if (!self || !token || self->length <= token->length + start) return -1;
+
+const String* UTF16String_substr(const String* arr, const size_t start, size_t length, void* mmArgs, Memory* memory) {
+	if (!arr || arr->length <= start)return 0;
+	if (length == 0) {
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF16String_construct(0, 0, 0, mmArgs, memory);
+	}
+	size_t end = start + length;
+	if (end >= arr->length) { end = arr->length - 1; length = end - start; }
+	if (length == 0) {
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF16String_construct(0, 0, 0, mmArgs, memory);
+	}
+	const UTF16* buffer = (const UTF16*)(arr + 1);
+	UTF16* startp;
+	size_t bytes;
+	if (arr->length == arr->length) {
+		startp = buffer + start;
+		bytes = length;
+	}
+	else {
+		startp = (UTF16*)UTF16_get(buffer, start);
+		const UTF16* endp = UTF16_get(startp, length);
+		bytes = ((size_t)(endp - startp))*sizeof(UTF16);
+	}
+
+	if (!memory) memory = Memory_default();
+	String* sub = (String*)memory->require(memory, sizeof(String) + bytes + sizeof(UTF16), mmArgs);
+	sub->length = length;
+	sub->bytes = bytes;
+	Memory_copy(sub + 1, startp, bytes);
+	startp =(UTF16*)(((byte_t*)startp) + bytes);
+	*startp = 0;
+	return sub;
+}
+
+const String* UTF32String_substr(const String* arr, const size_t start, size_t length, void* mmArgs, Memory* memory) {
+	if (!arr || arr->length <= start)return 0;
+	if (length == 0) {
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF32String_construct(0, 0, 0, mmArgs, memory);
+	}
+	size_t end = start + length;
+	if (end >= arr->length) { end = arr->length - 1; length = end - start; }
+	if (length == 0) {
+		if (String_emptyInstance)return String_emptyInstance;
+		return UTF32String_construct(0, 0, 0, mmArgs, memory);
+	}
+	const UTF32* buffer = (const UTF32*)(arr + 1);
+	UTF16* startp = buffer + start;
+	size_t bytes = length*sizeof(UTF32);
+	
+	if (!memory) memory = Memory_default();
+	String* sub = (String*)memory->require(memory, sizeof(String) + bytes + sizeof(UTF32), mmArgs);
+	sub->length = length;
+	sub->bytes = bytes;
+	Memory_copy(sub + 1, startp, bytes);
+	startp += length;
+	*startp = 0;
+	return sub;
+}
+
+
+
+size_t UTF8String_search(const String* search, const String* pattern, size_t start, Memory* memory) {
+	if (!search || !pattern || search->length <= pattern->length + start) return -1;
 	size_t selfIndex = 0;
-	byte_t* selfBuffer = (byte_t*)(self + 1);
-	byte_t* tokenBuffer = (byte_t*)(self + 1);
+	byte_t* selfBuffer = (byte_t*)(search + 1);
+	byte_t* tokenBuffer = (byte_t*)(pattern + 1);
+	if (search->bytes == search->length && pattern->bytes== pattern->length) {
+		return String_sunday8(selfBuffer, search->length, tokenBuffer,pattern->length,memory);
+	}
 	lchar_t selfCh = 0; lchar_t tokenCh;
-	for (size_t i = 0, j = self->length - token->length; i < j; i++) {
-		size_t selfCost = String_convertUtf8To32(selfBuffer, (lchar_t* const)&selfCh);
+	for (size_t i = 0, j = search->length - pattern->length; i < j; i++) {
+		size_t selfCost = UTF8_convertToUTF32(selfBuffer, (lchar_t* const)&selfCh);
 		if (selfCost == 0) return -1;
 		byte_t* selfp = (selfBuffer += selfCost); byte_t* tokenp = tokenBuffer;
-		for (size_t k = 0; k < token->length; k++) {
-			size_t tokenCost = String_convertUtf8To32(tokenp, (lchar_t* const)&tokenCh);
+		for (size_t k = 0; k < pattern->length; k++) {
+			size_t tokenCost = UTF8_convertToUTF32(tokenp, (lchar_t* const)&tokenCh);
 			if (tokenCh != selfCh) {
 				selfp = 0; break;
 			}
-			selfCost = String_convertUtf8To32(selfp, (lchar_t* const)&selfCh);
+			selfCost = UTF8_convertToUTF32(selfp, (lchar_t* const)&selfCh);
 			selfp += selfCost;
 		}
 		if (selfp) return selfIndex;
@@ -116,44 +209,42 @@ size_t String_search(const String* self, const String* token, size_t start, Memo
 	return selfIndex;
 }
 
-size_t Sunday(String* search,String* pattern,Memory* mm) {
-	
-	size_t n = search->length;
-	size_t m = pattern->length;
-	byte_t* sbuffer = (byte_t*)(search + 1);
-	byte_t* pbuffer = (byte_t*)(pattern+1);
-
-	// Ä£Ê½´®¿ªÊ¼Î»ÖÃÔÚÖ÷´®µÄÄÄÀï
-	size_t s = 0;
-	size_t index = 0;
-	// Ä£Ê½´®ÒÑ¾­Æ¥Åäµ½µÄÎ»ÖÃ
-	size_t j;
-	while (s <= n - m) {
-		j = 0;
-		while (sbuffer[s + j] == pbuffer[j]) {
-			j++;
-			// Æ¥Åä³É¹¦
-			if (j >= m) {
-				return s;// return s;ÓÉÓÚÊÇutf8£¬ĞèÒª×ª»»Ò»ÏÂindex
-			}
-		}
-		// ÕÒµ½Ö÷´®ÖĞµ±Ç°¸úÄ£Ê½´®Æ¥ÅäµÄ×îÄ©×Ö·ûµÄÏÂÒ»¸ö×Ö·û
-		// ÔÚÄ£Ê½´®ÖĞ³öÏÖ×îºóµÄÎ»ÖÃ
-		// ËùĞèÒª´Ó(Ä£Ê½´®Ä©Î²+1)ÒÆ¶¯µ½¸ÃÎ»ÖÃµÄ²½Êı
-		//Ä¬ÈÏÊÇm+1
-		size_t shiftCount = m+1;
-		byte_t c = sbuffer[s + m];
-		for (size_t k = 0,q= pattern->bytes; k <q; k++) {
-			if (pbuffer[k] == c) {
-				shiftCount = m-k;
-				break;
-			}
-		}
-
-		s += shiftCount;
+size_t UTF16String_search(const String* search, const String* pattern, size_t start, Memory* memory) {
+	if (!search || !pattern || search->length <= pattern->length + start) return -1;
+	size_t selfIndex = 0;
+	byte_t* selfBuffer = (byte_t*)(search + 1);
+	byte_t* tokenBuffer = (byte_t*)(pattern + 1);
+	if (search->bytes == search->length && pattern->bytes == pattern->length) {
+		return String_sunday16(selfBuffer, search->length, tokenBuffer, pattern->length, memory);
 	}
-	return -1;
+	lchar_t selfCh = 0; lchar_t tokenCh;
+	for (size_t i = 0, j = search->length - pattern->length; i < j; i++) {
+		size_t selfCost = UTF16_convertToUTF32(selfBuffer, (lchar_t* const)&selfCh);
+		if (selfCost == 0) return -1;
+		byte_t* selfp = (selfBuffer += selfCost); byte_t* tokenp = tokenBuffer;
+		for (size_t k = 0; k < pattern->length; k++) {
+			size_t tokenCost = UTF16_convertToUTF32(tokenp, (lchar_t* const)&tokenCh);
+			if (tokenCh != selfCh) {
+				selfp = 0; break;
+			}
+			selfCost = UTF8_convertToUTF32(selfp, (lchar_t* const)&selfCh);
+			selfp += selfCost;
+		}
+		if (selfp) return selfIndex;
+		selfIndex++;
+
+	}
+	return selfIndex;
 }
+
+
+size_t UTF32String_search(const String* search, const String* pattern, size_t start, Memory* memory) {
+	return String_sunday32((UTF32)(search+1), search->length, (UTF32)(pattern + 1), pattern->length, memory);
+}
+
+
+
+
 
 
 void getKMPNext(size_t* next, const char_t* p, size_t length) {
@@ -162,14 +253,14 @@ void getKMPNext(size_t* next, const char_t* p, size_t length) {
 	size_t j = 0;
 	size_t k = -1;
 	while (j < length - 1) {
-		//p[k]±íÊ¾Ç°×º£¬p[j]±íÊ¾ºó×º
+		//p[k]è¡¨ç¤ºå‰ç¼€ï¼Œp[j]è¡¨ç¤ºåç¼€
 		if (k == -1 || p[j] == p[k]) {
-			//½ÏÖ®Ç°nextÊı×éÇó·¨£¬¸Ä¶¯ÔÚÏÂÃæ4ĞĞ
+			//è¾ƒä¹‹å‰nextæ•°ç»„æ±‚æ³•ï¼Œæ”¹åŠ¨åœ¨ä¸‹é¢4è¡Œ
 			if (p[++j] == p[++k]) {
-				next[j] = next[k];// µ±Á½¸ö×Ö·ûÏàµÈÊ±ÒªÌø¹ı
+				next[j] = next[k];// å½“ä¸¤ä¸ªå­—ç¬¦ç›¸ç­‰æ—¶è¦è·³è¿‡
 			}
 			else {
-				next[j] = k;//Ö®Ç°Ö»ÓĞÕâÒ»ĞĞ
+				next[j] = k;//ä¹‹å‰åªæœ‰è¿™ä¸€è¡Œ
 			}
 		}
 		else {
@@ -188,22 +279,22 @@ int String_searchKMP(const String* search, const String* pattern, size_t start,M
 	const char_t* s = (char_t*)((char*)search + sizeof(String)) + start;
 	const char_t* p = (char_t*)((char*)pattern + sizeof(String));
 
-	// KMPËã·¨
-	//·ÖÅänext¿Õ¼ä
+	// KMPç®—æ³•
+	//åˆ†é…nextç©ºé—´
 	if (!memory) memory = Memory_default();
 	size_t* next = (size_t*)memory->require(memory, plength * sizeof(size_t), 0);
 	getKMPNext(next, p, plength);
-	size_t i = 0; // Ö÷´®µÄÎ»ÖÃ
-	size_t j = 0; // Ä£Ê½´®µÄÎ»ÖÃ
+	size_t i = 0; // ä¸»ä¸²çš„ä½ç½®
+	size_t j = 0; // æ¨¡å¼ä¸²çš„ä½ç½®
 
 	while (i < slength && (j == -1 || j < plength)) {
-		//¢ÙÈç¹ûj=-1£¬»òÕßµ±Ç°×Ö·ûÆ¥Åä³É¹¦£¨¼´S[i]==P[j]£©£¬¶¼Áîi++£¬j++
-		if (j == -1 || s[i] == p[j]) { // µ±jÎª-1Ê±£¬ÒªÒÆ¶¯µÄÊÇi£¬µ±È»jÒ²Òª¹é0
+		//â‘ å¦‚æœj=-1ï¼Œæˆ–è€…å½“å‰å­—ç¬¦åŒ¹é…æˆåŠŸï¼ˆå³S[i]==P[j]ï¼‰ï¼Œéƒ½ä»¤i++ï¼Œj++
+		if (j == -1 || s[i] == p[j]) { // å½“jä¸º-1æ—¶ï¼Œè¦ç§»åŠ¨çš„æ˜¯iï¼Œå½“ç„¶jä¹Ÿè¦å½’0
 			i++;
 			j++;
 		}
 		else {
-			//¢ÚÈç¹ûj!=-1£¬ÇÒµ±Ç°×Ö·ûÆ¥ÅäÊ§°Ü£¨¼´S[i]!=P[j]£©£¬ÔòÁîi²»±ä£¬j=next[j]£¬jÓÒÒÆi-next[j]
+			//â‘¡å¦‚æœj!=-1ï¼Œä¸”å½“å‰å­—ç¬¦åŒ¹é…å¤±è´¥ï¼ˆå³S[i]!=P[j]ï¼‰ï¼Œåˆ™ä»¤iä¸å˜ï¼Œj=next[j]ï¼Œjå³ç§»i-next[j]
 			j = next[j];
 		}
 	}
@@ -212,13 +303,13 @@ int String_searchKMP(const String* search, const String* pattern, size_t start,M
 
 }
 void String_cout(const String* self) {
-	char_t* buffer = (wchar_t*)((char*)self + sizeof(String));
-	for (size_t i = 0, j = self->length; i < j; i++) putwchar(*buffer++);
+	byte_t* buffer = (byte_t*)(self +1);
+	printf_s("%s",buffer);
 }
 void String_coutln(const String* self) {
-	char_t* buffer = (wchar_t*)((char*)self + sizeof(String));
-	for (size_t i = 0, j = self->length; i < j; i++) putwchar(*buffer++);
-	putwchar(L'\n');
+	byte_t* buffer = (byte_t*)(self + 1);
+	printf_s("%s\n", buffer);
+	
 }
 
 
@@ -228,8 +319,8 @@ int String_compare(const String* left, const String* right) {
 		if (right) {
 			size_t c = left->length;
 			if (c > right->length) c = right->length;
-			char_t* leftBuffer = (char_t*)((char*)left + sizeof(String));
-			char_t* rightBuffer = (char_t*)((char*)right + sizeof(String));
+			byte_t* leftBuffer = (byte_t*)((char*)left + sizeof(String));
+			byte_t* rightBuffer = (byte_t*)((char*)right + sizeof(String));
 			for (int i = 0, j = c; i < j; i++) {
 				if (*leftBuffer > * rightBuffer) return 1;
 				if (*leftBuffer < *rightBuffer) return -1;

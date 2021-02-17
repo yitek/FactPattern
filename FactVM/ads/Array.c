@@ -2,7 +2,7 @@
 const size_t Array_EndlMask = 1 << (sizeof(size_t) * 8 - 1);
 
 const Array* Array_construct(Array* self, const void* buffer, const size_t count, size_t unitSize, void* mmArgs, Memory* memory) {
-	//Èç¹ûÎ´·ÖÅä£¬¾Í×Ô¼ºÉêÇëÒ»Æ¬ÄÚ´æ
+	//å¦‚æœæœªåˆ†é…ï¼Œå°±è‡ªå·±ç”³è¯·ä¸€ç‰‡å†…å­˜
 	bool_t hasEndl = unitSize & Array_EndlMask;
 	if (self == 0) {
 		if (!memory)memory = Memory_default();
@@ -11,7 +11,7 @@ const Array* Array_construct(Array* self, const void* buffer, const size_t count
 			else self = (Array*)memory->require(memory, sizeof(Array) + count * unitSize, mmArgs);
 		}
 	}
-	// Ğ´Èë³¤¶È
+	// å†™å…¥é•¿åº¦
 	self->length = count;
 	if (hasEndl) {
 		unitSize = unitSize - Array_EndlMask;
@@ -23,7 +23,7 @@ const Array* Array_construct(Array* self, const void* buffer, const size_t count
 		else Memory_clear(p, unitSize);
 	}
 	else {
-		// ¿½±´Ô­Ê¼Êı¾İµ½Ä¿±êÄÚ´æ
+		// æ‹·è´åŸå§‹æ•°æ®åˆ°ç›®æ ‡å†…å­˜
 		if (count && buffer) {
 			Memory_copy((char*)self + sizeof(Array), buffer, unitSize * count);
 		}
@@ -58,12 +58,12 @@ size_t Array_index(const Array* self, void* item, size_t unitSize,size_t start) 
 
 
 const Array* Array_concat(const Array* left, const Array* right, const size_t unitSize,const Array* empty,void* mmArgs, Memory* memory) {
-	// ÓÒ±ßµÄÃ»ÓĞ£¬·µ»Ø×ó±ßµÄ
+	// å³è¾¹çš„æ²¡æœ‰ï¼Œè¿”å›å·¦è¾¹çš„
 	if (right == 0 || right->length == 0) return left;
-	// ×ó±ßµÄÃ»ÓĞ£¬·µ»ØÓÒ±ßµÄ
+	// å·¦è¾¹çš„æ²¡æœ‰ï¼Œè¿”å›å³è¾¹çš„
 	if (!left || !left->length) return right;
 	size_t leftLen = left->length, rightLen = right->length;
-	// ×Ü³¤¶ÈµÈÓÚ×ó±ß³¤¶È+ÓÒ±ß³¤¶È
+	// æ€»é•¿åº¦ç­‰äºå·¦è¾¹é•¿åº¦+å³è¾¹é•¿åº¦
 	size_t count = leftLen + rightLen ;
 	if (count == 0 && empty) return empty;
 	bool_t hasEndl = unitSize & Array_EndlMask;
@@ -71,20 +71,20 @@ const Array* Array_concat(const Array* left, const Array* right, const size_t un
 	if (hasEndl) {
 		concatedSize = (count + 1) * (unitSize - Array_EndlMask) + sizeof(Array);
 	}else concatedSize = count  * unitSize + sizeof(Array);
-	// ÄÚ´æ´óĞ¡µÈÓÚ³¤¶È³Ëµ¥Ôª´óĞ¡
+	// å†…å­˜å¤§å°ç­‰äºé•¿åº¦ä¹˜å•å…ƒå¤§å°
 
-	// ¹¹ÔìÒ»¸öĞÂÊı×é
+	// æ„é€ ä¸€ä¸ªæ–°æ•°ç»„
 	if (!memory)memory = Memory_default();
 	Array* concatedArray = memory->require(memory, concatedSize, mmArgs);
 	concatedArray->length = count;
 
-	// »ñÈ¡µ½Êı×éÔªËØµÄ¿ªÊ¼Î»ÖÃ
+	// è·å–åˆ°æ•°ç»„å…ƒç´ çš„å¼€å§‹ä½ç½®
 	char* buffer = ((char*)concatedArray) + sizeof(Array);
-	//¿½±´×ó±ßµÄÊı×éµÄÔªËØ
+	//æ‹·è´å·¦è¾¹çš„æ•°ç»„çš„å…ƒç´ 
 	Memory_copy(buffer, (char*)left + sizeof(Array), leftLen * unitSize);
-	// ÒÆ¶¯»º´æÖ¸Õëµ½Î²²¿
+	// ç§»åŠ¨ç¼“å­˜æŒ‡é’ˆåˆ°å°¾éƒ¨
 	buffer += leftLen * unitSize;
-	// ¿½±´ÓÒ±ßµÄÔªËØ
+	// æ‹·è´å³è¾¹çš„å…ƒç´ 
 	Memory_copy(buffer, (char*)right + sizeof(Array), rightLen * unitSize);
 	if (hasEndl) {
 		buffer += rightLen * unitSize;
@@ -95,25 +95,25 @@ const Array* Array_concat(const Array* left, const Array* right, const size_t un
 			Memory_clear(buffer, unitSize);
 		}
 	}
-	// ·µ»ØÁ¬½ÓºóµÄÊı×é
+	// è¿”å›è¿æ¥åçš„æ•°ç»„
 	return (const Array*)concatedArray;
 }
 
 const Array* Array_clip(const Array* arr, const size_t start, const size_t count, const size_t unitSize,const Array* empty, void* mmArgs, Memory* memory) {
 	if (!arr)return 0;
 	size_t len = arr->length;
-	//¿ªÊ¼Î»ÖÃ±È×îºóÒ»¸öÎ»ÖÃ»¹¿¿ºó,Ê²Ã´¶¼ÎŞ·¨½ØÈ¡
+	//å¼€å§‹ä½ç½®æ¯”æœ€åä¸€ä¸ªä½ç½®è¿˜é å,ä»€ä¹ˆéƒ½æ— æ³•æˆªå–
 	if (start >= len) return 0;
-	// Èç¹ûÃ»ÓĞÖ¸¶¨½ØÈ¡¸öÊı£¬Ä¬ÈÏÎª½ØÈ¡Ê£Óà²¿·Ö
+	// å¦‚æœæ²¡æœ‰æŒ‡å®šæˆªå–ä¸ªæ•°ï¼Œé»˜è®¤ä¸ºæˆªå–å‰©ä½™éƒ¨åˆ†
 	size_t clipCount;
 	if (count == -1) clipCount = len - start;
 	else {
-		// ½ØÈ¡µÄ³¤¶È³¬³öÁË×î´ó·¶Î§£¬½ØÈ¡µ½Î²²¿
+		// æˆªå–çš„é•¿åº¦è¶…å‡ºäº†æœ€å¤§èŒƒå›´ï¼Œæˆªå–åˆ°å°¾éƒ¨
 		if (start + count >= len) clipCount = len - start;
 		else clipCount = count;
 	}
 	if (clipCount == 0 && empty) return empty;
-	// ¹¹Ôì×ÓÊı×é
+	// æ„é€ å­æ•°ç»„
 	bool_t hasEndl = unitSize & Array_EndlMask;
 	size_t size;
 	if (hasEndl) {

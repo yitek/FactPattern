@@ -59,7 +59,7 @@ extern "C" {
 
 	}AlignedMemory;
 
-	AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, AlignedMemoryOptions* opts,Logger* logger);
+	AlignedMemory* AlignedMemory___construct__(AlignedMemory* self, AlignedMemoryOptions* opts,TLogger* logger);
 
 	void AlignedMemory___destruct__(AlignedMemory* self, bool_t existed);
 

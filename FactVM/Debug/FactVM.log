@@ -1,2 +1,12 @@
-﻿  String.c
+﻿  main.cpp
+D:\Yitek\FactPattern\FactVM\tests\TestLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\Loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\tests\TestMemory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\memories\Memory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\tests\TestArray.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\ads\Array.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\ads\String.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\ads\Encoding.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\FactVM\ads\String.h(143,13): warning C4244: “初始化”: 从“const UTF16”转换到“byte_t”，可能丢失数据
   FactVM.vcxproj -> D:\Yitek\FactPattern\Debug\FactVM.exe

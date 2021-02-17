@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,Logger* logger) {
+GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,TLogger* logger) {
 	if (!self) {
 		self = malloc(sizeof(GCMemory));
 		if (!self) {

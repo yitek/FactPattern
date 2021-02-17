@@ -17,11 +17,11 @@ void Memory_destruct(Memory* self, bool_t existed) {
 	}
 }
 
-Memory* Memory_construct(Memory* self, Logger* logger) {
+Memory* Memory_construct(Memory* self, TLogger* logger) {
 	if (!self) {
 		self = (Memory*)malloc(sizeof(Memory));
 		if (!self) {
-			printf_s("[ERR00001]:Memory___construct__:无法分配内存");
+			printf_s("[ERR00001]:Memory___construct__:鏃犳硶鍒嗛厤鍐呭瓨");
 			exit(1);
 			return NULL;
 		}

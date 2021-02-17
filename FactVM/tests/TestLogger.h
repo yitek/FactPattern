@@ -4,19 +4,19 @@
 *
 * author:yiy
 *
-* description: ÈÕÖ¾Àà²âÊÔ´úÂë
+* description: æ—¥å¿—ç±»æµ‹è¯•ä»£ç 
 *
 ******************************************************/
 
 #pragma once
-#include "../Loggers/Logger.h"
+#include "../Loggers/TLogger.h"
 #ifndef __TESTLOGGER_INCLUDED__ 
 #define __TESTLOGGER_INCLUDED__
 
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	void testLogger();
+	void testTLogger();
 
 #ifdef __cplusplus 
 }//end extern c

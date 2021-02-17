@@ -2,10 +2,10 @@
 *
 * author:yiy
 *
-* description: Êý×é»ùÀà
-* ¶¨ÒåÁË Á¬½Óconcat,ÇÐÆ¬clip²Ù×÷
-* ¶¨ÒåÁËÊôÐÔ length
-* ¶¨ÒåÁËÏÂ±ê·ÃÎÊÆ÷
+* description: æ•°ç»„åŸºç±»
+* å®šä¹‰äº† è¿žæŽ¥concat,åˆ‡ç‰‡clipæ“ä½œ
+* å®šä¹‰äº†å±žæ€§ length
+* å®šä¹‰äº†ä¸‹æ ‡è®¿é—®å™¨
 *
 ******************************************************/
 
@@ -13,7 +13,7 @@
 #include "../memories/Memory.h"
 #ifndef __ARRAY_INCLUDED__ 
 #define __ARRAY_INCLUDED__
-// cÓïÑÔÕûºÏ½øcppµÄ±ê×¼ÓÃ·¨,Ö¸¶¨ÀïÃæµÄ·ûºÅ°´ÕÕcÓïÑÔ·½Ê½²úÉú
+// cè¯­è¨€æ•´åˆè¿›cppçš„æ ‡å‡†ç”¨æ³•,æŒ‡å®šé‡Œé¢çš„ç¬¦å·æŒ‰ç…§cè¯­è¨€æ–¹å¼äº§ç”Ÿ
 #ifdef __cplusplus 
 extern "C" {
 #endif

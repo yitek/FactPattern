@@ -3,34 +3,35 @@
 #include <stdio.h>
 
 void testString() {
-	Logger_sectionBegin(0, L"String", L"Test start...");
-	const String* str1 = String_construct(0, L"Hello ", -1, 0, 0);
-	assert(L"String.construct",str1 && str1->length==6,L"´´½¨µÚÒ»¸ö×Ö·û´®[%p](%d):",str1,String_length(str1));
-	String_cout(str1); printf_s("\n");
+	Logger_sectionBegin(0, "String", "Test start...");
+	const String* str1 = String_construct(0, "ä½ å¥½ä¸¥ä¸€", 0, 0, 0);
+	assert("String.construct",str1 && str1->length==4,"åˆ›å»ºç¬¬ä¸€ä¸ªå­—ç¬¦ä¸²[%p](length=%d)",str1,String_length(str1));
+	String_coutln(str1);
 
-	const String* str2 = String_construct(0, L"Yiy. I'am Yi. How are you.", -1, 0, 0);
-	//assert(L"String.construct","´´½¨µÚ¶ş¸ö×Ö·û´®:");
-	String_cout(str2); printf_s("\n");
-
+	const String* str2 = String_construct(0, "ä½ å¥½..I'am ç¨‹åºå‘˜.", 0, 0, 0);
+	//const char* str = "å—";
+	//printf_s("ä½ å¥½..I'am ç¨‹åºå‘˜."); ?? ç³»ç»Ÿé”™è¯¯ï¼Ÿ å— å‘˜ä¸èƒ½æ­£å¸¸æ˜¾ç¤ºå•Šï¼Ÿ
+	assert("String.construct", str2 && str2->length == 12, "åˆ›å»ºç¬¬ä¸€ä¸ªå­—ç¬¦ä¸²[%p](length=%d):%s", str2, String_length(str2), String_buffer(str2));
 	const String* str3 = String_concat(str1,str2,0,0);
-	printf_s("Æ´½Ó×Ö·û´®:");
-	String_cout(str3); printf_s("\n");
+	assert("String.concat", str3 && str3->length == 21, "æ‹¼æ¥å‰2ä¸ªå­—ç¬¦ä¸²[%p](length=%d):%s", str3, String_length(str3),String_buffer(str3));
 
-	const String* token = String_construct(0,L"Yi",-1,0,0);
+	
+
+	const String* token = String_construct(0,"ä½ å¥½",0,0,0);
 
 	size_t firstAt = String_search(str3,token,0,0);
-	printf_s("Æ´½Ó×Ö·û´®ÖĞ²éÕÒ'yi'×Ó´®:%d\n", firstAt);
+	assert("String.search",firstAt==0,"æ‹¼æ¥å­—ç¬¦ä¸²ä¸­æŸ¥æ‰¾'ä½ å¥½'å­ä¸²:%d\n", firstAt);
 	size_t at = String_search(str3,token, firstAt+1, 0);
-	printf_s("Æ´½Ó×Ö·û´®ÖĞ,ÒÔÏÂ±ê%d¿ªÊ¼²éÕÒ'yi'×Ó´®:%d\n", firstAt+1, at);
+	//printf_s("æ‹¼æ¥å­—ç¬¦ä¸²ä¸­,ä»¥ä¸‹æ ‡%då¼€å§‹æŸ¥æ‰¾'yi'å­ä¸²:%d\n", firstAt+1, at);
 	size_t at1 = String_search(str3, token, at+1, 0);
-	printf_s("Æ´½Ó×Ö·û´®ÖĞ,ÒÔÏÂ±ê%d¿ªÊ¼²éÕÒ'yi'×Ó´®:%d\n", at+1, at1 );
+	//printf_s("æ‹¼æ¥å­—ç¬¦ä¸²ä¸­,ä»¥ä¸‹æ ‡%då¼€å§‹æŸ¥æ‰¾'yi'å­ä¸²:%d\n", at+1, at1 );
 
 	const String* substr = String_substr(str3,at,-1,0,0);
 
-	printf_s("»ñÈ¡×Ó´®(len=%d):",String_length(substr));
-	String_coutln(substr);
+	printf_s("è·å–å­ä¸²(len=%d):",String_length(substr));
+	//String_coutln(substr);
 
-	printf_s("»ñÈ¡×Ó´®µÄµÚ2¸ö×Ö·û%lc\n", String_get(substr,1));
+	//printf_s("è·å–å­ä¸²çš„ç¬¬2ä¸ªå­—ç¬¦%lc\n", String_get(substr,1));
 
 	printf_s("== END TEST: String.h ==\n");
 

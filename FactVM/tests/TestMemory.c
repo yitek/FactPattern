@@ -1,50 +1,50 @@
 #include "TestMemory.h"
-#include "../loggers/Logger.h"
+#include "../loggers/TLogger.h"
 
 void testMemory() {
-	Logger_sectionBegin(0,L"Memory",L"Test start...");
+	TLogger_sectionBegin(0,"Memory","Test start...");
 	Memory* mm = Memory_construct(0,0);
-	assert(L"Memory.__construct__", (bool_t)mm, L"¹¹ÔìÄÚ´æ¹ÜÀíÆ÷:%p\n", mm);
+	assert("Memory.__construct__", (bool_t)mm, "æ„é€ å†…å­˜ç®¡ç†å™¨:%p\n", mm);
 
 	int* obj4 = (int*)mm->require(mm,4,0);
 	*obj4 = 88;
-	assert(L"Memory.require", (bool_t)obj4,L"ÇëÇó4bytesÄÚ´æobj4[%p]=%d\n", obj4,*obj4);
+	assert("Memory.require", (bool_t)obj4,"è¯·æ±‚4byteså†…å­˜obj4[%p]=%d\n", obj4,*obj4);
 
 	long* obj8 = (long*)mm->require1(mm, 8,0);
 	*obj8 = 9876543210;
-	assert(L"Memory.require1", (bool_t)obj8,L"ÇëÇó8bytesÄÚ´æobj8[%p]=%ld\n", obj8,*obj8);
+	assert("Memory.require1", (bool_t)obj8,"è¯·æ±‚8byteså†…å­˜obj8[%p]=%ld\n", obj8,*obj8);
 
 	void* obj12 = mm->require(mm, 12,0);
-	assert(L"Memory.require", (bool_t)obj12,L"ÇëÇó12bytesÄÚ´æobj12[%p]\n", obj12);
+	assert("Memory.require", (bool_t)obj12,"è¯·æ±‚12byteså†…å­˜obj12[%p]\n", obj12);
 
 	void* obj16 = mm->require(mm, 16,0);
-	assert(L"Memory.require", (bool_t)obj16,L"ÇëÇó16bytesÄÚ´æobj16[%p]\n", obj16);
+	assert("Memory.require", (bool_t)obj16,"è¯·æ±‚16byteså†…å­˜obj16[%p]\n", obj16);
 
 	mm->increase(mm, obj4);
-	assert(L"Memory.increase", (bool_t)*obj4, L"ÒıÓÃÔö¼Óobj4[%p]=%d\n", obj4,*obj4);
+	assert("Memory.increase", (bool_t)*obj4, "å¼•ç”¨å¢åŠ obj4[%p]=%d\n", obj4,*obj4);
 
 	mm->decrease(mm, obj4);
-	assert(L"Memory.decrease", (bool_t)*obj4, L"ÒıÓÃÔö¼Óobj4[%p]=%d\n", obj4,*obj4);
+	assert("Memory.decrease", (bool_t)*obj4, "å¼•ç”¨å¢åŠ obj4[%p]=%d\n", obj4,*obj4);
 
 	mm->release(mm, obj4);
-	assert(L"Memory.release", (bool_t)obj4, L"ÊÍ·ÅÄÚ´æobj4[%p]=%d\n", obj4);
+	assert("Memory.release", (bool_t)obj4, "é‡Šæ”¾å†…å­˜obj4[%p]=%d\n", obj4);
 
 	mm->release(mm, obj8);
-	assert(L"Memory.release", (bool_t)obj8, L"ÊÍ·ÅÄÚ´æobj8[%p]=%ld\n", obj8,*obj8);
+	assert("Memory.release", (bool_t)obj8, "é‡Šæ”¾å†…å­˜obj8[%p]=%ld\n", obj8,*obj8);
 
 	mm->release(mm, obj12);
-	assert(L"Memory.release", (bool_t)obj12, L"ÊÍ·ÅÄÚ´æobj12[%p]\n", obj12);
+	assert("Memory.release", (bool_t)obj12, "é‡Šæ”¾å†…å­˜obj12[%p]\n", obj12);
 
 	mm->release(mm, obj16);
-	assert(L"Memory.release", (bool_t)obj16, L"ÊÍ·ÅÄÚ´æobj12[%p]\n", obj16);
+	assert("Memory.release", (bool_t)obj16, "é‡Šæ”¾å†…å­˜obj12[%p]\n", obj16);
 
 	Memory_destruct(mm,0);
-	assert(L"Memory.__destruct__", (bool_t)mm, L"Îö¹¹ÄÚ´æ¹ÜÀíÆ÷\n", mm);
+	assert("Memory.__destruct__", (bool_t)mm, "ææ„å†…å­˜ç®¡ç†å™¨\n", mm);
 
 	mm = Memory_default();
-	assert(L"Memory.default", mm && mm== Memory_defaultInstance, L"Ä¬ÈÏÄÚ´æ¹ÜÀíÆ÷%p\n", mm);
+	assert("Memory.default", mm && mm== Memory_defaultInstance, "é»˜è®¤å†…å­˜ç®¡ç†å™¨%p\n", mm);
 	Memory_destruct(mm, 0);
-	assert(L"Memory.__destruct__", Memory_defaultInstance==0, L"Îö¹¹Ä¬ÈÏµÄÄÚ´æ¹ÜÀíÆ÷\n", mm);
+	assert("Memory.__destruct__", Memory_defaultInstance==0, "ææ„é»˜è®¤çš„å†…å­˜ç®¡ç†å™¨\n", mm);
 
-	Logger_sectionEnd(0, L"Memory", L"Test done!");
+	TLogger_sectionEnd(0, "Memory", "Test done!");
 }

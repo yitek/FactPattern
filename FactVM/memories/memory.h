@@ -3,100 +3,100 @@
 *
 * author:yiy
 *
-* description: ÄÚ´æ¹ÜÀí»ùÀà
-* ¶¨ÒåÄÚ´æ¹ÜÀíÆ÷µÄ³éÏó½á¹¹
-* ÊµÏÖ»ùÓÚmallocµÄ×î¼òµ¥µÄÄÚ´æ¹ÜÀíÆ÷
+* description: å†…å­˜ç®¡ç†åŸºç±»
+* å®šä¹‰å†…å­˜ç®¡ç†å™¨çš„æŠ½è±¡ç»“æ„
+* å®ç°åŸºäºmallocçš„æœ€ç®€å•çš„å†…å­˜ç®¡ç†å™¨
 *
 ******************************************************/
 
 #pragma once
-#include "../loggers/Logger.h"
+#include "../loggers/TLogger.h"
 #ifndef __MEMORY_INCLUDED__ 
 #define __MEMORY_INCLUDED__
-// cÓïÑÔÕûºÏ½øcppµÄ±ê×¼ÓÃ·¨,Ö¸¶¨ÀïÃæµÄ·ûºÅ°´ÕÕcÓïÑÔ·½Ê½²úÉú
+// cè¯­è¨€æ•´åˆè¿›cppçš„æ ‡å‡†ç”¨æ³•,æŒ‡å®šé‡Œé¢çš„ç¬¦å·æŒ‰ç…§cè¯­è¨€æ–¹å¼äº§ç”Ÿ
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	typedef struct stMemoryLogger {
+	typedef struct stMemoryTLogger {
 		void(*allocated)(size_t size,const char_t* reason,const char_t* message);
 		void(*free)(size_t size, const char_t* reason, const char_t* message);
-	}MemoryLogger;
+	}MemoryTLogger;
 	struct stMemory;
 	/// <summary>
-	/// ÄÚ´æ¹ÜÀíÆ÷µÄĞéº¯Êı±í½á¹¹(ÃüÃû±í)
+	/// å†…å­˜ç®¡ç†å™¨çš„è™šå‡½æ•°è¡¨ç»“æ„(å‘½åè¡¨)
 	/// </summary>
 	typedef struct stMemoryVTBL {
 		/// <summary>
-		/// ÇëÇóÒ»Æ¬ÄÚ´æ£¬
+		/// è¯·æ±‚ä¸€ç‰‡å†…å­˜ï¼Œ
 		/// </summary>
 		void* (*require)(struct stMemory* self,size_t size,void* type);
 		void* (*require1)(struct stMemory* self, size_t size, void* type);
 		/// <summary>
-		/// (Ç¿)ÊÍ·ÅÒ»Æ¬ÄÚ´æ
-		/// Ö±½ÓÊÍ·Å£¬ÄÚ´æÒÑ¾­·µ»Ø¸øÁËÄÚ´æ¹ÜÀíÆ÷
+		/// (å¼º)é‡Šæ”¾ä¸€ç‰‡å†…å­˜
+		/// ç›´æ¥é‡Šæ”¾ï¼Œå†…å­˜å·²ç»è¿”å›ç»™äº†å†…å­˜ç®¡ç†å™¨
 		/// </summary>
 		bool_t (*release)(struct stMemory* self, void* p);
 
 		/// <summary>
-		/// Ôö¼ÓÒıÓÃ
-		/// ÔÚmallocÊ±£¬ÊÇ¸ö¿Õº¯Êı
+		/// å¢åŠ å¼•ç”¨
+		/// åœ¨mallocæ—¶ï¼Œæ˜¯ä¸ªç©ºå‡½æ•°
 		/// </summary>
 		bool_t(*increase)(void* p);
 		/// <summary>
-		/// ¼õÉÙÒıÓÃ
-		/// ÔÚmallocÊ±£¬ÊÇ¸ö¿Õº¯Êı
+		/// å‡å°‘å¼•ç”¨
+		/// åœ¨mallocæ—¶ï¼Œæ˜¯ä¸ªç©ºå‡½æ•°
 		/// </summary>
 		bool_t (*decrease)(void* p);
 		/// <summary>
-		///  Îö¹¹º¯Êı£¬ÄÚ´æ¹ÜÀíÆ÷³·ÏúÊ±µ÷ÓÃ
+		///  ææ„å‡½æ•°ï¼Œå†…å­˜ç®¡ç†å™¨æ’¤é”€æ—¶è°ƒç”¨
 		/// </summary>
 		void (*destruct)(struct stMemory* allocator);
 	}MemoryVTBL;
 
 	typedef struct stMemory {
 		/// <summary>
-		/// Ğéº¯ÊıÖ¸Õë£¬Ö±½ÓÖ¸ÏòºóÃæµÄvtbl½á¹¹£¬¸úc++µÄ¶ÔÏó²¼¾Ö±£³ÖÒ»ÖÂ
+		/// è™šå‡½æ•°æŒ‡é’ˆï¼Œç›´æ¥æŒ‡å‘åé¢çš„vtblç»“æ„ï¼Œè·Ÿc++çš„å¯¹è±¡å¸ƒå±€ä¿æŒä¸€è‡´
 		/// </summary>
 		struct stMemoryVTBL* vptr;
 		/// <summary>
-		/// ÇëÇóÒ»Æ¬ÄÚ´æ£¬
+		/// è¯·æ±‚ä¸€ç‰‡å†…å­˜ï¼Œ
 		/// </summary>
 		void* (*require)(struct stMemory* self, size_t size,void* type);
 		void* (*require1)(struct stMemory* self, size_t size, void* type);
 		/// <summary>
-		/// (Ç¿)ÊÍ·ÅÒ»Æ¬ÄÚ´æ
-		/// Ö±½ÓÊÍ·Å£¬ÄÚ´æÒÑ¾­·µ»Ø¸øÁËÄÚ´æ¹ÜÀíÆ÷
+		/// (å¼º)é‡Šæ”¾ä¸€ç‰‡å†…å­˜
+		/// ç›´æ¥é‡Šæ”¾ï¼Œå†…å­˜å·²ç»è¿”å›ç»™äº†å†…å­˜ç®¡ç†å™¨
 		/// </summary>
 		bool_t(*release)(struct stMemory* self, void* p);
 		/// <summary>
-		/// Ôö¼ÓÒıÓÃ
-		/// ÔÚmallocÊ±£¬ÊÇ¸ö¿Õº¯Êı
+		/// å¢åŠ å¼•ç”¨
+		/// åœ¨mallocæ—¶ï¼Œæ˜¯ä¸ªç©ºå‡½æ•°
 		/// </summary>
 		bool_t(*increase)(struct stMemory* self, void* p);
 		/// <summary>
-		/// ÈõÊÍ·ÅÄÚ´æ
-		/// ÔÚmallocÊ±£¬¸úÇ¿ÊÍ·ÅreleaseÊÇÒ»ÖÂµÄ
-		/// µ«ÔÚÀ¬»ø»ØÊÕÄÚ´æ·ÖÅäÊ±£¬ÈõÊÍ·ÅÖ»ÊÇ¼õÉÙÁËÒıÓÃ¼ÆÊı
+		/// å¼±é‡Šæ”¾å†…å­˜
+		/// åœ¨mallocæ—¶ï¼Œè·Ÿå¼ºé‡Šæ”¾releaseæ˜¯ä¸€è‡´çš„
+		/// ä½†åœ¨åƒåœ¾å›æ”¶å†…å­˜åˆ†é…æ—¶ï¼Œå¼±é‡Šæ”¾åªæ˜¯å‡å°‘äº†å¼•ç”¨è®¡æ•°
 		/// </summary>
 		bool_t(*decrease)(struct stMemory* self, void* p);
 		/// <summary>
-		///  Îö¹¹º¯Êı£¬ÄÚ´æ¹ÜÀíÆ÷³·ÏúÊ±µ÷ÓÃ
+		///  ææ„å‡½æ•°ï¼Œå†…å­˜ç®¡ç†å™¨æ’¤é”€æ—¶è°ƒç”¨
 		/// </summary>
 		void (*destruct)(struct stMemory* memory,bool_t autoFree);
-		Logger* logger;
+		TLogger* logger;
 	} Memory;
 
 	/// <summary>
-	/// Î¨Ò»µÄÄ¬ÈÏÄÚ´æ¹ÜÀíÆ÷£¬
+	/// å”¯ä¸€çš„é»˜è®¤å†…å­˜ç®¡ç†å™¨ï¼Œ
 	/// </summary>
 	extern Memory* Memory_defaultInstance;
 	/// <summary>
-	/// ×î½ü»ù´¡µÄÄÚ´æ¹ÜÀíÆ÷µÄ¹¹Ôìº¯Êı
-	/// ĞèÒªÌî³ästMemoryµÄ¸÷¸öĞéº¯ÊıÖ¸Õë
+	/// æœ€è¿‘åŸºç¡€çš„å†…å­˜ç®¡ç†å™¨çš„æ„é€ å‡½æ•°
+	/// éœ€è¦å¡«å……stMemoryçš„å„ä¸ªè™šå‡½æ•°æŒ‡é’ˆ
 	/// </summary>
 	/// <param name="self"></param>
 	/// <returns></returns>
-	Memory* Memory_construct(Memory* self,Logger* logger);
+	Memory* Memory_construct(Memory* self,TLogger* logger);
 	void* Memory_require(Memory* self, size_t size, void* type);
 	bool_t Memory_release(Memory* self, void* obj);
 	inline bool_t Memory_increase(Memory* self, void* obj) { return 1; }

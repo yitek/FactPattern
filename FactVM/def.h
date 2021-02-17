@@ -2,28 +2,28 @@
 * 
 * author:yiy
 * 
-* description: ¹«ÓÃ¶¨ÒåÎÄ¼ş
-* ¶¨ÒåÒ»Ğ©³£ÓÃÊı¾İÀàĞÍ
-* 32Î»»ò64Î»±àÒëÄÜ¹»ÓÃÏàÍ¬µÄÔ´´úÂë
+* description: å…¬ç”¨å®šä¹‰æ–‡ä»¶
+* å®šä¹‰ä¸€äº›å¸¸ç”¨æ•°æ®ç±»å‹
+* 32ä½æˆ–64ä½ç¼–è¯‘èƒ½å¤Ÿç”¨ç›¸åŒçš„æºä»£ç 
 * 
 ******************************************************/
 
 #pragma once
 
-// ÓÃÔ¤´¦Àí±êÇ©À´´¦ÀíÍ·ÎÄ¼şµÄ½»²æÒıÓÃ
-// ÊµÏÖ¶à´ÎÒıÓÃ¸ÃÍ·ÎÄ¼şÊ±£¬Í·ÎÄ¼şµÄÄÚÈİÔÚ¾­¹ıÔ¤´¦ÀíºóµÄËÍ±àÒëÆ÷µÄÔ´´úÂëÖĞÖ»³öÏÖÒ»´Î
-// Æä½á¹¹Îª #ifndef __Some_Mark
+// ç”¨é¢„å¤„ç†æ ‡ç­¾æ¥å¤„ç†å¤´æ–‡ä»¶çš„äº¤å‰å¼•ç”¨
+// å®ç°å¤šæ¬¡å¼•ç”¨è¯¥å¤´æ–‡ä»¶æ—¶ï¼Œå¤´æ–‡ä»¶çš„å†…å®¹åœ¨ç»è¿‡é¢„å¤„ç†åçš„é€ç¼–è¯‘å™¨çš„æºä»£ç ä¸­åªå‡ºç°ä¸€æ¬¡
+// å…¶ç»“æ„ä¸º #ifndef __Some_Mark
 //          #define __some_Mark
 //         #endif
 #ifndef __DEF_INCLUDED__ 
 #define __DEF_INCLUDED__
 
-//ÊÇ·ñÊÇ¿ª·¢¹ı³Ì
+//æ˜¯å¦æ˜¯å¼€å‘è¿‡ç¨‹
 #define __DEVALOPMENT__
 
 typedef char* addr_t;
-typedef char byte_t;
-typedef char utf8char_t;
+typedef unsigned char byte_t;
+typedef unsigned char utf8char_t;
 typedef unsigned short utf16char_t;
 typedef unsigned int utf32char_t;
 typedef unsigned short char_t;

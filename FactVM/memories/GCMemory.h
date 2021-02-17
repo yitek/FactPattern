@@ -39,7 +39,7 @@ extern "C" {
 	inline GCUnit* getGCUnit(void* p) { return (GCUnit*)(((byte_t*)p) - sizeof(GCUnit)); }
 	inline void* getGCObject(void* p) { return (void*)(((byte_t*)p) + sizeof(GCUnit)); }
 
-	GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,MemoryLogger* logger);
+	GCMemory* GCMemory___construct__(GCMemory* self, FindReferenceObject findReferenceObject, AlignedMemoryOptions* opts,MemoryTLogger* logger);
 
 	inline void GCMemory___destruct__(GCMemory* self, bool_t existed) {
 		AlignedMemory___destruct__((AlignedMemory*)self,existed);

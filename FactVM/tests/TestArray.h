@@ -4,7 +4,7 @@
 *
 * author:yiy
 *
-* description: ÄÚ´æ¹ÜÀíÆ÷»ùÀàµÄ²âÊÔ´úÂë
+* description: å†…å­˜ç®¡ç†å™¨åŸºç±»çš„æµ‹è¯•ä»£ç 
 *
 ******************************************************/
 
@@ -12,14 +12,14 @@
 #include "../ads/Array.h"
 #ifndef __TESTARRAY_INCLUDED__ 
 #define __TESTARRAY_INCLUDED__
-// cÓïÑÔÕûºÏ½øcppµÄ±ê×¼ÓÃ·¨,Ö¸¶¨ÀïÃæµÄ·ûºÅ°´ÕÕcÓïÑÔ·½Ê½²úÉú
+// cè¯­è¨€æ•´åˆè¿›cppçš„æ ‡å‡†ç”¨æ³•,æŒ‡å®šé‡Œé¢çš„ç¬¦å·æŒ‰ç…§cè¯­è¨€æ–¹å¼äº§ç”Ÿ
 #ifdef __cplusplus 
 extern "C" {
 #endif
 
 	typedef struct {
 		int no;
-		char_t* name;
+		byte_t* name;
 		int age;
 	}ArrayStudent;
 

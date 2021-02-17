@@ -51,9 +51,6 @@
     <ClInclude Include="memories\Memory.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="tests\TestString.h">
-      <Filter>tests</Filter>
-    </ClInclude>
     <ClInclude Include="tests\TestLink.h">
       <Filter>tests</Filter>
     </ClInclude>
@@ -117,11 +114,14 @@
     <ClInclude Include="vms\VMachine.h">
       <Filter>vms</Filter>
     </ClInclude>
-    <ClInclude Include="loggers\Logger.h">
-      <Filter>loggers</Filter>
-    </ClInclude>
     <ClInclude Include="tests\TestLogger.h">
       <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ads\Encoding.h">
+      <Filter>ads</Filter>
+    </ClInclude>
+    <ClInclude Include="loggers\TLogger.h">
+      <Filter>loggers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +135,6 @@
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="tests\TestMemory.c">
-      <Filter>tests</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\TestString.c">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="tests\TestLink.c">
@@ -170,11 +167,11 @@
     <ClCompile Include="vms\VMachine.c">
       <Filter>vms</Filter>
     </ClCompile>
-    <ClCompile Include="loggers\Logger.c">
-      <Filter>loggers</Filter>
-    </ClCompile>
     <ClCompile Include="tests\TestLogger.c">
       <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="loggers\TLogger.c">
+      <Filter>loggers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
