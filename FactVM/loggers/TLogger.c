@@ -1,4 +1,5 @@
 #include "TLogger.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -51,7 +52,7 @@ void TLogger_printf(const byte_t* p, void* args) {
 		if (prev) {
 			if (prev == L'l') {
 				if (ch == 'c') {
-					printf_s("%lc", va_arg((*(va_list*)args), char_t));
+					printf_s("%lc", va_arg((*(va_list*)args), int));
 					hasPlaceholder = 0;
 					continue;
 				}
@@ -61,7 +62,7 @@ void TLogger_printf(const byte_t* p, void* args) {
 					continue;
 				}
 				if (ch == 's') {
-					printf_s("%ls", va_arg((*(va_list*)args), char_t*));
+					printf_s("%ls", va_arg((*(va_list*)args), wchar_t*));
 					hasPlaceholder = 0;
 					continue;
 				}
@@ -70,7 +71,7 @@ void TLogger_printf(const byte_t* p, void* args) {
 		}
 		else {
 			if (ch == 'c') {
-				printf_s("%c", va_arg((*(va_list*)args), char));
+				printf_s("%c", va_arg((*(va_list*)args), int));
 				hasPlaceholder = 0;
 				continue;
 			}

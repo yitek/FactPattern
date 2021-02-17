@@ -21,65 +21,61 @@
 //是否是开发过程
 #define __DEVALOPMENT__
 
-typedef char* addr_t;
-typedef unsigned char byte_t;
-typedef unsigned char utf8char_t;
-typedef unsigned short utf16char_t;
-typedef unsigned int utf32char_t;
-typedef unsigned short char_t;
+typedef char byte_t;
+typedef unsigned char ubyte_t;
+typedef short short_t;
+typedef unsigned short ushort_t;
+typedef int int_t;
+typedef unsigned int uint_t;
+typedef long long_t;
+typedef unsigned int ulong_t;
+typedef long long large_t;
+typedef unsigned long long ularge_t;
 typedef unsigned int lchar_t;
-typedef unsigned int bool_t;
+typedef int bool_t;
 
+#if defined(_WIN64) || defined(__LP64__) || defined(__amd64)  || defined(__IA64__) || __SIZEOF_POINTER__ == 8
+#define __64BITS__
+#elif defined(_WIN16) || defined(__MSDOS__)
+#define __16BITS__
+#else 
+#define __32BITS__
+#endif
 
-#ifdef _WIN64
+#if defined(_WIN32)
+#define __WIN__
+#endif
+
+#if defined(__linux__)
+#define __LINUX__
+#endif
+
+#ifdef __64BITS__
 typedef long word_t;
+typedef unsigned long uword_t;
 typedef long long dword_t;
+typedef unsigned long long udword_t;
 typedef long long  lword_t[2];
-typedef unsigned long size_t;
-typedef unsigned long pointer_t;
-#else // else _WIN64
+typedef unsigned long usize_t;
+typedef unsigned long addr_t;
+#elif __32BITS__
 typedef int word_t;
+typedef unsigned int uword_t;
 typedef long dword_t;
+typedef unsigned long udword_t;
 typedef long long lword_t;
-typedef unsigned int size_t;
-typedef unsigned int pointer_t;
+typedef unsigned int usize_t;
+typedef unsigned int addr_t;
+#else // else16
+typedef short word_t;
+typedef unsigned short uword_t;
+typedef int dword_t;
+typedef unsigned int udword_t;
+typedef long  lword_t;
+typedef unsigned int usize_t;
+typedef unsigned int addr_t;
 #endif // endif _WIN64
 
-inline word_t invalidWordValue() { return !((word_t)0); }
 
-typedef union stByte {
-	byte_t value;
-	byte_t bytes[1];
-}Byte;
-
-typedef union stShort {
-	short value;
-	byte_t bytes[2];
-}Short;
-
-typedef union stInt {
-	int value;
-	byte_t bytes[4];
-}Int;
-
-typedef union stLong {
-	long value;
-	byte_t bytes[8];
-}Long;
-
-typedef union stLarge {
-	long long value;
-	byte_t bytes[16];
-}Large;
-
-typedef union stChar {
-	char_t value;
-	byte_t bytes[2];
-}Char;
-
-typedef union stFloat {
-	char_t value;
-	byte_t bytes[2];
-}Float;
 
 #endif // end ifndef __DEF_INCLUDED__
