@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "loggers/CLogger.h"
 #include "tests/loggers/TestLogger.h"
-//#include "tests/TestMemory.h"
+#include "tests/memories/TestMemory.h"
 //#include "tests/TestArray.h" 
 //#include "tests/TestString.h"
 //#include "tests/TestLink.h"
@@ -16,16 +16,16 @@ int main()
     CLogger* loggeer = new CLogger();
     //setlocale(LC_ALL, ""); 
     //setlocale(LC_ALL, "chs");
-    #if defined(_WIN16) || defined(_WIN32) || defined(_WIN64)
+    #if defined(__WIN__)
     // change code page，use utf-8
-    //system("chcp 65001");
+    system("chcp 65001");
     #endif
     testTLogger();
-    //testMemory();
+    testMemory();
     //testArray();
     //testString();
     //testLink();
     //testList();
     std::cout << "程序员xxx.press any key to continue...\n";
-    std::getchar();
+    char key = std::getchar();
 }

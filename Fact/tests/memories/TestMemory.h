@@ -9,7 +9,7 @@
 ******************************************************/
 
 #pragma once
-#include "../../memories/Memory.h"
+#include "../../memories/memories_module.h"
 #ifndef __TESTMEMORY_INCLUDED__ 
 #define __TESTMEMORY_INCLUDED__
 // c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生

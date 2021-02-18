@@ -176,6 +176,30 @@ loggers/TLogger.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.s
 .PHONY : loggers/TLogger.c.s
 
+loggers/loggers_module.obj: loggers/loggers_module.c.obj
+.PHONY : loggers/loggers_module.obj
+
+# target to build an object file
+loggers/loggers_module.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.obj
+.PHONY : loggers/loggers_module.c.obj
+
+loggers/loggers_module.i: loggers/loggers_module.c.i
+.PHONY : loggers/loggers_module.i
+
+# target to preprocess a source file
+loggers/loggers_module.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.i
+.PHONY : loggers/loggers_module.c.i
+
+loggers/loggers_module.s: loggers/loggers_module.c.s
+.PHONY : loggers/loggers_module.s
+
+# target to generate assembly for a file
+loggers/loggers_module.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.s
+.PHONY : loggers/loggers_module.c.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -199,6 +223,54 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+memories/TMemory.obj: memories/TMemory.c.obj
+.PHONY : memories/TMemory.obj
+
+# target to build an object file
+memories/TMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.obj
+.PHONY : memories/TMemory.c.obj
+
+memories/TMemory.i: memories/TMemory.c.i
+.PHONY : memories/TMemory.i
+
+# target to preprocess a source file
+memories/TMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.i
+.PHONY : memories/TMemory.c.i
+
+memories/TMemory.s: memories/TMemory.c.s
+.PHONY : memories/TMemory.s
+
+# target to generate assembly for a file
+memories/TMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.s
+.PHONY : memories/TMemory.c.s
+
+memories/memories_module.obj: memories/memories_module.c.obj
+.PHONY : memories/memories_module.obj
+
+# target to build an object file
+memories/memories_module.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/memories_module.c.obj
+.PHONY : memories/memories_module.c.obj
+
+memories/memories_module.i: memories/memories_module.c.i
+.PHONY : memories/memories_module.i
+
+# target to preprocess a source file
+memories/memories_module.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/memories_module.c.i
+.PHONY : memories/memories_module.c.i
+
+memories/memories_module.s: memories/memories_module.c.s
+.PHONY : memories/memories_module.s
+
+# target to generate assembly for a file
+memories/memories_module.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/memories_module.c.s
+.PHONY : memories/memories_module.c.s
 
 tests/loggers/TestLogger.obj: tests/loggers/TestLogger.c.obj
 .PHONY : tests/loggers/TestLogger.obj
@@ -224,6 +296,30 @@ tests/loggers/TestLogger.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.s
 .PHONY : tests/loggers/TestLogger.c.s
 
+tests/memories/TestMemory.obj: tests/memories/TestMemory.c.obj
+.PHONY : tests/memories/TestMemory.obj
+
+# target to build an object file
+tests/memories/TestMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/memories/TestMemory.c.obj
+.PHONY : tests/memories/TestMemory.c.obj
+
+tests/memories/TestMemory.i: tests/memories/TestMemory.c.i
+.PHONY : tests/memories/TestMemory.i
+
+# target to preprocess a source file
+tests/memories/TestMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/memories/TestMemory.c.i
+.PHONY : tests/memories/TestMemory.c.i
+
+tests/memories/TestMemory.s: tests/memories/TestMemory.c.s
+.PHONY : tests/memories/TestMemory.s
+
+# target to generate assembly for a file
+tests/memories/TestMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/memories/TestMemory.c.s
+.PHONY : tests/memories/TestMemory.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -239,12 +335,24 @@ help:
 	@echo ... loggers/TLogger.obj
 	@echo ... loggers/TLogger.i
 	@echo ... loggers/TLogger.s
+	@echo ... loggers/loggers_module.obj
+	@echo ... loggers/loggers_module.i
+	@echo ... loggers/loggers_module.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... memories/TMemory.obj
+	@echo ... memories/TMemory.i
+	@echo ... memories/TMemory.s
+	@echo ... memories/memories_module.obj
+	@echo ... memories/memories_module.i
+	@echo ... memories/memories_module.s
 	@echo ... tests/loggers/TestLogger.obj
 	@echo ... tests/loggers/TestLogger.i
 	@echo ... tests/loggers/TestLogger.s
+	@echo ... tests/memories/TestMemory.obj
+	@echo ... tests/memories/TestMemory.i
+	@echo ... tests/memories/TestMemory.s
 .PHONY : help
 
 

@@ -39,9 +39,6 @@
     <ClInclude Include="tests\loggers\TestLogger.h">
       <Filter>tests\loggers</Filter>
     </ClInclude>
-    <ClInclude Include="memories\Memory.h">
-      <Filter>memories</Filter>
-    </ClInclude>
     <ClInclude Include="tests\memories\TestMemory.h">
       <Filter>tests\memories</Filter>
     </ClInclude>
@@ -50,6 +47,12 @@
     </ClInclude>
     <ClInclude Include="loggers\loggers_module.h">
       <Filter>loggers</Filter>
+    </ClInclude>
+    <ClInclude Include="memories\TMemory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
+    <ClInclude Include="memories\memories_module.h">
+      <Filter>memories</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +65,6 @@
     <ClCompile Include="tests\loggers\TestLogger.c">
       <Filter>tests\loggers</Filter>
     </ClCompile>
-    <ClCompile Include="memories\Memory.c">
-      <Filter>memories</Filter>
-    </ClCompile>
     <ClCompile Include="tests\memories\TestMemory.c">
       <Filter>tests\memories</Filter>
     </ClCompile>
@@ -73,6 +73,12 @@
     </ClCompile>
     <ClCompile Include="loggers\loggers_module.c">
       <Filter>loggers</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\TMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\memories_module.c">
+      <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
