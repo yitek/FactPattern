@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 	struct stMemory;
-	typedef bool_t(*MemoryAllocating)(struct stMemory* self,usize_t t);
+	typedef word_t (*MemoryAllocating)(struct stMemory* self,usize_t t,void* param);
 	typedef struct stMemoryOptions {
 		MemoryAllocating allocating;
 	}MemoryOptions;

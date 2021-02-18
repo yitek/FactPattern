@@ -14,7 +14,7 @@ void* TMemory_alloc(TMemory* self, usize_t size) {
 		if (self && self->logger) TLogger_notice(self->logger,"TMemory.alloc","parameter size is required.");
 		return 0;
 	}
-	if (!self || self->allocating == 0 || self->allocating(self, size)) {
+	if (!self || self->allocating == 0 || self->allocating(self, size,0)>0) {
 		void* p = malloc(size);
 		if (self && self->logger) {
 			if (p)TLogger_trace(self->logger, "TMemory.alloc", "TMemory[%p] allocated:%ld", p, (long)size);
@@ -28,7 +28,7 @@ void* TMemory_alloc1(TMemory* self, usize_t size) {
 		if (self && self->logger) TLogger_notice(self->logger, "TMemory.alloc1", "parameter size is required.");
 		return 0;
 	}
-	if (!self || self->allocating == 0 || self->allocating(self, size)) {
+	if (!self || self->allocating == 0 || self->allocating(self, size,0)>0) {
 		void* p = malloc(size);
 		if (self && self->logger) {
 			if (p)TLogger_trace(self->logger, "TMemory.alloc", "TMemory[%p] allocated:%ld", p, (long)size);
@@ -71,6 +71,11 @@ TMemory* TMemory__construct__(TMemory* self, const MemoryOptions* options,TLogge
 			log_exit(1,"TMemory.__construct__","Cannot allocate memory.");
 			return 0;
 		}
+		else {
+			if (logger) {
+				if (logger) TLogger_trace(logger, "TTMemory.__construct__", "Memory is allocated for <TMemory>[%p].",self);
+			}
+		}
 	}
 	self->vftptr = (vftptr_t)&memoryVTBL;
 	if (options) {
@@ -80,6 +85,6 @@ TMemory* TMemory__construct__(TMemory* self, const MemoryOptions* options,TLogge
 		self->allocating = 0;
 	}
 	self->logger = logger;
-	if (logger) TLogger_trace(logger,"TTMemory.__construct__","TTMemory constructed.");
+	if (logger) TLogger_trace(logger,"TTMemory.__construct__","<TTMemory> constructed.");
 	return self;
 }

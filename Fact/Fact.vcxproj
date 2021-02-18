@@ -144,6 +144,7 @@
     <ClInclude Include="loggers\CLogger.h" />
     <ClInclude Include="loggers\loggers_module.h" />
     <ClInclude Include="loggers\TLogger.h" />
+    <ClInclude Include="memories\TAlignedMemory.h" />
     <ClInclude Include="memories\memories_module.h" />
     <ClInclude Include="memories\TMemory.h" />
     <ClInclude Include="tests\loggers\TestLogger.h" />
@@ -154,6 +155,7 @@
     <ClCompile Include="loggers\loggers_module.c" />
     <ClCompile Include="loggers\TLogger.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="memories\TAlignedMemory.c" />
     <ClCompile Include="memories\memories_module.c" />
     <ClCompile Include="memories\TMemory.c" />
     <ClCompile Include="tests\loggers\TestLogger.c" />

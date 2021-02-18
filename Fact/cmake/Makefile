@@ -224,6 +224,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+memories/TAlignedMemory.obj: memories/TAlignedMemory.c.obj
+.PHONY : memories/TAlignedMemory.obj
+
+# target to build an object file
+memories/TAlignedMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.obj
+.PHONY : memories/TAlignedMemory.c.obj
+
+memories/TAlignedMemory.i: memories/TAlignedMemory.c.i
+.PHONY : memories/TAlignedMemory.i
+
+# target to preprocess a source file
+memories/TAlignedMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.i
+.PHONY : memories/TAlignedMemory.c.i
+
+memories/TAlignedMemory.s: memories/TAlignedMemory.c.s
+.PHONY : memories/TAlignedMemory.s
+
+# target to generate assembly for a file
+memories/TAlignedMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.s
+.PHONY : memories/TAlignedMemory.c.s
+
 memories/TMemory.obj: memories/TMemory.c.obj
 .PHONY : memories/TMemory.obj
 
@@ -341,6 +365,9 @@ help:
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... memories/TAlignedMemory.obj
+	@echo ... memories/TAlignedMemory.i
+	@echo ... memories/TAlignedMemory.s
 	@echo ... memories/TMemory.obj
 	@echo ... memories/TMemory.i
 	@echo ... memories/TMemory.s

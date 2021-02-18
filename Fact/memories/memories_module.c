@@ -12,6 +12,13 @@ void memories_module(void* p) {
 	memoryVTBL.free = &TMemory_free;
 	memoryVTBL.__destruct__ = &TMemory__destruct__;
 	TMemory_default = (TMemory*)((byte_t*)&TMemory_defaultInstance + sizeof(TGCUnitLayout));
+
+	
+	alignedMemoryVTBL.offset = 0;
+	alignedMemoryVTBL.alloc =(void* (*)(TMemory*, usize_t)) &TAlignedMemory_alloc;
+	alignedMemoryVTBL.alloc1 = (void* (*)(TMemory*, usize_t))&TAlignedMemory_alloc1;
+	alignedMemoryVTBL.free = (bool_t(*)(TMemory *, void*))&TAlignedMemory_free;
+	alignedMemoryVTBL.__destruct__ = (void(*)(TMemory*, bool_t))&TAlignedMemory__destruct__;
 }
 
 

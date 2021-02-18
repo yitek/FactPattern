@@ -11,15 +11,40 @@
 //#include "tests/TestLink.h"
 //#include "tests/TestList.h"
  
-int main()
-{
-    CLogger* loggeer = new CLogger();
-    //setlocale(LC_ALL, ""); 
-    //setlocale(LC_ALL, "chs");
-    #if defined(__WIN__)
+void printSysInfo() {
+#if defined(__WIN__)
+
     // change code page，use utf-8
     system("chcp 65001");
-    #endif
+    printf_s("system: WINDOWS\n");
+#endif
+#if defined(__LINUX__)
+    printf_s("system: LINUX\n");
+#endif
+
+#if defined(__16BITS__)
+    printf_s("compile bits: 16\n");
+#elif defined(__64BITS__)
+    printf_s("compile bits: 64\n");
+#else
+    printf_s("compile bits: 32\n");
+#endif
+    printf_s("sizeof(char): %d\n",sizeof(char));
+    printf_s("sizeof(short): %d\n", sizeof(short));
+    printf_s("sizeof(int): %d\n", sizeof(int));
+    printf_s("sizeof(long): %d\n", sizeof(long));
+    printf_s("sizeof(long long): %d\n", sizeof(long long));
+    printf_s("sizeof(void*): %d\n", sizeof(void*));
+}
+int main()
+{
+    printSysInfo();
+    CLogger* loggeer = new CLogger();
+    
+    
+    
+    //setlocale(LC_ALL, ""); 
+    setlocale(LC_ALL, "chs");
     testTLogger();
     testMemory();
     //testArray();

@@ -24,14 +24,7 @@
 //是否是开发过程
 #define __DEVALOPMENT__
 
-typedef char byte_t;
-typedef unsigned char ubyte_t;
-typedef short short_t;
-typedef unsigned short ushort_t;
-typedef int int_t;
-typedef unsigned int uint_t;
-typedef unsigned int unichar_t;
-typedef int bool_t;
+
 
 #if defined(_WIN64) || __SIZEOF_POINTER__ == 8
 #define __64BITS__
@@ -50,31 +43,25 @@ typedef int bool_t;
 #endif
 
 #if defined(__64BITS__)
-typedef long long_t;
-typedef unsigned long ulong_t;
-typedef long long large_t;
-typedef unsigned long long ularge_t;
-typedef unsigned long addr_t;
+typedef long long long_t;
+typedef unsigned long long ulong_t;
+typedef unsigned long long addr_t;
 
-typedef long word_t;
-typedef unsigned long uword_t;
-typedef long long dword_t;
-typedef unsigned long long udword_t;
-typedef long long  lword_t[2];
-typedef unsigned long usize_t;
+typedef long long word_t;
+typedef unsigned long long uword_t;
+typedef long long dword_t[2];
+typedef unsigned long long udword_t[2];
+typedef unsigned long long usize_t;
 
 #elif defined(__32BITS__)
 typedef long long long_t;
 typedef unsigned long long ulong_t;
-typedef long long large_t[2];
-typedef unsigned long long ularge_t[2];
 typedef unsigned int addr_t;
 
 typedef int word_t;
 typedef unsigned int uword_t;
-typedef long dword_t;
-typedef unsigned long udword_t;
-typedef long long lword_t;
+typedef long long dword_t;
+typedef unsigned long long udword_t;
 typedef unsigned int usize_t;
 typedef unsigned int addr_t;
 #else // else16
@@ -88,7 +75,6 @@ typedef short word_t;
 typedef unsigned short uword_t;
 typedef int dword_t;
 typedef unsigned int udword_t;
-typedef long  lword_t;
 typedef unsigned int usize_t;
 typedef unsigned int addr_t;
 #endif // endif _WIN64
@@ -98,6 +84,15 @@ typedef unsigned short lchar_t;
 #elif defined(__LINUX__)
 typedef unsigned int lchar_t;
 #endif
+
+typedef char byte_t;
+typedef unsigned char ubyte_t;
+typedef short short_t;
+typedef unsigned short ushort_t;
+typedef int int_t;
+typedef unsigned int uint_t;
+typedef unsigned int unichar_t;
+typedef word_t bool_t;
 
 typedef struct stVTBLLayout {
 	usize_t offset;

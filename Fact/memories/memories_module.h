@@ -9,6 +9,8 @@
 #pragma once
 
 #include "TMemory.h"
+#include "TAlignedMemory.h"
+
 #ifndef __MEMORIES_INCLUDED__ 
 #define __MEMORIES_INCLUDED__
 #ifdef __cplusplus 
