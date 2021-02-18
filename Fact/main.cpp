@@ -1,17 +1,19 @@
-﻿// FactVM.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
+// FactVM.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
 #include <iostream>
 #include <stdlib.h>
-#include "tests/TestLogger.h"
+#include "loggers/CLogger.h"
+#include "tests/loggers/TestLogger.h"
 //#include "tests/TestMemory.h"
-//#include "tests/TestArray.h"
+//#include "tests/TestArray.h" 
 //#include "tests/TestString.h"
 //#include "tests/TestLink.h"
 //#include "tests/TestList.h"
  
 int main()
 {
+    CLogger* loggeer = new CLogger();
     //setlocale(LC_ALL, ""); 
     //setlocale(LC_ALL, "chs");
     #if defined(_WIN16) || defined(_WIN32) || defined(_WIN64)

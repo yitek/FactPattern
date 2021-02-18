@@ -5,14 +5,17 @@
 #include <malloc.h>
 #include <stdarg.h>
 #include <time.h>
+#ifdef __WIN__
 #include <windows.h>
+#endif
 
+struct stVTBL TLoggerVTBL;
+TLogger* TLogger_default;
 
-TLogger* defaultLoggerInstance;
 
 void setLevelColor(LogLevels level);
 
-
+#ifdef __WIN__
 void setLevelColor(LogLevels level){
 	
 	
@@ -32,10 +35,10 @@ void setLevelColor(LogLevels level){
 	
 }
 
+#endif
 
 
-
-void TLogger_printf(const byte_t* p, void* args) {
+void TLogger__printf(const byte_t* p, void* args) {
 	bool_t hasPlaceholder = 0;
 	byte_t prev = 0;
 	byte_t ch=0;
@@ -106,7 +109,7 @@ void TLogger_printf(const byte_t* p, void* args) {
 	if (ch != '\n')putchar('\n');
 }
 
-inline void printNow() {
+void printNow() {
 	time_t  t;
 	time(&t);
 	char tbuffer[32];
@@ -114,14 +117,14 @@ inline void printNow() {
 	char* p = tbuffer;
 	while (*p != '\n') { putchar(*p); p++; }
 }
-void terminate(word_t code, const byte_t* message, ...) {
+void terminat(word_t code, const byte_t* message, ...) {
 	setLevelColor(LogLevel_Error);
 	printNow();
 	printf_s(" [Terminate] with code:%d\n", code);
 	if (message) {
 		va_list valist;
 		va_start(valist, message);
-		TLogger_printf(message, &valist);
+		TLogger__printf(message, &valist);
 		va_end(valist);
 	}
 	
@@ -130,7 +133,7 @@ void terminate(word_t code, const byte_t* message, ...) {
 	
 }
 
-void TLogger_output(struct stTLogger* self, LogLevels lv, const byte_t* category ,const byte_t* message,void* args) {
+void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category ,const byte_t* message,void* args) {
 	if (lv < self->level) return;
 	
 	if (lv >=LogLevel_Error) {
@@ -158,103 +161,103 @@ void TLogger_output(struct stTLogger* self, LogLevels lv, const byte_t* category
 		printf_s("%s\n", message);
 		return;
 	}
-	TLogger_printf(message,args);
+	TLogger__printf(message,args);
 	setLevelColor(0);
 	
 }
 
 void TLogger_log(TLogger* self, LogLevels level, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, level, category, message, &valist);
+	TLogger_output__virtcal__(self, level, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_trace(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Trace, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Trace, category, message, &valist);
 	va_end(valist);
 }
 
 
 void TLogger_message(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Message, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Message, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_info(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Info, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Info, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_success(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Success, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Success, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_notice(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Notice, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Notice, category, message, &valist);
 	va_end(valist);
 }
 
 void TLogger_warn(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Warn, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Warn, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_exception(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Exception, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Exception, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_error(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_Error, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_Error, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_sectionBegin(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_SectionBegin, category, message, &valist);
+	TLogger_output__virtcal__(self, LogLevel_SectionBegin, category, message, &valist);
 	va_end(valist);
 }
 
 void TLogger_sectionEnd(TLogger* self, const byte_t* category, const byte_t* message, ...) {
-	if (!self) self = TLogger_default();
+	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	self->output(self, LogLevel_SectionEnd, category, message, &valist);
+	TLogger__output(self, LogLevel_SectionEnd, category, message, &valist);
 	va_end(valist);
 }
 
 void assert(const byte_t* category,bool_t condition,const byte_t* message, ...) {
-	TLogger* logger = TLogger_default();
+	TLogger* logger = TLogger_default;
 	LogLevels rs = condition ? LogLevel_Success : LogLevel_Error;
 	va_list valist;
 	va_start(valist, message);
-	logger->output(logger, rs, category, message, &valist);
+	TLogger__output(logger, rs, category, message, &valist);
 	va_end(valist);
 }
 
-TLogger* TLogger___construct__(TLogger* self, void* opts) {
+TLogger* TLogger__construct__(TLogger* self, void* opts) {
 	if (!self) {
 		self = malloc(sizeof(TLogger));
 		if (!self) {
@@ -264,14 +267,14 @@ TLogger* TLogger___construct__(TLogger* self, void* opts) {
 			return 0;
 		}
 	}
-	self->output = TLogger_output;
+	self->vftptr = &TLoggerVTBL;
 	self->level = LogLevel_None;
 	return self;
 }
 
-void TLogger___destruct__(TLogger* self, bool_t existed) {
+void TLogger__destruct__(TLogger* self, bool_t existed) {
 	if (!existed) {
-		if (self == defaultLoggerInstance)defaultLoggerInstance = 0;
-		free(self);
+		if (self != TLogger_default)free(self);
 	}
 }
+

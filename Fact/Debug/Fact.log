@@ -1,0 +1,58 @@
+﻿  CLogger.cpp
+D:\Yitek\FactPattern\Fact\loggers\CLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  class CLogger	size(8):
+  	+---
+   0	| {vfptr}
+   4	| LogLevels level
+  	+---
+  CLogger::$vftable@:
+  	| &CLogger_meta
+  	|  0
+   0	| &CLogger::output
+  CLogger::output this adjustor: 0
+  main.cpp
+D:\Yitek\FactPattern\Fact\main.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\CLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\tests\loggers\TestLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\Loggers\loggers_module.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  class CLogger	size(8):
+  	+---
+   0	| {vfptr}
+   4	| LogLevels level
+  	+---
+  CLogger::$vftable@:
+  	| &CLogger_meta
+  	|  0
+   0	| &CLogger::output
+  CLogger::output this adjustor: 0
+  正在生成代码...
+  TLogger.c
+D:\Yitek\FactPattern\Fact\loggers\TLogger.c(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  loggers_module.c
+D:\Yitek\FactPattern\Fact\loggers\loggers_module.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  Memory.c
+D:\Yitek\FactPattern\Fact\memories\Memory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  TestLogger.c
+D:\Yitek\FactPattern\Fact\tests\loggers\TestLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\Loggers\loggers_module.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\Loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  TestMemory.c
+D:\Yitek\FactPattern\Fact\tests\memories\TestMemory.c(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\tests\memories\TestMemory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\memories\Memory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\loggers\TLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Yitek\FactPattern\Fact\tests\memories\TestMemory.c(14,20): warning C4305: “=”: 从“__int64”到“long”截断
+  正在生成代码...
+  Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

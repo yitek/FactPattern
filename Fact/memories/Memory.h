@@ -17,10 +17,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	typedef struct stMemoryTLogger {
-		void(*allocated)(size_t size,const char_t* reason,const char_t* message);
-		void(*free)(size_t size, const char_t* reason, const char_t* message);
-	}MemoryTLogger;
+
 	struct stMemory;
 	/// <summary>
 	/// 内存管理器的虚函数表结构(命名表)
@@ -29,8 +26,8 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self,size_t size,void* type);
-		void* (*require1)(struct stMemory* self, size_t size, void* type);
+		void* (*require)(struct stMemory* self, usize_t size,void* type);
+		void* (*require1)(struct stMemory* self, usize_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
@@ -61,8 +58,8 @@ extern "C" {
 		/// <summary>
 		/// 请求一片内存，
 		/// </summary>
-		void* (*require)(struct stMemory* self, size_t size,void* type);
-		void* (*require1)(struct stMemory* self, size_t size, void* type);
+		void* (*require)(struct stMemory* self, usize_t size,void* type);
+		void* (*require1)(struct stMemory* self, usize_t size, void* type);
 		/// <summary>
 		/// (强)释放一片内存
 		/// 直接释放，内存已经返回给了内存管理器
@@ -97,28 +94,28 @@ extern "C" {
 	/// <param name="self"></param>
 	/// <returns></returns>
 	Memory* Memory_construct(Memory* self,TLogger* logger);
-	void* Memory_require(Memory* self, size_t size, void* type);
+	void* Memory_require(Memory* self, usize_t size, void* type);
 	bool_t Memory_release(Memory* self, void* obj);
 	inline bool_t Memory_increase(Memory* self, void* obj) { return 1; }
 	inline bool_t Memory_decrease(Memory* self, void* obj) { return 1; }
 	void Memory_destruct(Memory* self, bool_t existed);
 
 
-	inline bool_t Memory_copy(void* dest, const void* src, size_t size) {
+	inline bool_t Memory_copy(void* dest, const void* src, usize_t size) {
 
 		if (dest && src && size) {
 			if (size == sizeof(word_t)) {
 				*((word_t*)dest) = *(word_t*)src;
 				return 1;
 			}
-			size_t wordc = size / sizeof(word_t);
-			size_t bytec = size % sizeof(word_t);
+			usize_t wordc = size / sizeof(word_t);
+			usize_t bytec = size % sizeof(word_t);
 
-			if (wordc)for (size_t i = 0; i < wordc; i++) {
+			if (wordc)for (usize_t i = 0; i < wordc; i++) {
 				*((word_t*)dest) = *((word_t*)src);
 				dest =((word_t*)dest)+1; src = ((word_t*)src)+1;
 			}
-			if (bytec) for (size_t i = 0; i < bytec; i++) {
+			if (bytec) for (usize_t i = 0; i < bytec; i++) {
 				*((byte_t*)dest) = *((byte_t*)src);
 				dest =((byte_t*)dest)+1; src = ((byte_t*)src)+1;
 			}
@@ -128,23 +125,23 @@ extern "C" {
 
 	}
 
-	inline bool_t Memory_equal(void* dest, const void* src, size_t size) {
+	inline bool_t Memory_equal(void* dest, const void* src, usize_t size) {
 
 		if (dest && src && size) {
 			if (size == sizeof(word_t)) {
 				return *((word_t*)dest) == *(word_t*)src;
 			}
-			if (size == sizeof(char_t)) {
-				return *((char_t*)dest) == *(char_t*)src;
+			if (size == sizeof(byte_t)) {
+				return *((byte_t*)dest) == *(byte_t*)src;
 			}
-			size_t wordc = size / sizeof(word_t);
-			size_t bytec = size % sizeof(word_t);
+			usize_t wordc = size / sizeof(word_t);
+			usize_t bytec = size % sizeof(word_t);
 
-			if (wordc)for (size_t i = 0; i < wordc; i++) {
+			if (wordc)for (usize_t i = 0; i < wordc; i++) {
 				if (*((word_t*)dest) != *((word_t*)src))return 0;
 				dest = ((word_t*)dest) + 1; src = ((word_t*)src) + 1;
 			}
-			if (bytec) for (size_t i = 0; i < bytec; i++) {
+			if (bytec) for (usize_t i = 0; i < bytec; i++) {
 				if (*((byte_t*)dest) != *((byte_t*)src)) return 0;
 				dest = ((byte_t*)dest) + 1; src = ((byte_t*)src) + 1;
 			}
@@ -154,21 +151,21 @@ extern "C" {
 
 	}
 
-	inline bool_t Memory_clear(void* dest,  size_t size) {
+	inline bool_t Memory_clear(void* dest,  usize_t size) {
 
 		if (dest && size) {
 			if (size == sizeof(word_t)) {
 				*((word_t*)dest) = (word_t)0;
 				return 1;
 			}
-			size_t wordc = size / sizeof(word_t);
-			size_t bytec = size % sizeof(word_t);
+			usize_t wordc = size / sizeof(word_t);
+			usize_t bytec = size % sizeof(word_t);
 
-			if (wordc)for (size_t i = 0; i < wordc; i++) {
+			if (wordc)for (usize_t i = 0; i < wordc; i++) {
 				*((word_t*)dest) = (word_t)0;
 				dest = ((word_t*)dest) + 1;
 			}
-			if (bytec) for (size_t i = 0; i < bytec; i++) {
+			if (bytec) for (usize_t i = 0; i < bytec; i++) {
 				*((byte_t*)dest) = (byte_t)0;
 				dest = ((byte_t*)dest) + 1;
 			}

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="loggers">
+      <UniqueIdentifier>{0d27799a-cb17-4963-a4f1-c31528f32f2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{4123ba81-9a1b-4459-971c-b16f0d9d51ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\loggers">
+      <UniqueIdentifier>{6d4136ff-4abf-47ae-bde3-237a3858f999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memories">
+      <UniqueIdentifier>{08d3fcab-26f1-4e30-8a6a-935e401c1851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\memories">
+      <UniqueIdentifier>{3ddb019e-f289-4033-b1ea-05932ff28ce6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="loggers\TLogger.h">
+      <Filter>loggers</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\loggers\TestLogger.h">
+      <Filter>tests\loggers</Filter>
+    </ClInclude>
+    <ClInclude Include="memories\Memory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\memories\TestMemory.h">
+      <Filter>tests\memories</Filter>
+    </ClInclude>
+    <ClInclude Include="loggers\CLogger.h">
+      <Filter>loggers</Filter>
+    </ClInclude>
+    <ClInclude Include="loggers\loggers_module.h">
+      <Filter>loggers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="loggers\TLogger.c">
+      <Filter>loggers</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\loggers\TestLogger.c">
+      <Filter>tests\loggers</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\Memory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\memories\TestMemory.c">
+      <Filter>tests\memories</Filter>
+    </ClCompile>
+    <ClCompile Include="loggers\CLogger.cpp">
+      <Filter>loggers</Filter>
+    </ClCompile>
+    <ClCompile Include="loggers\loggers_module.c">
+      <Filter>loggers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcproj2cmake.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+</Project>

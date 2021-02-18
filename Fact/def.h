@@ -50,7 +50,7 @@ typedef int bool_t;
 #define __LINUX__
 #endif
 
-#ifdef __64BITS__
+#if defined(__64BITS__)
 typedef long word_t;
 typedef unsigned long uword_t;
 typedef long long dword_t;
@@ -58,7 +58,7 @@ typedef unsigned long long udword_t;
 typedef long long  lword_t[2];
 typedef unsigned long usize_t;
 typedef unsigned long addr_t;
-#elif __32BITS__
+#elif defined(__32BITS__)
 typedef int word_t;
 typedef unsigned int uword_t;
 typedef long dword_t;
@@ -76,6 +76,18 @@ typedef unsigned int usize_t;
 typedef unsigned int addr_t;
 #endif // endif _WIN64
 
+typedef struct stVTBL {
+	usize_t offset;
+	void* vfp0;
+}TVTBL;
 
+typedef TVTBL* vftptr_t;
+
+typedef struct stVirtStructLayout {
+	vftptr_t vftptr;
+}VirtStructLayout;
+static inline void* VirtStructLayout_getvf(const VirtStructLayout* const self, usize_t index) {
+	return ((void**)(&self->vftptr->vfp0))[index];
+}
 
 #endif // end ifndef __DEF_INCLUDED__

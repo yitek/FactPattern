@@ -56,10 +56,10 @@ RM = "C:\Program Files\CMake\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = D:\Yitek\FactPattern\FactVM
+CMAKE_SOURCE_DIR = D:\Yitek\FactPattern\Fact
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = D:\Yitek\FactPattern\FactVM\cmake
+CMAKE_BINARY_DIR = D:\Yitek\FactPattern\Fact\cmake
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -86,9 +86,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\Yitek\FactPattern\FactVM\cmake\CMakeFiles D:\Yitek\FactPattern\FactVM\cmake\\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\Yitek\FactPattern\Fact\cmake\CMakeFiles D:\Yitek\FactPattern\Fact\cmake\\CMakeFiles\progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\Yitek\FactPattern\FactVM\cmake\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\Yitek\FactPattern\Fact\cmake\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,31 +128,53 @@ Fact/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/build
 .PHONY : Fact/fast
 
-#=============================================================================
-# Target rules for targets named Fact-tests
+loggers/CLogger.obj: loggers/CLogger.cpp.obj
+.PHONY : loggers/CLogger.obj
 
-# Build rule for target.
-Fact-tests: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Fact-tests
-.PHONY : Fact-tests
+# target to build an object file
+loggers/CLogger.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.obj
+.PHONY : loggers/CLogger.cpp.obj
 
-# fast build rule for target.
-Fact-tests/fast:
-	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\Fact-tests.dir\build.make tests/CMakeFiles/Fact-tests.dir/build
-.PHONY : Fact-tests/fast
+loggers/CLogger.i: loggers/CLogger.cpp.i
+.PHONY : loggers/CLogger.i
 
-#=============================================================================
-# Target rules for targets named Fact-loggers
+# target to preprocess a source file
+loggers/CLogger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.i
+.PHONY : loggers/CLogger.cpp.i
 
-# Build rule for target.
-Fact-loggers: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Fact-loggers
-.PHONY : Fact-loggers
+loggers/CLogger.s: loggers/CLogger.cpp.s
+.PHONY : loggers/CLogger.s
 
-# fast build rule for target.
-Fact-loggers/fast:
-	$(MAKE) $(MAKESILENT) -f loggers\CMakeFiles\Fact-loggers.dir\build.make loggers/CMakeFiles/Fact-loggers.dir/build
-.PHONY : Fact-loggers/fast
+# target to generate assembly for a file
+loggers/CLogger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.s
+.PHONY : loggers/CLogger.cpp.s
+
+loggers/TLogger.obj: loggers/TLogger.c.obj
+.PHONY : loggers/TLogger.obj
+
+# target to build an object file
+loggers/TLogger.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.obj
+.PHONY : loggers/TLogger.c.obj
+
+loggers/TLogger.i: loggers/TLogger.c.i
+.PHONY : loggers/TLogger.i
+
+# target to preprocess a source file
+loggers/TLogger.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.i
+.PHONY : loggers/TLogger.c.i
+
+loggers/TLogger.s: loggers/TLogger.c.s
+.PHONY : loggers/TLogger.s
+
+# target to generate assembly for a file
+loggers/TLogger.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.s
+.PHONY : loggers/TLogger.c.s
 
 main.obj: main.cpp.obj
 .PHONY : main.obj
@@ -178,6 +200,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+tests/loggers/TestLogger.obj: tests/loggers/TestLogger.c.obj
+.PHONY : tests/loggers/TestLogger.obj
+
+# target to build an object file
+tests/loggers/TestLogger.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.obj
+.PHONY : tests/loggers/TestLogger.c.obj
+
+tests/loggers/TestLogger.i: tests/loggers/TestLogger.c.i
+.PHONY : tests/loggers/TestLogger.i
+
+# target to preprocess a source file
+tests/loggers/TestLogger.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.i
+.PHONY : tests/loggers/TestLogger.c.i
+
+tests/loggers/TestLogger.s: tests/loggers/TestLogger.c.s
+.PHONY : tests/loggers/TestLogger.s
+
+# target to generate assembly for a file
+tests/loggers/TestLogger.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.s
+.PHONY : tests/loggers/TestLogger.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -187,11 +233,18 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Fact
-	@echo ... Fact-loggers
-	@echo ... Fact-tests
+	@echo ... loggers/CLogger.obj
+	@echo ... loggers/CLogger.i
+	@echo ... loggers/CLogger.s
+	@echo ... loggers/TLogger.obj
+	@echo ... loggers/TLogger.i
+	@echo ... loggers/TLogger.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... tests/loggers/TestLogger.obj
+	@echo ... tests/loggers/TestLogger.i
+	@echo ... tests/loggers/TestLogger.s
 .PHONY : help
 
 
