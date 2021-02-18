@@ -256,8 +256,7 @@ TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts) {
 		self = malloc(sizeof(TLogger));
 		if (!self) {
 			log_exit(0,"TLogger.__construct__","Cannot allocate memory.");
-			exit(1);
-			return 0;
+			return (void*)-1;
 		}
 	}
 	self->vftptr = &loggerVTBL;

@@ -26,7 +26,8 @@ TAlignedMemoryChunk* TAlignedMemory__getNormalChunk(TAlignedMemory* self, size_t
 		return 0;
 	}
 	else {
-		chunk->memory->allocatedBytes += sizeof(TAlignedMemoryChunk);
+		self->allocatedBytes += sizeof(TAlignedMemoryChunk);
+		self->chunks[chunkIndex] = chunk;
 	}
 	chunk->page = 0;
 	chunk->memory = self;
@@ -37,7 +38,7 @@ TAlignedMemoryChunk* TAlignedMemory__getNormalChunk(TAlignedMemory* self, size_t
 
 	if (self->logger) {
 		if (self->logger) TLogger_trace(self->logger, "TAlignedMemory._getLargeChunk", "<TAlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
-			, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
+			, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
 		);
 	}
 	return chunk;
@@ -139,7 +140,7 @@ void* TAlignedMemory__resolveUnit(TAlignedMemoryChunk* chunk, size_t unitSize) {
 		return 0;
 	}
 	else {
-		chunk->memory->allocatedBytes += sizeof(TAlignedMemoryChunk);
+		chunk->memory->allocatedBytes += sizeof(TAlignedMemoryPage);
 	}
 	page->free = 0;
 	unit = chunk->memory->initPage(chunk,page,unitSize);
@@ -155,7 +156,7 @@ void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t size) {
 	size_t chunkIndex;
 	TAlignedMemoryChunk* chunk;
 	if (size <= 16 * sizeof(addr_t)) {// 16 个 1word 增加的 最大的是 16word, 0-15
-		chunkIndex = size / sizeof(addr_t);
+		chunkIndex = size / sizeof(addr_t)-1;
 		if (size % sizeof(addr_t)) chunkIndex++;
 		chunk = TAlignedMemory__getNormalChunk(self, chunkIndex);
 	}
@@ -172,15 +173,37 @@ void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t size) {
 	else {
 		chunk = TAlignedMemory__getLargeChunk(self, size);
 	}
-	void* unit = self->lookupUnit(chunk, size);
+	void* unit = self->lookupUnit(chunk, chunk->unitSize);
 	if (unit) return unit;
-	return TAlignedMemory__resolveUnit(chunk, size);
+	return TAlignedMemory__resolveUnit(chunk,chunk->unitSize);
 	
 }
 
 bool_t TAlignedMemory_free(TAlignedMemory* self, void* p) {
 	for (usize_t i = 0; i < 32; i++) {
 		TAlignedMemoryChunk* chunk = self->chunks[i];
+		if(!chunk) continue;
+		TAlignedMemoryPage* page = chunk->page;
+		usize_t maxOffset = chunk->pageCapacity* chunk->unitSize;
+		while (page) {
+			if (p > (void*)page) {
+				usize_t offset = ((usize_t)p - sizeof(TAlignedMemoryPage) - (usize_t)page);
+				if (offset > maxOffset) {
+					page = page->next; continue;
+				}
+				if (offset % chunk->unitSize) {
+					return 0;
+				}
+				AlignedMemoryFreeUnit* unit = (AlignedMemoryFreeUnit*)p;
+				unit->next = page->free;
+				page->free = unit;
+				return 1;
+			}
+			page = page->next;
+		}
+	}
+	TAlignedMemoryChunk* chunk = self->large;
+	while (chunk) {
 		TAlignedMemoryPage* page = chunk->page;
 		while (page) {
 			if (p > (void*)page) {
@@ -196,21 +219,7 @@ bool_t TAlignedMemory_free(TAlignedMemory* self, void* p) {
 				page->free = unit;
 				return 1;
 			}
-		}
-	}
-	TAlignedMemoryChunk* chunk = self->large;
-	while (chunk) {
-		TAlignedMemoryPage* page = chunk->page;
-		while (page) {
-			if (p > (void*)page) {
-				usize_t at = ((usize_t)p - sizeof(TAlignedMemoryPage) - (usize_t)page);
-				if (at > at / chunk->unitSize) continue;
-				if (at % chunk->unitSize) continue;
-				AlignedMemoryFreeUnit* unit = (AlignedMemoryFreeUnit*)p;
-				unit->next = page->free;
-				page->free = unit;
-				return 1;
-			}
+
 		}
 		chunk = chunk->nextChunk;
 	}
@@ -355,6 +364,7 @@ AlignedMemoryReleaseInfo TAlignedMemory_collectGarbages(TAlignedMemory* self, Al
 		chunk = nextChunk;
 		i++;
 	}
+	self->allocatedBytes -= rs.bytes;
 	return rs;
 }
 
@@ -363,12 +373,10 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 		self = (TAlignedMemory*)malloc(sizeof(TAlignedMemory));
 		if (!self) {
 			log_exit(1, "TAlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(TAlignedMemory));
-			return 0;
+			return(void*)-1;
 		}
 		else {
-			if (logger) {
-				if (logger) TLogger_trace(logger, "TAlignedTMemory.__construct__", "Memory is allocated for <TAlignedMemory>[%p].", self);
-			}
+			if (logger)  TLogger_trace(logger, "TAlignedTMemory.__construct__", "Memory is allocated for <TAlignedMemory>[%p]:%d", self,sizeof(TAlignedMemory));
 		}
 		self->allocatedBytes = sizeof(TAlignedMemory);
 	}

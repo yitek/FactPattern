@@ -69,7 +69,7 @@ TMemory* TMemory__construct__(TMemory* self, const MemoryOptions* options,TLogge
 		self = (TMemory*)malloc(sizeof(TMemory));
 		if (!self) {
 			log_exit(1,"TMemory.__construct__","Cannot allocate memory.");
-			return 0;
+			return (void*)-1;
 		}
 		else {
 			if (logger) {

@@ -44,9 +44,10 @@ int main()
     
     
     //setlocale(LC_ALL, ""); 
-    setlocale(LC_ALL, "chs");
+    //setlocale(LC_ALL, "chs");
     testTLogger();
     testMemory();
+    testAlignedMemory();
     //testArray();
     //testString();
     //testLink();

@@ -18,6 +18,7 @@ extern "C" {
 #endif
 	
 	void testMemory();
+	void testAlignedMemory();
 
 #ifdef __cplusplus 
 }//end extern c
