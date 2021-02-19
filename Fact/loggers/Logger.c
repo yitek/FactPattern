@@ -9,7 +9,7 @@
 #include <windows.h>
 #endif
 
-struct stVTBL loggerVTBL;
+LoggerMETA loggerMETA;
 
 LoggerGCLayout Logger_defaultInstance;
 Logger* Logger_default =0;
@@ -257,10 +257,9 @@ Logger* Logger__construct__(Logger* self, LoggerOptions* opts) {
 		self = malloc(sizeof(Logger));
 		if (!self) {
 			log_exit(0,"Logger.__construct__","Cannot allocate memory.");
-			return (void*)-1;
 		}
 	}
-	self->vftptr = &loggerVTBL;
+	self->__meta__ = (ObjectMetaLayout*)&loggerMETA;
 	if (opts) {
 		m_copy(&self->level,opts,sizeof(LoggerOptions));
 	}

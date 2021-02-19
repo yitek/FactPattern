@@ -57,8 +57,8 @@
     <ClInclude Include="memories\AlignedMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="memories\GCMemory.h">
-      <Filter>memories</Filter>
+    <ClInclude Include="layout.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -87,9 +87,6 @@
       <Filter>memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\AlignedMemory.c">
-      <Filter>memories</Filter>
-    </ClCompile>
-    <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>

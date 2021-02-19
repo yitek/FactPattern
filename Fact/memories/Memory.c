@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-MemoryVTBL memoryVTBL;
+MemoryMETA memoryMETA;
 
 MemoryGCLayout Memory_defaultInstance;
 
@@ -14,7 +14,7 @@ void* Memory_alloc(Memory* self, usize_t size) {
 		if (self && self->logger) Logger_notice(self->logger,"Memory.alloc","parameter size is required.");
 		return 0;
 	}
-	if (!self || self->allocating == 0 || self->allocating(self, size,0)>0) {
+	if (!self || ((MemoryMETA*)self->__meta__)->allocating == 0 || ((MemoryMETA*)self->__meta__)->allocating(self, size,0)>0) {
 		void* p = malloc(size);
 		if (self && self->logger) {
 			if (p)Logger_trace(self->logger, "Memory.alloc", "Memory[%p] allocated:%ld", p, (long)size);
@@ -28,7 +28,7 @@ void* Memory_alloc1(Memory* self, usize_t size) {
 		if (self && self->logger) Logger_notice(self->logger, "Memory.alloc1", "parameter size is required.");
 		return 0;
 	}
-	if (!self || self->allocating == 0 || self->allocating(self, size,0)>0) {
+	if (!self || ((MemoryMETA*)self->__meta__)->allocating == 0 || ((MemoryMETA*)self->__meta__)->allocating(self, size,0)>0) {
 		void* p = malloc(size);
 		if (self && self->logger) {
 			if (p)Logger_trace(self->logger, "Memory.alloc", "Memory[%p] allocated:%ld", p, (long)size);
@@ -77,12 +77,12 @@ Memory* Memory__construct__(Memory* self, const MemoryOptions* options,Logger* l
 			}
 		}
 	}
-	self->vftptr = (vftptr_t)&memoryVTBL;
+	self->__meta__ = (ObjectMetaLayout*)&memoryMETA;
 	if (options) {
-		m_copy(&self->allocating,options,sizeof(MemoryOptions));
+		m_copy(&self->__meta__+1,options,sizeof(MemoryOptions));
 	}
 	else {
-		self->allocating = 0;
+		
 	}
 	self->logger = logger;
 	if (logger) Logger_trace(logger,"TMemory.__construct__","<TMemory> constructed.");

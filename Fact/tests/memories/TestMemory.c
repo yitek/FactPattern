@@ -116,7 +116,7 @@ void testAlignedMemory() {
 	Logger_sectionBegin(0, "AlignedMemory", "Test start（32bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;
-	opts.allocating = 0;
+	//opts.allocating = 0;
 	opts.initPage = 0;
 	opts.totalBytes = 0;
 	//opts.lookupUnit = 0;

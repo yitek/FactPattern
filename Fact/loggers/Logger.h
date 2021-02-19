@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../def.h"
+#include "../layout.h"
 #ifndef __LOGGER_INCLUDED__ 
 #define __LOGGER_INCLUDED__
 #ifdef __cplusplus 
@@ -34,17 +34,23 @@ extern "C" {
 	}LoggerOptions;
 
 	typedef struct stLogger {
-		struct stVirtStructLayout;
+		struct stTObject;
 		struct stLoggerOptions;
 	} Logger;
+
 	typedef void (*LoggerOutput)(struct stLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 	
-	extern struct stVTBL loggerVTBL;
+	typedef struct stLoggerMETA {
+		struct stObjectMetaLayout;
+		LoggerOutput output;
+	}LoggerMETA;
+
+	extern LoggerMETA loggerMETA;
 
 	extern Logger* Logger_default;
 
-	typedef struct stLoggerGCLayout{ 
-		ObjectLayout __GC__;
+	typedef struct stLoggerLayout{ 
+		struct stGCUnitLayout;
 		struct stLogger;
 	}LoggerGCLayout;
 	extern LoggerGCLayout Logger_defaultInstance;
@@ -65,11 +71,12 @@ extern "C" {
 	void Logger_log(Logger* self, LogLevels level, const byte_t* category, const byte_t* message, ...);
 
 	void Logger__output(struct stLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
-	void Logger__printf(const byte_t* p, void* args);
-
-	static inline void Logger_output__virtual__(Logger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
-		((LoggerOutput)loggerVTBL.vfp0)(self, lv, category, message, args);
+	static inline void Logger_output__virtual__(struct stLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
+		((LoggerMETA*)(((TObject*)self)->__meta__))->output(self, lv, category, message, args);
 	}
+
+	
+	void Logger__printf(const byte_t* p, void* args);
 	void log_assert(const byte_t* category, bool_t condition, const byte_t* message, ...);
 	word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
 #ifdef __cplusplus 

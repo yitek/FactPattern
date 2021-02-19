@@ -6,6 +6,10 @@
 const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
+word_t GCMemory__allocating(GCMemory* self, usize_t t, void* param) {
+	
+}
+
 
 void GCMemory_markObject(ObjectLayout* gcObj,FindReferenceObject findReferenceObject) {
 	// idle或已标记

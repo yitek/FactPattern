@@ -66,7 +66,6 @@ extern "C" {
 		AlignedMemoryInitPage initPage;
 		//AlignedMemoryLookupUnit lookupUnit;
 		usize_t pageSize;
-		usize_t totalBytes;
 	};
 	typedef struct stAlignedMemoryOptions {
 		struct stMemoryOptions;
@@ -82,12 +81,12 @@ extern "C" {
 
 	}AlignedMemory;
 
-	typedef struct stAlignedMemoryVTBL {
-		struct stMemoryVTBL;
+	typedef struct stAlignedMemoryMETA {
+		struct stMemoryMETA;
 		AlignedMemoryReleaseInfo(*collectGarbages)(AlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
-	} AlignedMemoryVTBL;
+	} AlignedMemoryMETA;
 
-	extern AlignedMemoryVTBL alignedMemoryVTBL;
+	extern AlignedMemoryMETA alignedMemoryMETA;
 
 	AlignedMemoryChunk* AlignedMemory__getLargeChunk(AlignedMemory* self, size_t unitSize);
 	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize);

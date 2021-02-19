@@ -21,27 +21,28 @@ extern "C" {
 	struct stMemory;
 	typedef word_t (*MemoryAllocating)(struct stMemory* self,usize_t t,void* param);
 	typedef struct stMemoryOptions {
-		MemoryAllocating allocating;
+		usize_t totalBytes;
 	}MemoryOptions;
 
 	typedef struct stMemory {
 		/// <summary>
 		/// 虚函数指针，直接指向后面的vtbl结构，跟c++的对象布局保持一致
 		/// </summary>
-		struct stVirtStructLayout;
+		struct stTObject;
 		struct stMemoryOptions;
 		Logger* logger;
 	} Memory;
 
-	typedef struct stMemoryVTBL {
-		struct stVTBLLayout;
+	typedef struct stMemoryMETA {
+		struct stObjectMetaLayout;
+		MemoryAllocating allocating;
 		void* (*alloc)(Memory* self,usize_t size);
 		void* (*alloc1)(Memory* self, usize_t size);
 		bool_t (*free)(Memory* self,void* p);
 		void(*__destruct__)(Memory* self,bool_t existed);
-	} MemoryVTBL;
+	} MemoryMETA;
 
-	extern MemoryVTBL memoryVTBL;
+	extern MemoryMETA memoryMETA;
 
 	/// <summary>
 	/// 唯一的默认内存管理器，
@@ -67,10 +68,10 @@ extern "C" {
 	//inline bool_t Memory_dec_ref(Memory* self, void* obj) { return 1; }
 	
 
-	inline static void* Memory_alloc__virtual__(Memory* self, usize_t size) {return ((MemoryVTBL*)((VirtStructLayout*)self)->vftptr)->alloc(self,size);}
-	inline static void* Memory_alloc1__virtual__(Memory* self, usize_t size) { return ((MemoryVTBL*)((VirtStructLayout*)self)->vftptr)->alloc1(self, size); }
-	inline static bool_t Memory_free__virtual__(Memory* self, void* p) {return ((MemoryVTBL*)((VirtStructLayout*)self)->vftptr)->free(self, p);}
-	inline static void Memory__destruct____virtual__(Memory* self, bool_t existed) { ((MemoryVTBL*)((VirtStructLayout*)self)->vftptr)->__destruct__(self, existed); }
+	inline static void* Memory_alloc__virtual__(Memory* self, usize_t size) {return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc(self,size);}
+	inline static void* Memory_alloc1__virtual__(Memory* self, usize_t size) { return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc1(self, size); }
+	inline static bool_t Memory_free__virtual__(Memory* self, void* p) {return ((MemoryMETA*)((TObject*)self)->__meta__)->free(self, p);}
+	inline static void Memory__destruct____virtual__(Memory* self, bool_t existed) { ((MemoryMETA*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
 
 	static inline bool_t Memory_copy(void* dest, const void* src, usize_t size) { return (dest && src && size) ? m_copy(dest, src, size), 1 : 0; }
 	static inline bool_t Memory_repeat(void* dest, usize_t times, void* value, usize_t size) { return (dest&&times&&value&&size)?m_repeat(dest,times,value,size),1:0; }
