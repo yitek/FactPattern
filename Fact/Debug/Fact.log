@@ -10,7 +10,9 @@
    0	| &CLogger::output
   CLogger::output this adjustor: 0
   AlignedMemory.c
+  GCMemory.c
   memories_module.c
   TestMemory.c
   正在生成代码...
+D:\Yitek\FactPattern\Fact\memories\GCMemory.c(87): warning C4716: “GCMemory_collectGarbages”: 必须返回一个值
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

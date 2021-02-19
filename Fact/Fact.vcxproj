@@ -157,6 +157,7 @@
     <ClCompile Include="loggers\Logger.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\AlignedMemory.c" />
+    <ClCompile Include="memories\GCMemory.c" />
     <ClCompile Include="memories\memories_module.c" />
     <ClCompile Include="memories\Memory.c" />
     <ClCompile Include="tests\loggers\TestLogger.c" />

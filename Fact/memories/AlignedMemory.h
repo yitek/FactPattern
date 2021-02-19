@@ -102,6 +102,7 @@ extern "C" {
 	
 #define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);
 
+#ifndef AlignedMemoryLookupUnit
 #define AlignedMemoryLookupUnit(unit, chunk, unitSize) \
 	AlignedMemoryPage* lookupPage = chunk->page;\
 	while (lookupPage) {\
@@ -109,6 +110,8 @@ extern "C" {
 		if (unit) {lookupPage->free = ((AlignedMemoryFreeUnit*)unit)->next;break;}\
 		lookupPage = lookupPage->next;\
 	}\
+
+#endif
 
 	static inline void* AlignedMemory_alloc(AlignedMemory* self, usize_t unitSize) {
 #if defined(AlignedMemoryMetaSize)
@@ -217,8 +220,8 @@ extern "C" {
 		AlignedMemoryLookupUnit(unit, chunk, unitSize)
 #endif
 #if defined(AlignedMemoryMetaSize)
-			if (unit) return unit + AlignedMemoryMetaSize;
-		return AlignedMemory__chunkResolveUnit(chunk, unitSize) + AlignedMemoryMetaSize;
+		if (unit) return ((byte_t*)unit) + AlignedMemoryMetaSize;
+		return (void*)(((byte_t*)AlignedMemory__chunkResolveUnit(chunk, unitSize)) + AlignedMemoryMetaSize);
 #else
 			if (unit) return unit;
 		return AlignedMemory__chunkResolveUnit(chunk, unitSize);
