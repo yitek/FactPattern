@@ -1,2 +1,32 @@
-﻿  TAlignedMemory.c
+﻿  CLogger.cpp
+  class CLogger	size(8):
+  	+---
+   0	| {vfptr}
+   4	| LogLevels level
+  	+---
+  CLogger::$vftable@:
+  	| &CLogger_meta
+  	|  0
+   0	| &CLogger::output
+  CLogger::output this adjustor: 0
+  main.cpp
+  class CLogger	size(8):
+  	+---
+   0	| {vfptr}
+   4	| LogLevels level
+  	+---
+  CLogger::$vftable@:
+  	| &CLogger_meta
+  	|  0
+   0	| &CLogger::output
+  CLogger::output this adjustor: 0
+  正在生成代码...
+  Logger.c
+  loggers_module.c
+  AlignedMemory.c
+  Memory.c
+  memories_module.c
+  TestLogger.c
+  TestMemory.c
+  正在生成代码...
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

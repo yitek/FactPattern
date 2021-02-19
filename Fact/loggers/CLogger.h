@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "TLogger.h"
+#include "Logger.h"
 #ifndef __CLOGGER_INCLUDED__ 
 #define __CLOGGER_INCLUDED__
 
@@ -26,7 +26,7 @@ extern "C" {
 		}
 	protected:
 		virtual void output(LogLevels lv, const byte_t* category, const byte_t* message, void* args);
-		void message(TLogger* self, const byte_t* category, const byte_t* message, ...);
+		void message(Logger* self, const byte_t* category, const byte_t* message, ...);
 	};
 #ifdef __cplusplus 
 } //extern "C" {

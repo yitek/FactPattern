@@ -96,25 +96,25 @@ typedef word_t bool_t;
 
 typedef struct stVTBLLayout {
 	usize_t offset;
-}TVTBLLayout;
+}VTBLLayout;
 typedef struct stVTBL {
 	struct stVTBLLayout;
 	void* vfp0;
-}TVTBL;
+}VTBL;
 
-typedef TVTBL* vftptr_t;
+typedef VTBL* vftptr_t;
 
 typedef struct stVirtStructLayout {
 	vftptr_t vftptr;
-}TVirtStructLayout;
-static inline void* VirtStructLayout_getvf(const TVirtStructLayout* const self, usize_t index) {
+}VirtStructLayout;
+static inline void* VirtStructLayout_getvf(const VirtStructLayout* const self, usize_t index) {
 	return ((void**)(&self->vftptr->vfp0))[index];
 }
 
 typedef struct stGCUnitLayout {
 	void* type;
 	usize_t ref;
-}TGCUnitLayout;
+}GCUnitLayout;
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
 

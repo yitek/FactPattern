@@ -7,18 +7,18 @@ void memories_module(void* p) {
 	memories_initialized = 1;
 	loggers_module(p);
 	memoryVTBL.offset = 0;
-	memoryVTBL.alloc = &TMemory_alloc;
-	memoryVTBL.alloc1 = &TMemory_alloc1;
-	memoryVTBL.free = &TMemory_free;
-	memoryVTBL.__destruct__ = &TMemory__destruct__;
-	TMemory_default = (TMemory*)((byte_t*)&TMemory_defaultInstance + sizeof(TGCUnitLayout));
+	memoryVTBL.alloc = &Memory_alloc;
+	memoryVTBL.alloc1 = &Memory_alloc1;
+	memoryVTBL.free = &Memory_free;
+	memoryVTBL.__destruct__ = &Memory__destruct__;
+	Memory_default = (Memory*)((byte_t*)&Memory_defaultInstance + sizeof(GCUnitLayout));
 
 	
 	alignedMemoryVTBL.offset = 0;
-	alignedMemoryVTBL.alloc =(void* (*)(TMemory*, usize_t)) &TAlignedMemory_alloc;
-	alignedMemoryVTBL.alloc1 = (void* (*)(TMemory*, usize_t))&TAlignedMemory_alloc1;
-	alignedMemoryVTBL.free = (bool_t(*)(TMemory *, void*))&TAlignedMemory_free;
-	alignedMemoryVTBL.__destruct__ = (void(*)(TMemory*, bool_t))&TAlignedMemory__destruct__;
+	alignedMemoryVTBL.alloc =(void* (*)(Memory*, usize_t)) &AlignedMemory_alloc;
+	alignedMemoryVTBL.alloc1 = (void* (*)(Memory*, usize_t))&AlignedMemory_alloc1;
+	alignedMemoryVTBL.free = (bool_t(*)(Memory *, void*))&AlignedMemory_free;
+	alignedMemoryVTBL.__destruct__ = (void(*)(Memory*, bool_t))&AlignedMemory__destruct__;
 }
 
 

@@ -16,7 +16,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	void testTLogger();
+	void testLogger();
 
 #ifdef __cplusplus 
 }//end extern c

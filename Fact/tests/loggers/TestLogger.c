@@ -1,17 +1,17 @@
 #include "TestLogger.h"
 #include <stddef.h>
-void testTLogger() {
+void testLogger() {
 	loggers_module(0);
-	TLogger* logger = TLogger_default;
-	TLogger_sectionBegin(logger, "TLogger", "Test start...");
-	TLogger_trace(logger,"TLogger.trace","Trace message with number: %d and %d.\n",12,13);
-	TLogger_message(logger, "TLogger.message", "Message with char string: %ls and %ls.\n", "[ooo]", "[ppp]");
-	TLogger_info(0, "TLogger.info","Infomation with address:%p and %p",logger,logger);
-	TLogger_success(0, "TLogger.success","success with category with xn: %x,%x",23,23);
-	TLogger_notice(0, "TLogger.notice","Notice with c:%c and %c.",'x','y');
-	TLogger_warn(0, "TLogger.warn","Warn with lc:%lc,%lc",(wchar_t)'X',(wchar_t)'Y');
-	TLogger_exception(0, "TLogger.exception", "Exception with byte string:%s,%s", "hello", "world");
-	TLogger_error(0, "TLogger.error","Error with float:%f,%f.",0.1,0.2);
+	Logger* logger = Logger_default;
+	Logger_sectionBegin(logger, "Logger", "Test start...");
+	Logger_trace(logger,"Logger.trace","Trace message with number: %d and %d.\n",12,13);
+	Logger_message(logger, "Logger.message", "Message with char string: %ls and %ls.\n", "[ooo]", "[ppp]");
+	Logger_info(0, "Logger.info","Infomation with address:%p and %p",logger,logger);
+	Logger_success(0, "Logger.success","success with category with xn: %x,%x",23,23);
+	Logger_notice(0, "Logger.notice","Notice with c:%c and %c.",'x','y');
+	Logger_warn(0, "Logger.warn","Warn with lc:%lc,%lc",(wchar_t)'X',(wchar_t)'Y');
+	Logger_exception(0, "Logger.exception", "Exception with byte string:%s,%s", "hello", "world");
+	Logger_error(0, "Logger.error","Error with float:%f,%f.",0.1,0.2);
 
-	TLogger_sectionEnd(0, "TLogger", "Test end.");
+	Logger_sectionEnd(0, "Logger", "Test end.");
 }
