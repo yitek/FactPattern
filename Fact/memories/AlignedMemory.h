@@ -119,7 +119,7 @@ extern "C" {
 		size_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
 		if (unitSize > 16 * sizeof(addr_t) * 4) {
-			if (unitSize % sizeof(addr_t) * 4) unitSize = (unitSize / sizeof(addr_t) * 4) + 1;
+			if (unitSize % (sizeof(addr_t) * 4)) unitSize = (unitSize / sizeof(addr_t) * 4) + 1;
 			AlignedMemoryChunk* existed = self->large;
 			AlignedMemoryChunk* prev = 0;
 			while (existed) {
@@ -176,13 +176,13 @@ extern "C" {
 			}
 			else if (unitSize <= 16 * sizeof(addr_t) * 2) {// 最大的 32word 15 - 31 128 
 				chunkIndex = 16 - 8 + unitSize / (sizeof(addr_t) * 2);
-				if (unitSize % sizeof(addr_t) * 2) {
+				if (unitSize % (sizeof(addr_t) * 2)) {
 					unitSize = 16 * sizeof(word_t) + (++chunkIndex - 16 + 8) * sizeof(addr_t) * 2;
 				}
 			}
 			else if (unitSize <= 16 * sizeof(addr_t) * 4) {// 最大 64 word 256bytes 24-28
 				chunkIndex = 24 - 8 + unitSize / (sizeof(addr_t) * 4);
-				if (unitSize % sizeof(addr_t) * 4) { unitSize = 16 * sizeof(dword_t) + (++chunkIndex - 24 + 8) * sizeof(addr_t) * 4; }
+				if (unitSize % (sizeof(addr_t) * 4)) { unitSize = 16 * sizeof(dword_t) + (++chunkIndex - 24 + 8) * sizeof(addr_t) * 4; }
 			}
 
 			chunk = self->chunks[--chunkIndex];

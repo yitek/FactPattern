@@ -57,9 +57,17 @@ typedef struct stTFieldList {
 	usize_t length;
 }TFieldList;
 
+typedef enum {
+	TypeKind_func=			0b0000001,
+	TypeKind_struct =		0b0000010,
+	TypeKind_class=			0b0000100, 
+	TypeKind_interface =	0b0001000
+}TypeKinds;
+
 typedef struct stTType {
 	struct stTObject;
 	usize_t size;
+	uword_t decorators;
 	TFieldList* fields;
 }TType;
 typedef enum {
@@ -67,19 +75,25 @@ typedef enum {
 	MemberType_method =		0b10,
 	MemberType_property =	0b11
 } MemberTypes;
+
 typedef enum {
 	AccessLevel_private = 0,
-	AccessLevel_protected =			0b00100,
-	AccessLevel_internal =			0b01000,
-	AccessLevel_protected_internal =0b01100,
-	AccessLevel_public=				0b11100
+	AccessLevel_protected =			0b00100000000,
+	AccessLevel_internal =			0b01000000000,
+	AccessLevel_protected_internal =0b01100000000,
+	AccessLevel_public=				0b11100000000
 } AccessLevels;
 
 typedef struct stTMember {
 	struct stTObject;
 	uword_t decorators;
-	TType* memberType;
+	TType* type;
 }TMember;
+
+typedef struct stTField {
+	struct stTMember;
+	usize_t offset;
+}TField;
 
 static inline TType* get_type(TObject* obj) {
 	return obj->__meta__->get_type();

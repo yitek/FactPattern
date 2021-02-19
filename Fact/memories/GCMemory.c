@@ -2,45 +2,49 @@
 
 
 
-
+GCMemoryMETA gcMemoryMETA;
 const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
 word_t GCMemory__allocating(GCMemory* self, usize_t t, void* param) {
-	
+	GCMemory_collectGarbages(self, 0, 0);
+	return AllocatePageDirective_RecheckOrNewPage;
 }
 
 
-void GCMemory_markObject(ObjectLayout* gcObj,FindReferenceObject findReferenceObject) {
+void GCMemory__markObject(TObject* obj) {
 	// idle或已标记
 
 	// 标记可达性
-	gcObj->ref |= markNumber;
-	size_t memberIndex = 0;
-	ObjectLayout* member = findReferenceObject(gcObj,memberIndex);
-	while (member) {
-		GCMemory_markObject(member, findReferenceObject);
-		member = findReferenceObject(gcObj, ++memberIndex);
-	}
-	
+	(*((GCUnitLayout*)obj-1)).ref |= markNumber;
+	usize_t memberIndex = 0;
+	TType* type = get_type(obj);
+	TField* field = (TField*)(&type->fields + 1);
+	for (usize_t i = 0; i < type->fields->length; i++) {
+		if (field->type->decorators & TypeKind_class) {
+			TObject* refObj = (TObject*)(((byte_t*)obj) + field->offset);
+			GCMemory__markObject(refObj );
+		}
+	}	
 }
 
-void GCMemory_markChunk(AlignedMemoryChunk* chunk) {
+void GCMemory__markChunk(AlignedMemoryChunk* chunk) {
 	//mark阶段
 	AlignedMemoryPage* page = chunk->page;
-	FindReferenceObject findReferenceObject = 0;
+	
 	while (page) {
-		ObjectLayout* gcObj = (ObjectLayout*)((byte_t*)page + sizeof(AlignedMemoryPage));
+		GCUnitLayout* gcUnit = (GCUnitLayout*)&page->free;
 		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
-			if (gcObj->ref == 0 || gcObj->ref & markNumber) return;
-			GCMemory_markObject(gcObj, findReferenceObject);
+			if (gcUnit->ref == 0 || gcUnit->ref & markNumber) return;
+			GCMemory__markObject((TObject*)(gcUnit +1));
+			gcUnit = (GCUnitLayout*)((byte_t*)gcUnit + chunk->unitSize);
 		}
 		page = page->next;
 	}
 }
 
 
-size_t GCMemory_sweepChunk(AlignedMemoryChunk* chunk) {
+size_t GCMemory__sweepChunk(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
 	size_t count = 0;
 	while (page) {
@@ -63,29 +67,31 @@ size_t GCMemory_sweepChunk(AlignedMemoryChunk* chunk) {
 }
 
 AlignedMemoryReleaseInfo GCMemory_collectGarbages(GCMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback) {
+	AlignedMemoryReleaseInfo rs;
+	rs.bytes = rs.chunkCount = rs.pages = rs.pageSize = rs.units = rs.unitSize = 0;
 	AlignedMemoryChunk* chunk = self->large;
 	while (chunk) {
-		GCMemory_markChunk(chunk);
+		GCMemory__markChunk(chunk);
 		chunk = chunk->nextChunk;
 	}
 	for (size_t i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
-			GCMemory_markChunk(chunk);
+			GCMemory__markChunk(chunk);
 		}
 	}
 
 	while (chunk) {
-		size_t c = GCMemory_sweepChunk(chunk);
+		size_t c = GCMemory__sweepChunk(chunk);
 		//if (log) log(chunk,c);
 		chunk = chunk->nextChunk;
 	}
 	for (size_t i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
-			size_t c = GCMemory_sweepChunk(chunk);
+			size_t c = GCMemory__sweepChunk(chunk);
 			//if (log) log(chunk, c);
 		}
 	}
-
+	return rs;
 }

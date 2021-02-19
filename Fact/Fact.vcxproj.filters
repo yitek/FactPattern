@@ -60,6 +60,9 @@
     <ClInclude Include="layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="memories\GCMemory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,6 +90,9 @@
       <Filter>memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\AlignedMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>
