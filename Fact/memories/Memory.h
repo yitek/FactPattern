@@ -48,7 +48,7 @@ extern "C" {
 	/// </summary>
 	extern Memory* Memory_default;
 	typedef struct stMemoryGCLayout{
-		GCUnitLayout __GC__;
+		ObjectLayout __GC__;
 		struct stMemory;
 	} MemoryGCLayout;
 	extern MemoryGCLayout Memory_defaultInstance;

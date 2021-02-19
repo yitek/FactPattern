@@ -7,110 +7,10 @@
 AlignedMemoryVTBL alignedMemoryVTBL;
 
 
-AlignedMemoryChunk* AlignedMemory__getNormalChunk(AlignedMemory* self, size_t chunkIndex) {
-	AlignedMemoryChunk* chunk = self->chunks[chunkIndex];
-	if (chunk) return chunk;
-	size_t unitSize;
-	if (chunkIndex < 16) {
-		unitSize = (chunkIndex + 1) * sizeof(addr_t);
-	}
-	else if (chunkIndex < 24) {
-		unitSize = 16 * sizeof(word_t) + (chunkIndex - 16 + 8) * sizeof(addr_t)*2;
-	}
-	else { //chunkIndex<32
-		unitSize = 16 * sizeof(dword_t) + (chunkIndex - 24 + 8) * sizeof(addr_t)*4;
-	}
-	chunk = malloc(sizeof(AlignedMemoryChunk));
-	if (!chunk) {
-		log_exit(1,"AlignedMemory._getNormalChunk","Cannot alloc memory:%ld",(long)sizeof(AlignedMemoryChunk));
-		return 0;
-	}
-	else {
-		self->allocatedBytes += sizeof(AlignedMemoryChunk);
-		self->chunks[chunkIndex] = chunk;
-	}
-	chunk->page = 0;
-	chunk->memory = self;
-	chunk->nextChunk = 0;
-	chunk->pageSize = self->pageSize;
-	chunk->unitSize = unitSize;
-	chunk->pageCapacity = (self->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
-	if (self->logger) {
-		if (self->logger) Logger_trace(self->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
-			, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
-		);
-	}
-	return chunk;
-}
 
-AlignedMemoryChunk* AlignedMemory__getLargeChunk(AlignedMemory* self, size_t size) {
-	//假设大内存不常用，用链表处理
-	if (size % sizeof(addr_t)*4) size = (size / sizeof(addr_t)*4) + 1;
-	AlignedMemoryChunk* existed = self->large;
-	AlignedMemoryChunk* prev = 0;
-	while (existed) {
-		if (existed->unitSize == size) return existed;
-		else if (existed->unitSize < size) {
-			prev = existed;
-			existed = existed->nextChunk;
-		}
-		else break;
-	}
-	size_t pageSize = self->pageSize;
-	size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
-	size_t pageCapacity = pageUsableSize / size;
-	// 一页都无法装下一个
-	if (pageCapacity == 0) {
-		pageSize = size + sizeof(AlignedMemoryPage);
-		pageCapacity = 1;
-	}
-	// 一页只能装一个
-	else if (pageCapacity < 2) {
-		//剩余的太多
-		if (pageUsableSize % size > pageUsableSize / 4) {
-			pageSize = size + sizeof(AlignedMemoryPage);
-			pageCapacity = 1;
-		}
-	}
-	AlignedMemoryChunk* chunk = malloc(sizeof(AlignedMemoryChunk));
-	if (!chunk) {
-		log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
-		return 0;
-	}
-	else {
-		chunk->memory->allocatedBytes += sizeof(AlignedMemoryChunk);
-	}
-	chunk->page = 0;
-	chunk->memory = self;
-	chunk->nextChunk = existed;
-	chunk->pageSize = pageSize;
-	chunk->unitSize = size;
-	chunk->pageCapacity = pageCapacity;
-	if (prev) prev->nextChunk = chunk;
-	else self->large = chunk;
 
-	if (self->logger) {
-		if (self->logger) Logger_trace(self->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
-			,chunk,(unsigned long)chunk->unitSize,(unsigned long)chunk->pageSize,(unsigned long) chunk->pageCapacity,chunk->memory->allocatedBytes
-		);
-	}
 
-	return chunk;
-}
-
-void* AlignedMemory__lookupUnit(AlignedMemoryChunk* chunk, size_t unitSize) {
-	AlignedMemoryPage* page = chunk->page;
-	while (page) {
-		AlignedMemoryFreeUnit* unit = page->free;
-		if (unit) {
-			page->free = unit->next;
-			return unit;
-		}
-		page = page->next;
-	}
-	return 0;
-}
 
 void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* page, size_t unitSize) {
 	AlignedMemoryFreeUnit* unit = (AlignedMemoryFreeUnit*)(page +1);
@@ -123,14 +23,17 @@ void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* 
 }
 
 void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize) {
-	byte_t* unit;
+	void* unit=0;
 	if (chunk->memory->allocating) {
 		AllocatePageDirectives directive = chunk->memory->allocating((Memory*)chunk->memory,chunk->pageSize,chunk);
 		if (directive == AllocatePageDirective_Fail) return 0;
 		if (directive == AllocatePageDirective_Recheck || directive == AllocatePageDirective_RecheckOrNewPage) {
-			unit = chunk->memory->lookupUnit(chunk,unitSize);
+#if defined(AlignedMemoryLookupUnit)
+			AlignedMemoryLookupUnit(unit, chunk, unitSize)
+#endif
 			if (unit)return unit;
 		}
+		
 		if (directive == AllocatePageDirective_Recheck) return 0;
 	}
 
@@ -143,7 +46,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 		chunk->memory->allocatedBytes += chunk->pageSize;
 	}
 	page->free = 0;
-	unit = chunk->memory->initPage(chunk,page,unitSize);
+	unit = chunk->memory->opts.initPage(chunk,page,unitSize);
 	page->next = chunk->page;
 	chunk->page = page;
 	if (chunk->memory->logger) {
@@ -152,32 +55,6 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 	return unit;
 }
 
-void* AlignedMemory_alloc(AlignedMemory* self, usize_t size) {
-	size_t chunkIndex;
-	AlignedMemoryChunk* chunk;
-	if (size <= 16 * sizeof(addr_t)) {// 16 个 1word 增加的 最大的是 16word, 0-15
-		chunkIndex = size / sizeof(addr_t)-1;
-		if (size % sizeof(addr_t)) chunkIndex++;
-		chunk = AlignedMemory__getNormalChunk(self, chunkIndex);
-	}
-	else if (size <= 16 * sizeof(addr_t)*2) {// 最大的 32word 15 - 31 128 
-		chunkIndex = 16 - 8 + size / (sizeof(addr_t)*2);
-		if (size % sizeof(addr_t)*2) chunkIndex++;
-		chunk = AlignedMemory__getNormalChunk(self, chunkIndex);
-	}
-	else if (size <= 16 * sizeof(addr_t)*4) {// 最大 64 word 256bytes 24-28
-		chunkIndex = 24 - 8 + size / (sizeof(addr_t)*4);
-		if (size % sizeof(addr_t)*4) chunkIndex++;
-		chunk = AlignedMemory__getNormalChunk(self, chunkIndex);
-	}
-	else {
-		chunk = AlignedMemory__getLargeChunk(self, size);
-	}
-	void* unit = self->lookupUnit(chunk, chunk->unitSize);
-	if (unit) return unit;
-	return AlignedMemory__chunkResolveUnit(chunk,chunk->unitSize);
-	
-}
 
 bool_t AlignedMemory_free(AlignedMemory* self, void* p) {
 	for (usize_t i = 0; i < 32; i++) {
@@ -341,7 +218,7 @@ bool_t AlignedMemory__collectChunkGarbages(AlignedMemory* self,AlignedMemoryRele
 	}
 	return 0;
 }
-AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self, AlignedMemoryGCCallback callback) {
+AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_t releasePage ,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo rs;
 	rs.bytes = rs.pages = rs.pageSize = rs.units = rs.chunkCount = rs.unitSize = 0;
 	
@@ -382,14 +259,14 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 	Memory__construct__((Memory*)self, (MemoryOptions*)opts, logger);
 	self->vftptr = (vftptr_t)&alignedMemoryVTBL;
 	if (opts) {
-		m_copy(&self->initPage,&opts->initPage,sizeof(struct stAlignedMemoryOpts));
+		m_copy(&self->opts.initPage,&opts->initPage,sizeof(struct stAlignedMemoryOpts));
 	} else {
-		self->pageSize = 1024 * 2;
-		self->totalBytes = 0;
-		self->totalBytes = 0;
+		self->opts.pageSize = 1024 * 2;
+		self->opts.totalBytes = 0;
+		self->allocatedBytes = 0;
 	}
-	if (!self->initPage) self->initPage = &AlignedMemory__initPageUnits;
-	if (!self->lookupUnit) self->lookupUnit = &AlignedMemory__lookupUnit;
+	if (!self->opts.initPage) self->opts.initPage = &AlignedMemory__initPageUnits;
+	//if (!self->lookupUnit) self->lookupUnit = &AlignedMemory__lookupUnit;
 	self->logger = logger;
 
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;

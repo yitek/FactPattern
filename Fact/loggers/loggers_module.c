@@ -9,7 +9,7 @@ void loggers_module(void* p) {
 	loggerVTBL.offset = 0;
 	loggerVTBL.vfp0 = &Logger__output;
 	Logger_defaultInstance.level = 0;
-	Logger_default = (Logger*)((byte_t*)&Logger_defaultInstance + sizeof(GCUnitLayout));
+	Logger_default = (Logger*)((byte_t*)&Logger_defaultInstance + sizeof(ObjectLayout));
 }
 
 

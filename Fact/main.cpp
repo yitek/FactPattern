@@ -41,7 +41,14 @@ int main()
     printSysInfo();
     CLogger* loggeer = new CLogger();
     
-    
+    ObjectLayout objInst;
+    objInst.ref = 0; objInst.type = 0;
+    void* obj = &objInst+1;
+    Object_param(obj);
+    void* obj2 = 0;
+
+
+
     
     //setlocale(LC_ALL, ""); 
     //setlocale(LC_ALL, "chs");

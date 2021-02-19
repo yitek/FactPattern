@@ -9,8 +9,8 @@
 #pragma once
 
 #include "../def.h"
-#ifndef __TLOGGER_INCLUDED__ 
-#define __TLOGGER_INCLUDED__
+#ifndef __LOGGER_INCLUDED__ 
+#define __LOGGER_INCLUDED__
 #ifdef __cplusplus 
 extern "C" {
 #endif
@@ -44,7 +44,7 @@ extern "C" {
 	extern Logger* Logger_default;
 
 	typedef struct stLoggerGCLayout{ 
-		GCUnitLayout __GC__;
+		ObjectLayout __GC__;
 		struct stLogger;
 	}LoggerGCLayout;
 	extern LoggerGCLayout Logger_defaultInstance;
@@ -76,4 +76,4 @@ extern "C" {
 } //extern "C" 
 #endif
 
-#endif // end ifndef __TLOGGER_INCLUDED__
+#endif // end ifndef __LOGGER_INCLUDED__

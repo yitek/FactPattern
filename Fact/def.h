@@ -111,10 +111,14 @@ static inline void* VirtStructLayout_getvf(const VirtStructLayout* const self, u
 	return ((void**)(&self->vftptr->vfp0))[index];
 }
 
-typedef struct stGCUnitLayout {
-	void* type;
+typedef struct stObjectLayout {
 	usize_t ref;
-}GCUnitLayout;
+	void* type;
+}ObjectLayout;
+
+#define Object_param(obj) ( (*((ObjectLayout*)obj-1)).ref++,obj )
+#define Object_assign(dest,obj) ( (*((ObjectLayout*)(dest=obj)-1)).ref++,obj )
+#define Object_release(obj) ( --(*((ObjectLayout*)obj-1)).ref<=0?(obj=0):obj )
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
 

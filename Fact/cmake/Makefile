@@ -248,6 +248,30 @@ memories/AlignedMemory.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.s
 .PHONY : memories/AlignedMemory.c.s
 
+memories/GCMemory.obj: memories/GCMemory.c.obj
+.PHONY : memories/GCMemory.obj
+
+# target to build an object file
+memories/GCMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.obj
+.PHONY : memories/GCMemory.c.obj
+
+memories/GCMemory.i: memories/GCMemory.c.i
+.PHONY : memories/GCMemory.i
+
+# target to preprocess a source file
+memories/GCMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.i
+.PHONY : memories/GCMemory.c.i
+
+memories/GCMemory.s: memories/GCMemory.c.s
+.PHONY : memories/GCMemory.s
+
+# target to generate assembly for a file
+memories/GCMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.s
+.PHONY : memories/GCMemory.c.s
+
 memories/Memory.obj: memories/Memory.c.obj
 .PHONY : memories/Memory.obj
 
@@ -368,6 +392,9 @@ help:
 	@echo ... memories/AlignedMemory.obj
 	@echo ... memories/AlignedMemory.i
 	@echo ... memories/AlignedMemory.s
+	@echo ... memories/GCMemory.obj
+	@echo ... memories/GCMemory.i
+	@echo ... memories/GCMemory.s
 	@echo ... memories/Memory.obj
 	@echo ... memories/Memory.i
 	@echo ... memories/Memory.s
