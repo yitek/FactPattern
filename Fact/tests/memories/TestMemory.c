@@ -91,6 +91,20 @@ void testAlignedMemory() {
 		, obj3,mm->allocatedBytes);
 
 	AlignedMemory_free(mm,obj1);
+	AlignedMemory_free(mm, obj3);
+
+	void* obj4 = AlignedMemory_alloc(mm, 8);
+	log_assert("Memory.re-alloc",obj4==obj3,"应该在被释放的内存上obj4==obj3");
+	void* obj5 = AlignedMemory_alloc(mm, 8);
+	log_assert("Memory.re-alloc", obj5 == obj4-8, "内存是连续的obj5==obj4-8");
+	void* obj6 = AlignedMemory_alloc(mm,6);
+	log_assert("Memory.re-alloc", obj6 == obj1, "应该在被释放的内存上obj6==obj1");
+	AlignedMemoryReleaseInfo rs = AlignedMemory_collectGarbages(mm, 0);
+	log_assert("Memory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面");
+	AlignedMemory_free(mm, obj6);
+	AlignedMemory_free(mm, obj2);
+	rs = AlignedMemory_collectGarbages(mm, 0);
+	log_assert("Memory.collectGarbages", rs.bytes == opts.pageSize && rs.pages==1, "释放obj6,obj2,让page1页面空闲，回收一个页面");
 
 	Logger_sectionEnd(0, "AlignedMemory", "Test done!");
 }

@@ -152,29 +152,29 @@ loggers/CLogger.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.s
 .PHONY : loggers/CLogger.cpp.s
 
-loggers/TLogger.obj: loggers/TLogger.c.obj
-.PHONY : loggers/TLogger.obj
+loggers/Logger.obj: loggers/Logger.c.obj
+.PHONY : loggers/Logger.obj
 
 # target to build an object file
-loggers/TLogger.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.obj
-.PHONY : loggers/TLogger.c.obj
+loggers/Logger.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.obj
+.PHONY : loggers/Logger.c.obj
 
-loggers/TLogger.i: loggers/TLogger.c.i
-.PHONY : loggers/TLogger.i
+loggers/Logger.i: loggers/Logger.c.i
+.PHONY : loggers/Logger.i
 
 # target to preprocess a source file
-loggers/TLogger.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.i
-.PHONY : loggers/TLogger.c.i
+loggers/Logger.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.i
+.PHONY : loggers/Logger.c.i
 
-loggers/TLogger.s: loggers/TLogger.c.s
-.PHONY : loggers/TLogger.s
+loggers/Logger.s: loggers/Logger.c.s
+.PHONY : loggers/Logger.s
 
 # target to generate assembly for a file
-loggers/TLogger.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.s
-.PHONY : loggers/TLogger.c.s
+loggers/Logger.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.s
+.PHONY : loggers/Logger.c.s
 
 loggers/loggers_module.obj: loggers/loggers_module.c.obj
 .PHONY : loggers/loggers_module.obj
@@ -224,53 +224,53 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-memories/TAlignedMemory.obj: memories/TAlignedMemory.c.obj
-.PHONY : memories/TAlignedMemory.obj
+memories/AlignedMemory.obj: memories/AlignedMemory.c.obj
+.PHONY : memories/AlignedMemory.obj
 
 # target to build an object file
-memories/TAlignedMemory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.obj
-.PHONY : memories/TAlignedMemory.c.obj
+memories/AlignedMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.obj
+.PHONY : memories/AlignedMemory.c.obj
 
-memories/TAlignedMemory.i: memories/TAlignedMemory.c.i
-.PHONY : memories/TAlignedMemory.i
+memories/AlignedMemory.i: memories/AlignedMemory.c.i
+.PHONY : memories/AlignedMemory.i
 
 # target to preprocess a source file
-memories/TAlignedMemory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.i
-.PHONY : memories/TAlignedMemory.c.i
+memories/AlignedMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.i
+.PHONY : memories/AlignedMemory.c.i
 
-memories/TAlignedMemory.s: memories/TAlignedMemory.c.s
-.PHONY : memories/TAlignedMemory.s
+memories/AlignedMemory.s: memories/AlignedMemory.c.s
+.PHONY : memories/AlignedMemory.s
 
 # target to generate assembly for a file
-memories/TAlignedMemory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.s
-.PHONY : memories/TAlignedMemory.c.s
+memories/AlignedMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.s
+.PHONY : memories/AlignedMemory.c.s
 
-memories/TMemory.obj: memories/TMemory.c.obj
-.PHONY : memories/TMemory.obj
+memories/Memory.obj: memories/Memory.c.obj
+.PHONY : memories/Memory.obj
 
 # target to build an object file
-memories/TMemory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.obj
-.PHONY : memories/TMemory.c.obj
+memories/Memory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.obj
+.PHONY : memories/Memory.c.obj
 
-memories/TMemory.i: memories/TMemory.c.i
-.PHONY : memories/TMemory.i
+memories/Memory.i: memories/Memory.c.i
+.PHONY : memories/Memory.i
 
 # target to preprocess a source file
-memories/TMemory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.i
-.PHONY : memories/TMemory.c.i
+memories/Memory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.i
+.PHONY : memories/Memory.c.i
 
-memories/TMemory.s: memories/TMemory.c.s
-.PHONY : memories/TMemory.s
+memories/Memory.s: memories/Memory.c.s
+.PHONY : memories/Memory.s
 
 # target to generate assembly for a file
-memories/TMemory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.s
-.PHONY : memories/TMemory.c.s
+memories/Memory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.s
+.PHONY : memories/Memory.c.s
 
 memories/memories_module.obj: memories/memories_module.c.obj
 .PHONY : memories/memories_module.obj
@@ -356,21 +356,21 @@ help:
 	@echo ... loggers/CLogger.obj
 	@echo ... loggers/CLogger.i
 	@echo ... loggers/CLogger.s
-	@echo ... loggers/TLogger.obj
-	@echo ... loggers/TLogger.i
-	@echo ... loggers/TLogger.s
+	@echo ... loggers/Logger.obj
+	@echo ... loggers/Logger.i
+	@echo ... loggers/Logger.s
 	@echo ... loggers/loggers_module.obj
 	@echo ... loggers/loggers_module.i
 	@echo ... loggers/loggers_module.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
-	@echo ... memories/TAlignedMemory.obj
-	@echo ... memories/TAlignedMemory.i
-	@echo ... memories/TAlignedMemory.s
-	@echo ... memories/TMemory.obj
-	@echo ... memories/TMemory.i
-	@echo ... memories/TMemory.s
+	@echo ... memories/AlignedMemory.obj
+	@echo ... memories/AlignedMemory.i
+	@echo ... memories/AlignedMemory.s
+	@echo ... memories/Memory.obj
+	@echo ... memories/Memory.i
+	@echo ... memories/Memory.s
 	@echo ... memories/memories_module.obj
 	@echo ... memories/memories_module.i
 	@echo ... memories/memories_module.s
