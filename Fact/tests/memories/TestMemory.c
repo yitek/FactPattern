@@ -51,9 +51,8 @@ void testAlignedMemory() {
 	Logger_sectionBegin(0, "AlignedMemory", "Test start（64bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;
-	//opts.allocating = 0;
-	opts.initPage = 0;
 	opts.totalBytes = 0;
+	opts.gcBytes = 0;
 
 	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
 	log_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]%d\n", mm,mm->allocatedBytes);
@@ -116,10 +115,8 @@ void testAlignedMemory() {
 	Logger_sectionBegin(0, "AlignedMemory", "Test start（32bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;
-	//opts.allocating = 0;
-	opts.initPage = 0;
 	opts.totalBytes = 0;
-	//opts.lookupUnit = 0;
+	opts.gcBytes=0;
 
 	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
 	log_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);

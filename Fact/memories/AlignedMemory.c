@@ -24,19 +24,16 @@ void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* 
 
 void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize) {
 	void* unit=0;
-	MemoryAllocating allocating = ((MemoryMETA*)chunk->memory->__meta__)->allocating;
-	if (allocating) {
-		AllocatePageDirectives directive = allocating((Memory*)chunk->memory,chunk->pageSize,chunk);
-		if (directive == AllocatePageDirective_Fail) return 0;
-		if (directive == AllocatePageDirective_Recheck || directive == AllocatePageDirective_RecheckOrNewPage) {
+	MemoryAllocatingDirectives directive = ((MemoryMETA*)chunk->memory->__meta__)->allocating((Memory*)chunk->memory, chunk->pageSize, chunk);
+	if (directive == MemoryAllocatingDirective_Fail) return 0;
+	if (directive == MemoryAllocatingDirective_Recheck || directive == MemoryAllocatingDirective_RecheckOrNewPage) {
 #if defined(AlignedMemoryLookupUnit)
-			AlignedMemoryLookupUnit(unit, chunk, unitSize)
+		AlignedMemoryLookupUnit(unit, chunk, unitSize)
 #endif
 			if (unit)return unit;
-		}
-		
-		if (directive == AllocatePageDirective_Recheck) return 0;
 	}
+
+	if (directive == MemoryAllocatingDirective_Recheck) return 0;
 
 	AlignedMemoryPage* page = (AlignedMemoryPage*)malloc(chunk->pageSize);
 	if (!page) {
@@ -47,7 +44,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 		chunk->memory->allocatedBytes += chunk->pageSize;
 	}
 	page->free = 0;
-	unit = chunk->memory->opts.initPage(chunk,page,unitSize);
+	unit = ((AlignedMemoryMETA*)chunk->memory->__meta__)->initPageUnits(chunk,page,unitSize);
 	page->next = chunk->page;
 	chunk->page = page;
 	if (chunk->memory->logger) {
@@ -260,18 +257,31 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 	Memory__construct__((Memory*)self, (MemoryOptions*)opts, logger);
 	self->__meta__ = (ObjectMetaLayout*)&alignedMemoryMETA;
 	if (opts) {
-		m_copy(&self->opts.initPage,&opts->initPage,sizeof(struct stAlignedMemoryOpts));
+		self->gcBytes = opts->gcBytes;
+		self->pageSize = opts->pageSize;
 	} else {
-		self->opts.pageSize = 1024 * 2;
-		self->totalBytes = 0;
-		self->allocatedBytes = 0;
+		self->pageSize = 1024 * 2;
+		self->gcBytes = 0;
 	}
-	if (!self->opts.initPage) self->opts.initPage = &AlignedMemory__initPageUnits;
-	//if (!self->lookupUnit) self->lookupUnit = &AlignedMemory__lookupUnit;
 	self->logger = logger;
 
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
 	self->large = 0;
 	if (logger) Logger_trace(logger, "AlignedMemory.__construct__", "<AlignedMemory> constructed.");
 	return self;
+}
+
+MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size, AlignedMemoryChunk* chunk) {
+	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
+		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_Recheck;
+		return MemoryAllocatingDirective_Fail;
+	}
+	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
+		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_RecheckOrNewPage;
+		else return MemoryAllocatingDirective_NewPage;
+	}
+	return MemoryAllocatingDirective_NewPage;
+
 }

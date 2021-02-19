@@ -69,7 +69,7 @@ Memory* Memory__construct__(Memory* self, const MemoryOptions* options,Logger* l
 		self = (Memory*)malloc(sizeof(Memory));
 		if (!self) {
 			log_exit(1,"Memory.__construct__","Cannot allocate memory.");
-			return (void*)-1;
+			return 0;
 		}
 		else {
 			if (logger) {
@@ -79,12 +79,14 @@ Memory* Memory__construct__(Memory* self, const MemoryOptions* options,Logger* l
 	}
 	self->__meta__ = (ObjectMetaLayout*)&memoryMETA;
 	if (options) {
-		m_copy(&self->__meta__+1,options,sizeof(MemoryOptions));
+		self->totalBytes = options->totalBytes;
 	}
 	else {
-		
+		self->totalBytes = 0;
 	}
 	self->logger = logger;
 	if (logger) Logger_trace(logger,"TMemory.__construct__","<TMemory> constructed.");
 	return self;
 }
+
+

@@ -19,7 +19,14 @@ extern "C" {
 #endif
 
 	struct stMemory;
-	typedef word_t (*MemoryAllocating)(struct stMemory* self,usize_t t,void* param);
+	typedef enum {
+		MemoryAllocatingDirective_Fail = 0,
+		MemoryAllocatingDirective_Recheck = -1,
+		MemoryAllocatingDirective_NewPage = 1,
+		MemoryAllocatingDirective_RecheckOrNewPage = 2,
+	} MemoryAllocatingDirectives;
+
+	
 	typedef struct stMemoryOptions {
 		usize_t totalBytes;
 	}MemoryOptions;
@@ -30,16 +37,18 @@ extern "C" {
 		/// </summary>
 		struct stTObject;
 		struct stMemoryOptions;
+		
 		Logger* logger;
+		
 	} Memory;
 
 	typedef struct stMemoryMETA {
 		struct stObjectMetaLayout;
-		MemoryAllocating allocating;
 		void* (*alloc)(Memory* self,usize_t size);
 		void* (*alloc1)(Memory* self, usize_t size);
 		bool_t (*free)(Memory* self,void* p);
 		void(*__destruct__)(Memory* self,bool_t existed);
+		MemoryAllocatingDirectives(*allocating)(Memory* memory,usize_t size,void* param);
 	} MemoryMETA;
 
 	extern MemoryMETA memoryMETA;
@@ -49,8 +58,8 @@ extern "C" {
 	/// </summary>
 	extern Memory* Memory_default;
 	typedef struct stMemoryGCLayout{
-		ObjectLayout __GC__;
-		struct stMemory;
+		struct stObjectLayout __ob__;
+		struct stMemory mm;
 	} MemoryGCLayout;
 	extern MemoryGCLayout Memory_defaultInstance;
 	/// <summary>
@@ -64,8 +73,7 @@ extern "C" {
 	void* Memory_alloc(Memory* self, usize_t size);
 	void* Memory_alloc1(Memory* self, usize_t size);
 	bool_t Memory_free(Memory* self, void* obj);
-	//inline bool_t Memory_inc_ref(Memory* self, void* obj) { return 1; }
-	//inline bool_t Memory_dec_ref(Memory* self, void* obj) { return 1; }
+	MemoryAllocatingDirectives Memory__allocating(Memory* memory, usize_t size, void* param);
 	
 
 	inline static void* Memory_alloc__virtual__(Memory* self, usize_t size) {return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc(self,size);}

@@ -12,7 +12,6 @@
 
 #ifndef __GCMEMORY_INCLUDED__ 
 
-#define AlignedMemoryMetaSize sizeof(GCUnitLayout)
 #define AlignedMemoryLookupUnit(unit, chunk, unitSize) \
 	AlignedMemoryPage* lookupPage = chunk->page;\
 	while (lookupPage) {\
@@ -32,10 +31,17 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	
+	typedef struct stGCMemoryOpts {
+		usize_t sweepBytes;
+	}GCMemoryOpts;
 
+	typedef struct stGCMemoryOptions {
+		struct stAlignedMemoryOptions;
+		struct stGCMemoryOpts;
+	} GCMemoryOptions;
 	typedef struct stGCMemory {
 		struct stAlignedMemory;
+		struct stGCMemoryOpts;
 		
 	}GCMemory;
 	typedef struct stGCMemoryMETA {
@@ -43,11 +49,11 @@ extern "C" {
 	}GCMemoryMETA;
 	extern GCMemoryMETA gcMemoryMETA;
 
-	static inline GCMemory* GCMemory__construct__(GCMemory* self, AlignedMemoryOptions* opts, Logger* logger) {
-		GCMemory* p = (GCMemory*)AlignedMemory__construct__((AlignedMemory*)self,opts,logger);
-		((TObject*)p)->__meta__ = (ObjectMetaLayout*)&gcMemoryMETA;
-		return p;
+	GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* logger);
+	static inline void GCMemory__destruct__(GCMemory* self, bool_t existed) {
+		AlignedMemory__destruct__((AlignedMemory*)self,existed);
 	}
+
 	static inline void* GCMemory_alloc(GCMemory* self, usize_t size) {
 		return AlignedMemory_alloc((AlignedMemory*)self, size);
 	}
@@ -72,7 +78,7 @@ extern "C" {
 		return 1;
 	}
 
-	static inline void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize) {
+	static inline void* GCMemory__initPageUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize) {
 		byte_t* unit = (byte_t*)&page->free;
 		for (usize_t i = 0; i < chunk->pageCapacity;i++) {
 			((ObjectLayout*)unit)->ref = 0;
@@ -82,7 +88,7 @@ extern "C" {
 	}
 
 	AlignedMemoryReleaseInfo GCMemory_collectGarbages(GCMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
-
+	MemoryAllocatingDirectives GCMemory__allocating(GCMemory* self, usize_t t, AlignedMemoryChunk* param);
 #ifdef __cplusplus 
 }//end extern c
 #endif

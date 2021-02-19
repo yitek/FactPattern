@@ -20,14 +20,9 @@ extern "C" {
 	struct stAlignedMemoryChunk;
 	struct stAlignedMemoryPage;
 
-	typedef enum {
-		AllocatePageDirective_Fail=0,
-		AllocatePageDirective_Recheck = -1,
-		AllocatePageDirective_NewPage =1,
-		AllocatePageDirective_RecheckOrNewPage=2,
-	} AllocatePageDirectives;
+	
 
-	typedef AllocatePageDirectives (*AlignedMemoryAllocating)(struct stAlignedMemoryChunk* chunk);
+	//typedef MemoryAllocatingDirectives (*AlignedMemoryAllocating)(struct stAlignedMemoryChunk* chunk);
 
 	
 
@@ -59,22 +54,25 @@ extern "C" {
 	}AlignedMemoryReleaseInfo;
 
 	typedef void (*AlignedMemoryGCCallback)(AlignedMemoryReleaseInfo info);
-	typedef void* (*AlignedMemoryInitPage)(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, usize_t size);
-	typedef void* (*AlignedMemoryLookupUnit)(AlignedMemoryChunk* chunk,usize_t size);
+	
 
 	struct stAlignedMemoryOpts {
-		AlignedMemoryInitPage initPage;
-		//AlignedMemoryLookupUnit lookupUnit;
 		usize_t pageSize;
+		usize_t gcBytes;
 	};
 	typedef struct stAlignedMemoryOptions {
 		struct stMemoryOptions;
 		struct stAlignedMemoryOpts;
 	}AlignedMemoryOptions;
 
-	typedef struct stAlignedMemory {
+	struct stAlignedMemoryHeader {
 		struct stMemory;
 		struct stAlignedMemoryOpts opts;
+	};
+
+	typedef struct stAlignedMemory {
+		struct stMemory;
+		struct stAlignedMemoryOpts;
 		usize_t allocatedBytes;
 		AlignedMemoryChunk* large;
 		AlignedMemoryChunk* chunks[32+1];
@@ -83,13 +81,14 @@ extern "C" {
 
 	typedef struct stAlignedMemoryMETA {
 		struct stMemoryMETA;
+		
+		void* (*initPageUnits)(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, usize_t size);
 		AlignedMemoryReleaseInfo(*collectGarbages)(AlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
 	} AlignedMemoryMETA;
 
 	extern AlignedMemoryMETA alignedMemoryMETA;
 
-	AlignedMemoryChunk* AlignedMemory__getLargeChunk(AlignedMemory* self, size_t unitSize);
-	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize);
+	
 
 	
 
@@ -100,6 +99,11 @@ extern "C" {
 	AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
 	
 #define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);
+
+	MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size, AlignedMemoryChunk* chunk);
+	AlignedMemoryChunk* AlignedMemory__getLargeChunk(AlignedMemory* self, size_t unitSize);
+	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize);
+	void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize);
 
 #ifndef AlignedMemoryLookupUnit
 #define AlignedMemoryLookupUnit(unit, chunk, unitSize) \
@@ -130,7 +134,7 @@ extern "C" {
 				}
 				else break;
 			}
-			size_t pageSize = self->opts.pageSize;
+			size_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
 			size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
 			size_t pageCapacity = pageUsableSize / unitSize;
 			// 一页都无法装下一个
@@ -200,9 +204,9 @@ extern "C" {
 				chunk->page = 0;
 				chunk->memory = self;
 				chunk->nextChunk = 0;
-				chunk->pageSize = self->opts.pageSize;
+				chunk->pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
 				chunk->unitSize = unitSize;
-				chunk->pageCapacity = (self->opts.pageSize - sizeof(AlignedMemoryPage)) / unitSize;
+				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
 				if (((Memory*)self)->logger) {
 					Logger_trace(((Memory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
@@ -218,13 +222,8 @@ extern "C" {
 #if defined(AlignedMemoryLookupUnit)
 		AlignedMemoryLookupUnit(unit, chunk, unitSize)
 #endif
-#if defined(AlignedMemoryMetaSize)
-		if (unit) return ((byte_t*)unit) + AlignedMemoryMetaSize;
-		return (void*)(((byte_t*)AlignedMemory__chunkResolveUnit(chunk, unitSize)) + AlignedMemoryMetaSize);
-#else
 			if (unit) return unit;
 		return AlignedMemory__chunkResolveUnit(chunk, unitSize);
-#endif	
 	}
 
 	static inline void* AlignedMemory_alloc1(AlignedMemory* self, usize_t size) { return AlignedMemory_alloc(self, size); }

@@ -10,6 +10,7 @@
 
 #include "Memory.h"
 #include "AlignedMemory.h"
+#include "GCMemory.h"
 
 #ifndef __MEMORIES_INCLUDED__ 
 #define __MEMORIES_INCLUDED__
