@@ -122,7 +122,7 @@ void* TAlignedMemory__initPageUnits(TAlignedMemoryChunk* chunk,TAlignedMemoryPag
 	return unit;
 }
 
-void* TAlignedMemory__resolveUnit(TAlignedMemoryChunk* chunk, size_t unitSize) {
+void* TAlignedMemory__chunkResolveUnit(TAlignedMemoryChunk* chunk, size_t unitSize) {
 	byte_t* unit;
 	if (chunk->memory->allocating) {
 		AllocatePageDirectives directive = chunk->memory->allocating((TMemory*)chunk->memory,chunk->pageSize,chunk);
@@ -140,7 +140,7 @@ void* TAlignedMemory__resolveUnit(TAlignedMemoryChunk* chunk, size_t unitSize) {
 		return 0;
 	}
 	else {
-		chunk->memory->allocatedBytes += sizeof(TAlignedMemoryPage);
+		chunk->memory->allocatedBytes += chunk->pageSize;
 	}
 	page->free = 0;
 	unit = chunk->memory->initPage(chunk,page,unitSize);
@@ -175,7 +175,7 @@ void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t size) {
 	}
 	void* unit = self->lookupUnit(chunk, chunk->unitSize);
 	if (unit) return unit;
-	return TAlignedMemory__resolveUnit(chunk,chunk->unitSize);
+	return TAlignedMemory__chunkResolveUnit(chunk,chunk->unitSize);
 	
 }
 
@@ -322,7 +322,7 @@ bool_t TAlignedMemory__collectChunkGarbages(TAlignedMemory* self,AlignedMemoryRe
 		rs->pages += pageCount;
 		rs->units = info.units;
 		rs->chunkCount++;
-		if(self->logger)TLogger_trace(self->logger, "TAlignedMemory.collectGarbages", "<TAlignedMemoryChunk>[%d][%p] released some memory: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.",index ,chunk, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
+		if(self->logger)TLogger_trace(self->logger, "TAlignedMemory.collectGarbages", "<TAlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.",index ,chunk,info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
 		if (index >= 32 && !chunk->page) {
 			if (prevChunk) prevChunk->nextChunk = chunk->nextChunk;
 			else self->large = chunk->nextChunk;
@@ -372,8 +372,7 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 	if (!self) {
 		self = (TAlignedMemory*)malloc(sizeof(TAlignedMemory));
 		if (!self) {
-			log_exit(1, "TAlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(TAlignedMemory));
-			return(void*)-1;
+			return (TAlignedMemory*)log_exit(1, "TAlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(TAlignedMemory));
 		}
 		else {
 			if (logger)  TLogger_trace(logger, "TAlignedTMemory.__construct__", "Memory is allocated for <TAlignedMemory>[%p]:%d", self,sizeof(TAlignedMemory));

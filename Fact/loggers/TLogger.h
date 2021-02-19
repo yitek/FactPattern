@@ -71,7 +71,7 @@ extern "C" {
 		((LoggerOutput)loggerVTBL.vfp0)(self, lv, category, message, args);
 	}
 	void log_assert(const byte_t* category, bool_t condition, const byte_t* message, ...);
-	void log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
+	word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
 #ifdef __cplusplus 
 } //extern "C" 
 #endif

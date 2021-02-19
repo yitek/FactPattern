@@ -44,9 +44,11 @@ void testMemory() {
 
 	TLogger_sectionEnd(0, "TMemory", "Test done!");
 }
+
+#if defined(__64BITS__)
 void testAlignedMemory() {
 	memories_module(0);
-	TLogger_sectionBegin(0, "TAlignedMemory", "Test start...");
+	TLogger_sectionBegin(0, "TAlignedMemory", "Test start（64bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;
 	opts.allocating = 0;
@@ -56,7 +58,7 @@ void testAlignedMemory() {
 
 	TAlignedMemory* mm = TAlignedMemory__construct__(0, &opts, TLogger_default);
 	log_assert("TMemory.__construct__", mm && mm->allocatedBytes == sizeof(TAlignedMemory), "构造对齐的内存管理器:[%p]%d\n", mm,mm->allocatedBytes);
-#if defined(__64BITS__)
+
 	void* obj1 = TAlignedMemory_alloc(mm,6);
 	log_assert("TMemory.alloc"
 		// 在第一个插槽中
@@ -89,6 +91,105 @@ void testAlignedMemory() {
 		, obj3,mm->allocatedBytes);
 
 	TAlignedMemory_free(mm,obj1);
-#endif
+
 	TLogger_sectionEnd(0, "TAlignedMemory", "Test done!");
 }
+#endif
+
+
+#if defined(__32BITS__)
+void testAlignedMemory() {
+	memories_module(0);
+	TLogger_sectionBegin(0, "TAlignedMemory", "Test start（32bits）...");
+	AlignedMemoryOptions opts;
+	opts.pageSize = 36;
+	opts.allocating = 0;
+	opts.initPage = 0;
+	opts.totalBytes = 0;
+	opts.lookupUnit = 0;
+
+	TAlignedMemory* mm = TAlignedMemory__construct__(0, &opts, TLogger_default);
+	log_assert("TMemory.__construct__", mm && mm->allocatedBytes == sizeof(TAlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
+
+	void* obj1 = TAlignedMemory_alloc(mm, 6);
+	TAlignedMemoryChunk* chunk = mm->chunks[1];
+	log_assert("TMemory.alloc"
+		// 在第一个插槽中
+		, chunk != 0
+		// 分配了一个页面
+		&& chunk->page != 0
+		// 只有一个内存页
+		&& chunk->page->next == 0
+		// 总共分配的内存为 memory + chunk + page
+		&& mm->allocatedBytes == sizeof(TAlignedMemory) + sizeof(TAlignedMemoryChunk) + opts.pageSize
+		, "分配6个字节的单元obj1[%p]，会对齐到8个字节的单元\r\n构建一个插槽[%p]\r\n分配一个内存页[%p]\r\n共分配%ld字节\n", obj1, chunk,chunk->page,mm->totalBytes);
+
+	log_assert("TMemory.alloc"
+		// 处在最后一个位置
+		, obj1 == (((byte_t*)chunk->page) + sizeof(TAlignedMemoryPage) + 16)
+		, "分配6个字节的单元obj1[%p](total:%d)，会对齐到8个字节的单元\n", obj1, mm->allocatedBytes);
+
+	void* obj2 = TAlignedMemory_alloc(mm, 7);
+	log_assert("TMemory.alloc"
+		// 在前面那个单元的前面
+		, obj2 == ((byte_t*)obj1) - 8
+		, "分配7个字节的单元obj2[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
+
+	void* obj3 = TAlignedMemory_alloc(mm, 8);
+	log_assert("TMemory.alloc"
+		// 在前面那个单元的前面
+		, obj3 == ((byte_t*)obj2) - 8
+		, "分配7个字节的单元obj3[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
+
+	
+	void* obj4 = TAlignedMemory_alloc(mm, 6);
+	usize_t allocatedSize = sizeof(TAlignedMemory) + sizeof(TAlignedMemoryChunk) + opts.pageSize * 2;
+	log_assert("TMemory.alloc"
+		, chunk->page != 0
+		// 有2个内存页
+		&& chunk->page->next != 0
+		&& chunk->page->next->next == 0
+		// 总共分配的内存为 memory + chunk + page
+		&& mm->allocatedBytes == allocatedSize
+		, "分配6个字节的单元obj4[%p]，内存翻页\r\n分配更多的内存页[%p]\r\n共分配%ld字节\n", obj4, chunk->page, mm->totalBytes);
+	log_assert("TMemory.alloc"
+		// 处在最后一个位置
+		, obj4 == (((byte_t*)chunk->page) + sizeof(TAlignedMemoryPage) + 16)
+		, "新分配的单元在第二个页上(链上是首页)[%p](total:%d)，会对齐到8个字节的单元\n", obj4, mm->allocatedBytes);
+
+	log_assert("TMemory.alloc"
+		// 处在最后一个位置
+		, obj1 == (((byte_t*)chunk->page->next) + sizeof(TAlignedMemoryPage) + 16)
+		, "原先的页被移动到了第二页\n");
+	
+	TAlignedMemory_free(mm, obj2);
+	log_assert("TMemory.free" , obj2 == chunk->page->next->free, "归还内存obj2[%p]，page上放着空闲块链\n",obj2);
+	TAlignedMemory_free(mm, obj4);
+	log_assert("TMemory.free"
+		// 处在最后一个位置
+		, obj4 == chunk->page->free
+		, "归还内存obj4[%p]，page上放着空闲块链\n", obj4);
+	TAlignedMemory_free(mm, obj3);
+	log_assert("TMemory.free", obj3 == chunk->page->next->free && obj2==chunk->page->next->free->next, "归还内存obj3[%p]，page上放着空闲块链", obj3);
+	TAlignedMemory_free(mm, obj1);
+	log_assert("TMemory.free", obj1 == chunk->page->next->free , "归还内存obj1[%p]，page上放着空闲块链", obj1);
+
+	void* obj11 = TAlignedMemory_alloc(mm, 5);
+	log_assert("TMemory.alloc", obj11 == obj4, "再次分配内存，使用空闲单元obj4==obj11[%p]", obj11);
+
+	void* obj12 = TAlignedMemory_alloc(mm, 5);
+	log_assert("TMemory.alloc", obj12 == (byte_t*)obj4 - 8, "分配内存obj12，占据page2[%p]", obj12);
+	void* obj13 = TAlignedMemory_alloc(mm, 5);
+	log_assert("TMemory.alloc", obj13 == (byte_t*)obj12 - 8, "分配内存obj13，占据page2[%p]", obj13);
+	void* obj14 = TAlignedMemory_alloc(mm, 5);
+	log_assert("TMemory.alloc", obj14 == obj1, "分配内存obj14，重复使用pag1上的空闲块obj14==obj1[%p]", obj14);
+
+	AlignedMemoryReleaseInfo rs = TAlignedMemory_collectGarbages(mm, 0);
+	log_assert("TMemory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面\r\n");
+	TAlignedMemory_free(mm, obj14);
+	rs = TAlignedMemory_collectGarbages(mm, 0);
+	log_assert("TMemory.collectGarbages", rs.bytes == opts.pageSize && rs.pages==1, "释放obj14,让page1页面空闲，回收一个页面\r");
+	
+	TLogger_sectionEnd(0, "TAlignedMemory", "Test done!");
+}
+#endif

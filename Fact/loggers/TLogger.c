@@ -119,12 +119,13 @@ void printNow() {
 	char* p = tbuffer;
 	while (*p != '\n') { putchar(*p); p++; }
 }
-void log_exit(word_t code, const byte_t* category, const byte_t* message, ...) {
+word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...) {
 	va_list valist;
 	va_start(valist, message);
 	TLogger_output__virtual__(TLogger_default, LogLevel_Error, category, message, &valist);
 	va_end(valist);
 	exit(code);
+	return 0;
 }
 
 void TLogger__output(struct stLogger* self, LogLevels lv, const byte_t* category ,const byte_t* message,void* args) {
