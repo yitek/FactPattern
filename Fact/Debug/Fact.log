@@ -1,17 +1,2 @@
-﻿  main.cpp
-  class CLogger	size(8):
-  	+---
-   0	| {vfptr}
-   4	| LogLevels level
-  	+---
-  CLogger::$vftable@:
-  	| &CLogger_meta
-  	|  0
-   0	| &CLogger::output
-  CLogger::output this adjustor: 0
-  AlignedMemory.c
-  GCMemory.c
-  memories_module.c
-  TestMemory.c
-  正在生成代码...
+﻿  TestMemory.c
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

@@ -95,6 +95,9 @@
     <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
+    <ClCompile Include="layout.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcproj2cmake.ps1" />

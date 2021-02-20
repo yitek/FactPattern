@@ -153,6 +153,7 @@
     <ClInclude Include="tests\memories\TestMemory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="layout.c" />
     <ClCompile Include="loggers\CLogger.cpp" />
     <ClCompile Include="loggers\loggers_module.c" />
     <ClCompile Include="loggers\Logger.c" />

@@ -20,21 +20,21 @@ GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* l
 MemoryAllocatingDirectives GCMemory__allocating(GCMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
-		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_Recheck;
-		return MemoryAllocatingDirective_Fail;
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
+		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
-		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_RecheckOrNewPage;
-		else return MemoryAllocatingDirective_NewPage;
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
+		else return MemoryAllocatingDirective_new;
 	}
 
 	if (memory->sweepBytes && memory->allocatedBytes + chunk->pageSize > memory->sweepBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 0, 0);
-		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_RecheckOrNewPage;
-		else return MemoryAllocatingDirective_NewPage;
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
+		else return MemoryAllocatingDirective_new;
 	}
-	return MemoryAllocatingDirective_NewPage;
+	return MemoryAllocatingDirective_new;
 }
 
 
@@ -59,6 +59,7 @@ void GCMemory__markChunk(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
 	
 	while (page) {
+		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		MemoryRefUnit* gcUnit = (MemoryRefUnit*)&page->free;
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcUnit->ref == 0 || gcUnit->ref & markNumber) return;
@@ -74,6 +75,7 @@ usize_t GCMemory__sweepChunk(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
 	usize_t count = 0;
 	while (page) {
+		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		ObjectLayout* gcObj = (ObjectLayout*)((byte_t*)page + sizeof(AlignedMemoryPage));
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcObj->ref | markNumber) {

@@ -20,16 +20,16 @@ extern "C" {
 
 	struct stMemory;
 	typedef enum {
-		MemoryAllocatingDirective_Fail = 0,
-		MemoryAllocatingDirective_Recheck = -1,
-		MemoryAllocatingDirective_NewPage = 1,
-		MemoryAllocatingDirective_RecheckOrNewPage = 2,
+		MemoryAllocatingDirective_fail = 0,
+		MemoryAllocatingDirective_lookup = -1,
+		MemoryAllocatingDirective_new = 1,
+		MemoryAllocatingDirective_lookupOrNew = 2,
 	} MemoryAllocatingDirectives;
 
 	typedef enum {
-		MemoryKind_readonly = 0b01,
-		MemoryKind_writable = 0b10,
-		MemoryKind_readwrite = 0b11,
+		MemoryKind_normal = 0,
+		MemoryKind_disCollect = 0b1,
+		MemoryKind_readonly = 0b010,
 		MemoryKind_system = 0b100
 	} MemoryKinds;
 

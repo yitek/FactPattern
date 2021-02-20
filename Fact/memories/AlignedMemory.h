@@ -30,6 +30,7 @@ extern "C" {
 
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
+		MemoryKinds kind;
 		MemoryLinkUnit* free;
 	}AlignedMemoryPage;
 
@@ -102,9 +103,7 @@ extern "C" {
 	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
 	bool_t AlignedMemory_freeLink(AlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(AlignedMemory* self, void* obj) {
-		ObjectLayout* p = ((ObjectLayout*)obj - 1);
-		p->ref = 0;
-		return 1;
+		return ((MemoryRefUnit*)obj)->ref=0;
 	}
 	static inline bool_t AlignedMemory_free(AlignedMemory* self, void* obj) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_freeLink(self,obj);
@@ -115,21 +114,13 @@ extern "C" {
 #define MemoryLookupLinkUnit(unit, chunk, unitSize,masks) \
 	AlignedMemoryPage* lookupPage = chunk->page;\
 	while (lookupPage) {\
-		unit = (void*)(lookupPage->free);\
-		if (unit) {lookupPage->free = ((MemoryLinkUnit*)unit)->next;break;}\
+		if(lookupPage->kind == masks){\
+			unit = (void*)(lookupPage->free);\
+			if (unit) {lookupPage->free = ((MemoryLinkUnit*)unit)->next;break;}\
+		}\
 		lookupPage = lookupPage->next;\
 	}\
 
-#define MemoryLookupRefUnit(unit, chunk, unitSize,masks) \
-	AlignedMemoryPage* lookupPage = chunk->page;\
-	while (lookupPage) {\
-		ObjectLayout* p_unit = (ObjectLayout*)&lookupPage->free;\
-		usize_t pageCapacity= chunk->pageCapacity; \
-		for(usize_t freeUnitIndex=0;freeUnitIndex<pageCapacity ;freeUnitIndex++){\
-			if (p_unit->ref==0) {unit = p_unit;break;}\
-		} \
-		if (!unit) lookupPage = lookupPage->next;\
-	}\
 
 	static inline void* AlignedMemory_allocLink(AlignedMemory* self, usize_t unitSize,uword_t masks) {
 
@@ -163,7 +154,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk), MemoryKind_readwrite | MemoryKind_system);
+			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 			if (!chunk) {
 				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -205,7 +196,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk), MemoryKind_readwrite | MemoryKind_system);
+				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 				if (!chunk) {
 					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
@@ -237,6 +228,21 @@ extern "C" {
 		if (unit) return unit;
 		return AlignedMemory__chunkResolveUnit(chunk, unitSize,masks);
 	}
+
+#define MemoryLookupRefUnit(unit, chunk, unitSize,masks) \
+	AlignedMemoryPage* lookupPage = chunk->page;\
+	while (lookupPage) {\
+		if(lookupPage->kind == masks){\
+			MemoryRefUnit* p_unit = (MemoryRefUnit*)&lookupPage->free;\
+			usize_t pageCapacity= chunk->pageCapacity; \
+			for(usize_t freeUnitIndex=0;freeUnitIndex<pageCapacity ;freeUnitIndex++){\
+				if (p_unit->ref==0) {unit = p_unit;break;}\
+				p_unit = (MemoryRefUnit*)((byte_t*)p_unit + unitSize);\
+			} \
+		}\
+		if (unit) break;\
+		lookupPage = lookupPage->next;\
+	}\
 
 	static inline void* AlignedMemory_allocRef(AlignedMemory* self, usize_t unitSize, uword_t masks) {
 
@@ -270,7 +276,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk),MemoryKind_readwrite | MemoryKind_system);
+			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk,MemoryKind_system);
 			if (!chunk) {
 				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -312,7 +318,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk),MemoryKind_readwrite | MemoryKind_system);
+				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 				if (!chunk) {
 					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
@@ -340,7 +346,20 @@ extern "C" {
 		void* unit = 0;
 		unitSize = chunk->unitSize;
 
-		MemoryLookupRefUnit(unit, chunk, unitSize, masks)
+		AlignedMemoryPage* lookupPage = chunk->page;
+		while (lookupPage) {
+			if (lookupPage->kind == masks) {
+				MemoryRefUnit* p_unit = (MemoryRefUnit*)&lookupPage->free;
+				usize_t pageCapacity = chunk->pageCapacity;
+				for (usize_t freeUnitIndex = 0; freeUnitIndex < pageCapacity; freeUnitIndex++) {
+					if (p_unit->ref == 0) { unit = p_unit; break; }
+					p_unit = (MemoryRefUnit*)((byte_t*)p_unit + unitSize);
+				}
+			}
+			if (unit) break;
+			lookupPage = lookupPage->next;
+
+		}
 		if (unit) return unit;
 		return AlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
 	}

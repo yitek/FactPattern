@@ -1,5 +1,4 @@
 #include "AlignedMemory.h"
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,8 +29,8 @@ static inline void* AlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* ch
 void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
 	void* unit=0;
 	MemoryAllocatingDirectives directive = ((MemoryMETA*)chunk->memory->__meta__)->allocating((Memory*)chunk->memory, chunk->pageSize, masks,chunk);
-	if (directive == MemoryAllocatingDirective_Fail) return 0;
-	if (directive == MemoryAllocatingDirective_Recheck || directive == MemoryAllocatingDirective_RecheckOrNewPage) {
+	if (directive == MemoryAllocatingDirective_fail) return 0;
+	if (directive == MemoryAllocatingDirective_lookup || directive == MemoryAllocatingDirective_lookupOrNew) {
 		if (chunk->memory->unitKind == MemoryUnitKind_link) {
 			MemoryLookupLinkUnit(unit, chunk, unitSize, masks)
 		}
@@ -45,9 +44,10 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 		if (unit)return unit;
 	}
 
-	if (directive == MemoryAllocatingDirective_Recheck) return 0;
+	if (directive == MemoryAllocatingDirective_lookup) return 0;
 
-	AlignedMemoryPage* page = (AlignedMemoryPage*)malloc(chunk->pageSize);
+	AlignedMemoryPage* page = (AlignedMemoryPage*)m_alloc(chunk->pageSize, 0);
+	page->kind = masks;
 	if (!page) {
 		log_exit(1, "AlignedMemory._resolveUnit", "Cannot alloc memory:%ld", (long)chunk->pageSize);
 		return 0;
@@ -182,6 +182,7 @@ bool_t AlignedMemory__collectChunkGarbages(AlignedMemory* self,AlignedMemoryRele
 	AlignedMemoryPage* next = 0;
 	AlignedMemoryPage* prev = 0;
 	while (page) {
+		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		usize_t c = 0;
 		next = page->next;
 		MemoryLinkUnit* unit = page->free;
@@ -263,7 +264,7 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 
 AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts, Logger* logger) {
 	if (!self) {
-		self = (AlignedMemory*)malloc(sizeof(AlignedMemory));
+		self = (AlignedMemory*)m_alloc(sizeof(AlignedMemory),0);
 		if (!self) {
 			(AlignedMemory*)log_exit(1, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemory));
 		}
@@ -294,14 +295,14 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
-		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_Recheck;
-		return MemoryAllocatingDirective_Fail;
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
+		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
-		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_RecheckOrNewPage;
-		else return MemoryAllocatingDirective_NewPage;
+		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
+		else return MemoryAllocatingDirective_new;
 	}
-	return MemoryAllocatingDirective_NewPage;
+	return MemoryAllocatingDirective_new;
 
 }

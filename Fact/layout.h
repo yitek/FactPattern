@@ -102,13 +102,19 @@ typedef struct stTField {
 static inline TType* get_type(TObject* obj) {
 	return obj->__meta__->get_type();
 }
+static inline void* ref_increase(void* obj) { return (((MemoryRefUnit*)obj-1)->ref++,obj); }
+#define ref_inc(obj) (((MemoryRefUnit*)obj-1)->ref++,obj)
+static inline void* ref_decrease(void* obj) { return (--(((MemoryRefUnit*)obj - 1)->ref) >= 0 ? obj : ((((MemoryRefUnit*)obj - 1)->ref=0,obj))); }
+#define ref_dec(obj) (--(((MemoryRefUnit*)obj - 1)->ref) >= 0 ? obj : ((((MemoryRefUnit*)obj - 1)->ref=0,obj)))
 
 #define Object_param(obj) ( (*((ObjectLayout*)obj-1)).ref++,obj )
 #define Object_assign(dest,obj) ( (*((ObjectLayout*)(dest=obj)-1)).ref++,obj )
 #define Object_release(obj) ( --(*((ObjectLayout*)obj-1)).ref<=0?(obj=0):obj )
 
 
-
+void* m_alloc(usize_t size, uword_t mkinds);
+bool_t m_free(void* p);
+#define m_allocate(T,mmkinds) (T*)m_alloc(sizeof(T),mmkinds);
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
 

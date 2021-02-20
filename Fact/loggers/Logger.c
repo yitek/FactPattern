@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <stdarg.h>
 #include <time.h>
 #ifdef __WIN__
@@ -254,7 +253,7 @@ void log_assert(const byte_t* category,bool_t condition,const byte_t* message, .
 
 Logger* Logger__construct__(Logger* self, LoggerOptions* opts) {
 	if (!self) {
-		self = malloc(sizeof(Logger));
+		self = m_allocate(Logger,0);
 		if (!self) {
 			log_exit(0,"Logger.__construct__","Cannot allocate memory.");
 		}
@@ -272,7 +271,7 @@ Logger* Logger__construct__(Logger* self, LoggerOptions* opts) {
 
 void Logger__destruct__(Logger* self, bool_t existed) {
 	if (!existed) {
-		if (self != Logger_default)free(self);
+		if (self != Logger_default)m_free(self);
 	}
 }
 
