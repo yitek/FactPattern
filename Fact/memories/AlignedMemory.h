@@ -103,7 +103,7 @@ extern "C" {
 	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
 	bool_t AlignedMemory_freeLink(AlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(AlignedMemory* self, void* obj) {
-		return ((MemoryRefUnit*)obj)->ref=0;
+		return ((MemoryRefUnit*)obj)->ref=0,1;
 	}
 	static inline bool_t AlignedMemory_free(AlignedMemory* self, void* obj) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_freeLink(self,obj);

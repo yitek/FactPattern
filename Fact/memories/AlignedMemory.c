@@ -175,7 +175,7 @@ void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed) {
 	}
 	Memory__destruct__((Memory*)self, existed);
 }
-bool_t AlignedMemory__collectChunkGarbages(AlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
+bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
 	usize_t pageCount = 0;
 	AlignedMemoryPage* page = chunk->page;
@@ -235,6 +235,63 @@ bool_t AlignedMemory__collectChunkGarbages(AlignedMemory* self,AlignedMemoryRele
 	}
 	return 0;
 }
+bool_t AlignedMemory__collectChunkRefGarbages(AlignedMemory* self, AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk, AlignedMemoryChunk* prevChunk, usize_t index, AlignedMemoryGCCallback callback) {
+	AlignedMemoryReleaseInfo info;
+	usize_t pageCount = 0;
+	AlignedMemoryPage* page = chunk->page;
+	AlignedMemoryPage* next = 0;
+	AlignedMemoryPage* prev = 0;
+	usize_t chunkUnitSize = chunk->unitSize;
+	while (page) {
+		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
+		usize_t c = 0;
+		next = page->next;
+		MemoryRefUnit* unit = (MemoryRefUnit*)&page->free;
+		bool_t hasAllocated = 0;
+		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
+			if (unit->ref) { hasAllocated = 1; break; }
+			unit = (MemoryRefUnit*)((byte_t*)unit + chunkUnitSize);
+		}
+		if (!hasAllocated) {
+			if (prev)prev->next = next;
+			else chunk->page = next;
+			free(page);
+			pageCount++;
+		}
+		prev = page;
+		page = next;
+
+	}
+	if (pageCount) {
+
+		info.bytes = pageCount * chunk->pageSize;
+		info.units = pageCount * chunk->pageCapacity;
+		info.pages = pageCount;
+		info.unitSize = chunk->unitSize;
+		info.pageSize = chunk->pageSize;
+		rs->bytes += info.bytes;
+		rs->pages += pageCount;
+		rs->units = info.units;
+		rs->chunkCount++;
+		if (self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.", index, chunk, info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
+		if (index >= 32 && !chunk->page) {
+			if (prevChunk) prevChunk->nextChunk = chunk->nextChunk;
+			else self->large = chunk->nextChunk;
+			free(chunk);
+			info.bytes += sizeof(AlignedMemoryChunk);
+			rs->bytes += sizeof(AlignedMemoryChunk);
+			if (self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] released self: { unitSize: %d,pageSize: %d }.", index, chunk, info.unitSize, info.pageSize);
+
+			info.chunkCount = 1;
+		}
+		else info.chunkCount = 0;
+
+
+		if (callback)callback(info);
+		return info.chunkCount;
+	}
+	return 0;
+}
 AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_t releasePage ,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo rs;
 	rs.bytes = rs.pages = rs.pageSize = rs.units = rs.chunkCount = rs.unitSize = 0;
@@ -244,7 +301,8 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	for (i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
-			AlignedMemory__collectChunkGarbages(self, &rs, chunk,0,i, callback);
+			if(self->unitKind == MemoryUnitKind_link)AlignedMemory__collectChunkLinkGarbages(self, &rs, chunk,0,i, callback);
+			else if (self->unitKind == MemoryUnitKind_ref)AlignedMemory__collectChunkRefGarbages(self, &rs, chunk, 0, i, callback);
 		}
 	}
 
@@ -252,7 +310,11 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	AlignedMemoryChunk* prevChunk=0;
 	while (chunk) {
 		AlignedMemoryChunk* nextChunk = chunk->nextChunk;
-		if (!AlignedMemory__collectChunkGarbages(self, &rs, chunk, prevChunk, 0, callback)) {
+		bool_t chunkCollectRs = 0;
+		if (self->unitKind == MemoryUnitKind_link)AlignedMemory__collectChunkLinkGarbages(self, &rs, chunk, prevChunk, i, callback);
+		else if (self->unitKind == MemoryUnitKind_ref)AlignedMemory__collectChunkRefGarbages(self, &rs, chunk, prevChunk, i, callback);
+		if (chunkCollectRs==0) {
+			// chunk 没被移除
 			prevChunk = chunk;
 		}
 		chunk = nextChunk;

@@ -319,19 +319,21 @@ void testAlignedRefUnitMemory() {
 	ref_inc((MemoryRefUnit*)obj16 + 1);
 	log_assert("Memory.alloc", obj16 == obj3, "分配内存obj14，重复使用pag1上的空闲块obj16==obj3[%p]", obj16);
 	
-	/*
+	
 	AlignedMemoryReleaseInfo rs = AlignedMemory_collectGarbages(mm, 1, 0);
 	log_assert("Memory.collectGarbages", rs.bytes == 0, "垃圾回收，所有页面都没有空闲，无法回收页面\r\n");
 	AlignedMemory_free(mm, obj14);
+	AlignedMemory_free(mm, obj15);
+	AlignedMemory_free(mm, obj16);
 	rs = AlignedMemory_collectGarbages(mm, 1, 0);
 	log_assert("Memory.collectGarbages", rs.bytes == opts.pageSize && rs.pages == 1, "释放obj14,让page1页面空闲，回收一个页面\r");
-	log_assert("Memory.collectGarbages", chunk->page && chunk->page->next == 0 && chunk->page + 1 == obj13, "只有一个页面\r");
+	log_assert("Memory.collectGarbages", chunk->page && chunk->page->next == 0 && (&chunk->page->free == obj11), "只有一个页面\r");
 
 	bool_t sfreeRs = AlignedMemory_sfree(mm, obj13);
 	log_assert("Memory.sfree", sfreeRs && obj13 == 0, "安全释放宏，由于原先的内存放着空链指针，不可以再使用，释放后原先的指针应该不能被使用\t");
 
 	Logger_sectionEnd(0, "AlignedMemory(REF unit,32bits)", "Test done!");
-	*/
+	
 }
 
 void testAlignedMemory() {
