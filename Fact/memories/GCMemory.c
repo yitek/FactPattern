@@ -13,7 +13,7 @@ GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* l
 		p->sweepBytes = opts->sweepBytes;
 	}
 	else p->sweepBytes = 0;
-
+	p->unitKind = MemoryUnitKind_ref;
 	return p;
 };
 
@@ -60,7 +60,7 @@ void GCMemory__markChunk(AlignedMemoryChunk* chunk) {
 	
 	while (page) {
 		MemoryRefUnit* gcUnit = (MemoryRefUnit*)&page->free;
-		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
+		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcUnit->ref == 0 || gcUnit->ref & markNumber) return;
 			GCMemory__markObject((TObject*)(gcUnit +1));
 			gcUnit = (MemoryRefUnit*)((byte_t*)gcUnit + chunk->unitSize);
@@ -70,12 +70,12 @@ void GCMemory__markChunk(AlignedMemoryChunk* chunk) {
 }
 
 
-size_t GCMemory__sweepChunk(AlignedMemoryChunk* chunk) {
+usize_t GCMemory__sweepChunk(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
-	size_t count = 0;
+	usize_t count = 0;
 	while (page) {
 		ObjectLayout* gcObj = (ObjectLayout*)((byte_t*)page + sizeof(AlignedMemoryPage));
-		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
+		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcObj->ref | markNumber) {
 				//标记过，有引用,还原引用计数
 				gcObj->ref &= unmarkNumber;
@@ -100,7 +100,7 @@ AlignedMemoryReleaseInfo GCMemory_collectGarbages(GCMemory* self, bool_t release
 		GCMemory__markChunk(chunk);
 		chunk = chunk->nextChunk;
 	}
-	for (size_t i = 0; i < 32; i++) {
+	for (usize_t i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
 			GCMemory__markChunk(chunk);
@@ -108,14 +108,14 @@ AlignedMemoryReleaseInfo GCMemory_collectGarbages(GCMemory* self, bool_t release
 	}
 
 	while (chunk) {
-		size_t c = GCMemory__sweepChunk(chunk);
+		usize_t c = GCMemory__sweepChunk(chunk);
 		//if (log) log(chunk,c);
 		chunk = chunk->nextChunk;
 	}
-	for (size_t i = 0; i < 32; i++) {
+	for (usize_t i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
-			size_t c = GCMemory__sweepChunk(chunk);
+			usize_t c = GCMemory__sweepChunk(chunk);
 			//if (log) log(chunk, c);
 		}
 	}

@@ -46,7 +46,7 @@ extern "C" {
 	}
 
 	static inline void* GCMemory_alloc(GCMemory* self, usize_t size,uword_t masks) {
-		void* p = AlignedMemory_alloc((AlignedMemory*)self, size,masks);
+		void* p = AlignedMemory_allocRef((AlignedMemory*)self, size + sizeof(ObjectLayout),masks);
 		//(*((GCUnitLayout*)p-1)).type = type;
 		return p;
 	}

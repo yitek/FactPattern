@@ -9,7 +9,6 @@
 
 #pragma once
 #include "Memory.h"
-#include <malloc.h>
 #ifndef __ALIGNEDMEMORY_INCLUDED__ 
 #define __ALIGNEDMEMORY_INCLUDED__
 #ifdef __cplusplus 
@@ -100,7 +99,7 @@ extern "C" {
 #define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);
 
 	MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);
-	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks);
+	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
 	bool_t AlignedMemory_freeLink(AlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(AlignedMemory* self, void* obj) {
 		ObjectLayout* p = ((ObjectLayout*)obj - 1);
@@ -134,7 +133,7 @@ extern "C" {
 
 	static inline void* AlignedMemory_allocLink(AlignedMemory* self, usize_t unitSize,uword_t masks) {
 
-		size_t chunkIndex;
+		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
 		if (unitSize > 16 * sizeof(addr_t) * 4) {
 			if (unitSize % (sizeof(addr_t) * 4)) unitSize = (unitSize / sizeof(addr_t) * 4) + 1;
@@ -148,9 +147,9 @@ extern "C" {
 				}
 				else break;
 			}
-			size_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
-			size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
-			size_t pageCapacity = pageUsableSize / unitSize;
+			usize_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
+			usize_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
+			usize_t pageCapacity = pageUsableSize / unitSize;
 			// 一页都无法装下一个
 			if (pageCapacity == 0) {
 				pageSize = unitSize + sizeof(AlignedMemoryPage);
@@ -164,7 +163,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk), MemoryKind_readwrite | MemoryKind_system);
 			if (!chunk) {
 				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -206,7 +205,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+				chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk), MemoryKind_readwrite | MemoryKind_system);
 				if (!chunk) {
 					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
@@ -241,7 +240,7 @@ extern "C" {
 
 	static inline void* AlignedMemory_allocRef(AlignedMemory* self, usize_t unitSize, uword_t masks) {
 
-		size_t chunkIndex;
+		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
 		if (unitSize > 16 * sizeof(addr_t) * 4) {
 			if (unitSize % (sizeof(addr_t) * 4)) unitSize = (unitSize / sizeof(addr_t) * 4) + 1;
@@ -255,9 +254,9 @@ extern "C" {
 				}
 				else break;
 			}
-			size_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
-			size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
-			size_t pageCapacity = pageUsableSize / unitSize;
+			usize_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
+			usize_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
+			usize_t pageCapacity = pageUsableSize / unitSize;
 			// 一页都无法装下一个
 			if (pageCapacity == 0) {
 				pageSize = unitSize + sizeof(AlignedMemoryPage);
@@ -271,7 +270,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk),MemoryKind_readwrite | MemoryKind_system);
 			if (!chunk) {
 				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -313,7 +312,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+				chunk = (AlignedMemoryChunk*)Memory_alloc(0,sizeof(AlignedMemoryChunk),MemoryKind_readwrite | MemoryKind_system);
 				if (!chunk) {
 					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;

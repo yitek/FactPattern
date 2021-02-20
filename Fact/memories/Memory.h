@@ -27,10 +27,11 @@ extern "C" {
 	} MemoryAllocatingDirectives;
 
 	typedef enum {
-		MemoryMask_readonly = 1,
-		MemoryMask_writable = 2,
-		MemoryMask_readwrite = 3
-	} MemoryMasks;
+		MemoryKind_readonly = 0b01,
+		MemoryKind_writable = 0b10,
+		MemoryKind_readwrite = 0b11,
+		MemoryKind_system = 0b100
+	} MemoryKinds;
 
 	
 	typedef struct stMemoryOptions {
