@@ -128,6 +128,30 @@ Fact/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/build
 .PHONY : Fact/fast
 
+layout.obj: layout.c.obj
+.PHONY : layout.obj
+
+# target to build an object file
+layout.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.obj
+.PHONY : layout.c.obj
+
+layout.i: layout.c.i
+.PHONY : layout.i
+
+# target to preprocess a source file
+layout.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.i
+.PHONY : layout.c.i
+
+layout.s: layout.c.s
+.PHONY : layout.s
+
+# target to generate assembly for a file
+layout.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.s
+.PHONY : layout.c.s
+
 loggers/CLogger.obj: loggers/CLogger.cpp.obj
 .PHONY : loggers/CLogger.obj
 
@@ -377,6 +401,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Fact
+	@echo ... layout.obj
+	@echo ... layout.i
+	@echo ... layout.s
 	@echo ... loggers/CLogger.obj
 	@echo ... loggers/CLogger.i
 	@echo ... loggers/CLogger.s

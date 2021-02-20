@@ -17,21 +17,32 @@ extern "C" {
 
 	typedef enum {
 		LogLevel_None = 0,
-		LogLevel_Trace = 1,
-		LogLevel_Message = 2,
-		LogLevel_Info = 3,
-		LogLevel_Success = 4,
-		LogLevel_Notice = 5,
-		LogLevel_Warn = 6,
-		LogLevel_Exception = 7,
-		LogLevel_Error = 8,
-		LogLevel_SectionBegin = 16,
-		LogLevel_SectionEnd = 17
+		LogLevel_SectionBegin = 1 ,
+		LogLevel_SectionEnd = 1 << 1,
+		LogLevel_Trace = 1<<8,
+		LogLevel_Message = 1<<9,
+		LogLevel_Info = 1 << 10,
+		LogLevel_Success = 1 << 11,
+		LogLevel_Notice = 1 << 12,
+		LogLevel_Warn = 1 << 13,
+		LogLevel_Exception = 1 << 14,
+		LogLevel_Error = 1 << 15,
+		
+		
 	}LogLevels;
 
 	typedef struct stLoggerOptions {
 		LogLevels level;
 	}LoggerOptions;
+
+	typedef struct stTest {
+		char* category;
+		usize_t assertCount;
+		usize_t failCount;
+		usize_t childCount;
+		usize_t failedChildCount;
+		struct stTest* parent;
+	}Test;
 
 	typedef struct stLogger {
 		struct stTObject;
@@ -77,8 +88,22 @@ extern "C" {
 
 	
 	void Logger__printf(const byte_t* p, void* args);
-	void log_assert(const byte_t* category, bool_t condition, const byte_t* message, ...);
+	
 	word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
+	
+	
+	extern Test* Test__current;
+	extern Logger* Test__logger;
+	void Test_begin(const byte_t* category, const byte_t* message, ...);
+	void Test_end();
+	void Test_assert(const byte_t* category, bool_t condition, const byte_t* message, ...);
+
+	typedef enum{
+		
+		ExitCode_memory = 1,
+		ExitCode_critical = 2,
+		ExitCode_argument = 3
+	} ExitCodes;
 #ifdef __cplusplus 
 } //extern "C" 
 #endif

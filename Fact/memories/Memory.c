@@ -56,7 +56,7 @@ Memory* Memory__construct__(Memory* self, const MemoryOptions* options,Logger* l
 	if (!self) {
 		self = (Memory*)malloc(sizeof(Memory));
 		if (!self) {
-			log_exit(1,"Memory.__construct__","Cannot allocate memory.");
+			log_exit(ExitCode_memory,"Memory.__construct__","Cannot allocate memory.");
 			return 0;
 		}
 		else {

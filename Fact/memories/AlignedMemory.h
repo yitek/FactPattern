@@ -156,7 +156,7 @@ extern "C" {
 			}
 			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 			if (!chunk) {
-				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+				log_exit(ExitCode_memory, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
 			}
 			else {
@@ -198,7 +198,7 @@ extern "C" {
 
 				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 				if (!chunk) {
-					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+					log_exit(ExitCode_memory, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
 				}
 				else {
@@ -278,7 +278,7 @@ extern "C" {
 			}
 			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk,MemoryKind_system);
 			if (!chunk) {
-				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+				log_exit(ExitCode_memory, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
 			}
 			else {
@@ -320,7 +320,7 @@ extern "C" {
 
 				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
 				if (!chunk) {
-					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+					log_exit(ExitCode_memory, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
 				}
 				else {

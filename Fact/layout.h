@@ -114,7 +114,7 @@ static inline void* ref_decrease(void* obj) { return (--(((MemoryRefUnit*)obj - 
 
 void* m_alloc(usize_t size, uword_t mkinds);
 bool_t m_free(void* p);
-#define m_allocate(T,mmkinds) (T*)m_alloc(sizeof(T),mmkinds);
+#define m_allocate(T,mmkinds) ((T*)m_alloc(sizeof(T),mmkinds));
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
 
@@ -218,9 +218,20 @@ static inline bool_t m_equal(void* dest, const void* src, usize_t size) {
 	else {
 		return src ? 0 : 1;
 	}
-	
+}
 
+static inline usize_t m_strlen(const char* str) {
+	usize_t len = 0;
+	while (*str++)++len;
+	return len;
+}
 
+static inline const char* m_cstr(const char* str) {
+	usize_t len = m_strlen(str);
+	char* p = (char*)m_alloc(len+1,0);
+	m_copy(p,str,len);
+	*(p + len) = 0;
+	return (const char*)p;
 }
 
 #endif // end ifndef __LAYOUT_INCLUDED__

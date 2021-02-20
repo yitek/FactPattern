@@ -27,7 +27,7 @@ aux_source_directory(tests/memories DIR_TESTS_MEMORIES)
 
 
 # 指定生成目标
-add_executable(Fact main.cpp 
+add_executable(Fact ${DIR_ROOT} 
 	${DIR_LOGGERS} ${DIR_MEMORIES} 
 	${DIR_TESTS_LOGGERS} ${DIR_TESTS_MEMORIES}
 )

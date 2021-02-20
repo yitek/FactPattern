@@ -38,7 +38,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 			MemoryLookupRefUnit(unit, chunk, unitSize, masks)
 		}
 		else {
-			log_exit(3,"AlignedMemory._chunkResolveUnit","unitKind must be MemoryKind_link or MemoryKind_ref");
+			log_exit(ExitCode_argument,"AlignedMemory._chunkResolveUnit","unitKind must be MemoryKind_link or MemoryKind_ref");
 		}
 		
 		if (unit)return unit;
@@ -49,7 +49,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 	AlignedMemoryPage* page = (AlignedMemoryPage*)m_alloc(chunk->pageSize, 0);
 	page->kind = masks;
 	if (!page) {
-		log_exit(1, "AlignedMemory._resolveUnit", "Cannot alloc memory:%ld", (long)chunk->pageSize);
+		log_exit(ExitCode_memory, "AlignedMemory._resolveUnit", "Cannot alloc memory:%ld", (long)chunk->pageSize);
 		return 0;
 	}
 	else {
@@ -198,7 +198,7 @@ bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemory
 			pageCount++;
 		}
 		else if (c > chunk->pageCapacity) {
-			log_exit(2, "AlignedMemory", "Critial error: the unit in Memory page is more than capacity(throw by AlignedMemory_collectGarbages).");
+			log_exit(ExitCode_critical, "AlignedMemory", "Critial error: the unit in Memory page is more than capacity(throw by AlignedMemory_collectGarbages).");
 			return 0;
 		}
 		prev = page;
@@ -328,7 +328,7 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 	if (!self) {
 		self = (AlignedMemory*)m_alloc(sizeof(AlignedMemory),0);
 		if (!self) {
-			(AlignedMemory*)log_exit(1, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemory));
+			(AlignedMemory*)log_exit(ExitCode_memory, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemory));
 		}
 		else {
 			if (logger)  Logger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(AlignedMemory));
@@ -345,6 +345,12 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 		self->pageSize = 1024 * 2;
 		self->gcBytes = 0;
 		self->unitKind = MemoryUnitKind_link;
+	}
+	if(self->unitKind!= MemoryUnitKind_link && self->unitKind!= MemoryUnitKind_ref){
+		log_exit(ExitCode_argument,"AlignedMemory.__construct__","opts.unitSize should be MemoryUnitKind_link or MemoryUnitKind_ref");
+	}
+	if(self->pageSize<sizeof(AlignedMemoryPage) + sizeof(addr_t)){
+		log_exit(ExitCode_argument,"AlignedMemory.__construct__","opts.pageSize should be greater than :%ld(sizeof(AlignedMemoryPage)) + %ld(sizeof(addr_t))",sizeof(AlignedMemoryPage),sizeof(addr_t));
 	}
 	self->logger = logger;
 
