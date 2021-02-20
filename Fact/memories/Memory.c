@@ -9,12 +9,12 @@ MemoryGCLayout Memory_defaultInstance;
 
 Memory* Memory_default = 0;
 
-void* Memory_alloc(Memory* self, usize_t size) { 
+void* Memory_alloc(Memory* self, usize_t size,uword_t masks) { 
 	if (!size) {
 		if (self && self->logger) Logger_notice(self->logger,"Memory.alloc","parameter size is required.");
 		return 0;
 	}
-	if (!self || ((MemoryMETA*)self->__meta__)->allocating == 0 || ((MemoryMETA*)self->__meta__)->allocating(self, size,0)>0) {
+	if (!self || ((MemoryMETA*)self->__meta__)->allocating == 0 || ((MemoryMETA*)self->__meta__)->allocating(self, size,masks,0)>0) {
 		void* p = malloc(size);
 		if (self && self->logger) {
 			if (p)Logger_trace(self->logger, "Memory.alloc", "Memory[%p] allocated:%ld", p, (long)size);
@@ -23,21 +23,7 @@ void* Memory_alloc(Memory* self, usize_t size) {
 		return p;
 	}else return 0;
 }
-void* Memory_alloc1(Memory* self, usize_t size) { 
-	if (!size) {
-		if (self && self->logger) Logger_notice(self->logger, "Memory.alloc1", "parameter size is required.");
-		return 0;
-	}
-	if (!self || ((MemoryMETA*)self->__meta__)->allocating == 0 || ((MemoryMETA*)self->__meta__)->allocating(self, size,0)>0) {
-		void* p = malloc(size);
-		if (self && self->logger) {
-			if (p)Logger_trace(self->logger, "Memory.alloc", "Memory[%p] allocated:%ld", p, (long)size);
-			else Logger_warn(self->logger, "Memory.alloc", "Cannot alloc memory:%ld", (long)size);
-		}
-		return p;
-	}
-	else return 0;
-}
+
 bool_t Memory_free(Memory* self, void* p) { 
 	if (!p) {
 		if (self && self->logger) Logger_notice(self->logger, "Memory.free", "parameter p is required.");

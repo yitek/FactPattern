@@ -3,7 +3,7 @@
 
 bool_t loggers_initialized = 0;
 
-void loggers_module(void* p) {
+void loggers_module(void* memory,void* p,void* p1) {
 	if (loggers_initialized) return;
 	loggers_initialized = 1;
 	loggerMETA.offset = 0;

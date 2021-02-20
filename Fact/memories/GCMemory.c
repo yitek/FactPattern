@@ -17,14 +17,14 @@ GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* l
 	return p;
 };
 
-MemoryAllocatingDirectives GCMemory__allocating(GCMemory* memory, usize_t size, AlignedMemoryChunk* chunk) {
+MemoryAllocatingDirectives GCMemory__allocating(GCMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
 		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_Recheck;
 		return MemoryAllocatingDirective_Fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_RecheckOrNewPage;
 		else return MemoryAllocatingDirective_NewPage;
 	}

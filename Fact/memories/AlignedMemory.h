@@ -20,19 +20,20 @@ extern "C" {
 	struct stAlignedMemoryChunk;
 	struct stAlignedMemoryPage;
 
+	typedef enum{
+		MemoryUnitKind_link,
+		MemoryUnitKind_ref
+	} MemoryUnitKinds;
+
 	
 
-	//typedef MemoryAllocatingDirectives (*AlignedMemoryAllocating)(struct stAlignedMemoryChunk* chunk);
-
-	
-
-	typedef struct stAlignedMemoryFreeUnit {
-		struct stAlignedMemoryFreeUnit* next;
-	}AlignedMemoryFreeUnit;
+	typedef struct stMemoryLinkUnit {
+		struct stMemoryLinkUnit* next;
+	}MemoryLinkUnit;
 
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
-		AlignedMemoryFreeUnit* free;
+		MemoryLinkUnit* free;
 	}AlignedMemoryPage;
 
 	typedef struct stAlignedMemoryChunk {
@@ -57,6 +58,7 @@ extern "C" {
 	
 
 	struct stAlignedMemoryOpts {
+		MemoryUnitKinds unitKind;
 		usize_t pageSize;
 		usize_t gcBytes;
 	};
@@ -100,26 +102,41 @@ extern "C" {
 	
 #define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);
 
-	MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size, AlignedMemoryChunk* chunk);
-	AlignedMemoryChunk* AlignedMemory__getLargeChunk(AlignedMemory* self, size_t unitSize);
-	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize);
-	void* AlignedMemory__initPageUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize);
+	MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);
+	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks);
+	bool_t AlignedMemory_freeLink(AlignedMemory* self, void* obj);
+	static inline bool_t AlignedMemory_freeRef(AlignedMemory* self, void* obj) {
+		ObjectLayout* p = ((ObjectLayout*)obj - 1);
+		p->ref = 0;
+		return 1;
+	}
+	static inline bool_t AlignedMemory_free(AlignedMemory* self, void* obj) {
+		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_freeLink(self,obj);
+		else if(((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return AlignedMemory_freeRef(self, obj);
+		return 0;
+	}
 
-#ifndef AlignedMemoryLookupUnit
-#define AlignedMemoryLookupUnit(unit, chunk, unitSize) \
+#define MemoryLookupLinkUnit(unit, chunk, unitSize,masks) \
 	AlignedMemoryPage* lookupPage = chunk->page;\
 	while (lookupPage) {\
 		unit = (void*)(lookupPage->free);\
-		if (unit) {lookupPage->free = ((AlignedMemoryFreeUnit*)unit)->next;break;}\
+		if (unit) {lookupPage->free = ((MemoryLinkUnit*)unit)->next;break;}\
 		lookupPage = lookupPage->next;\
 	}\
 
-#endif
+#define MemoryLookupRefUnit(unit, chunk, unitSize,masks) \
+	AlignedMemoryPage* lookupPage = chunk->page;\
+	while (lookupPage) {\
+		ObjectLayout* p_unit = (ObjectLayout*)&lookupPage->free;\
+		usize_t pageCapacity= chunk->pageCapacity; \
+		for(usize_t freeUnitIndex=0;freeUnitIndex<pageCapacity ;freeUnitIndex++){\
+			if (p_unit->ref==0) {unit = p_unit;break;}\
+		} \
+		if (!unit) lookupPage = lookupPage->next;\
+	}\
 
-	static inline void* AlignedMemory_alloc(AlignedMemory* self, usize_t unitSize) {
-#if defined(AlignedMemoryMetaSize)
-		unitSize += AlignedMemoryMetaSize;
-#endif
+	static inline void* AlignedMemory_allocLink(AlignedMemory* self, usize_t unitSize,uword_t masks) {
+
 		size_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
 		if (unitSize > 16 * sizeof(addr_t) * 4) {
@@ -219,15 +236,124 @@ extern "C" {
 
 		void* unit = 0;
 		unitSize = chunk->unitSize;
-#if defined(AlignedMemoryLookupUnit)
-		AlignedMemoryLookupUnit(unit, chunk, unitSize)
-#endif
-			if (unit) return unit;
-		return AlignedMemory__chunkResolveUnit(chunk, unitSize);
+
+		MemoryLookupLinkUnit(unit, chunk, unitSize, masks)
+		if (unit) return unit;
+		return AlignedMemory__chunkResolveUnit(chunk, unitSize,masks);
 	}
 
-	static inline void* AlignedMemory_alloc1(AlignedMemory* self, usize_t size) { return AlignedMemory_alloc(self, size); }
+	static inline void* AlignedMemory_allocRef(AlignedMemory* self, usize_t unitSize, uword_t masks) {
 
+		size_t chunkIndex;
+		AlignedMemoryChunk* chunk = 0;
+		if (unitSize > 16 * sizeof(addr_t) * 4) {
+			if (unitSize % (sizeof(addr_t) * 4)) unitSize = (unitSize / sizeof(addr_t) * 4) + 1;
+			AlignedMemoryChunk* existed = self->large;
+			AlignedMemoryChunk* prev = 0;
+			while (existed) {
+				if (existed->unitSize == unitSize) return existed;
+				else if (existed->unitSize < unitSize) {
+					prev = existed;
+					existed = existed->nextChunk;
+				}
+				else break;
+			}
+			size_t pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
+			size_t pageUsableSize = (pageSize - sizeof(AlignedMemoryPage));
+			size_t pageCapacity = pageUsableSize / unitSize;
+			// 一页都无法装下一个
+			if (pageCapacity == 0) {
+				pageSize = unitSize + sizeof(AlignedMemoryPage);
+				pageCapacity = 1;
+			}
+			// 一页只能装一个
+			else if (pageCapacity < 2) {
+				//剩余的太多
+				if (pageUsableSize % unitSize > pageUsableSize / 4) {
+					pageSize = unitSize + sizeof(AlignedMemoryPage);
+					pageCapacity = 1;
+				}
+			}
+			AlignedMemoryChunk* chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+			if (!chunk) {
+				log_exit(1, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+				return 0;
+			}
+			else {
+				chunk->memory->allocatedBytes += sizeof(AlignedMemoryChunk);
+			}
+			chunk->page = 0;
+			chunk->memory = self;
+			chunk->nextChunk = existed;
+			chunk->pageSize = pageSize;
+			chunk->unitSize = unitSize;
+			chunk->pageCapacity = pageCapacity;
+			if (prev) prev->nextChunk = chunk;
+			else self->large = chunk;
+
+			if (((Memory*)self)->logger) {
+				Logger_trace(((Memory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
+					, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
+				);
+			}
+		}
+		else {
+			if (unitSize <= 16 * sizeof(addr_t)) {// 16 个 1word 增加的 最大的是 16word, 0-15
+				chunkIndex = unitSize / sizeof(addr_t);
+				if (unitSize % sizeof(addr_t)) { unitSize = (++chunkIndex) * sizeof(addr_t); }
+			}
+			else if (unitSize <= 16 * sizeof(addr_t) * 2) {// 最大的 32word 15 - 31 128 
+				chunkIndex = 16 - 8 + unitSize / (sizeof(addr_t) * 2);
+				if (unitSize % (sizeof(addr_t) * 2)) {
+					unitSize = 16 * sizeof(word_t) + (++chunkIndex - 16 + 8) * sizeof(addr_t) * 2;
+				}
+			}
+			else if (unitSize <= 16 * sizeof(addr_t) * 4) {// 最大 64 word 256bytes 24-28
+				chunkIndex = 24 - 8 + unitSize / (sizeof(addr_t) * 4);
+				if (unitSize % (sizeof(addr_t) * 4)) { unitSize = 16 * sizeof(dword_t) + (++chunkIndex - 24 + 8) * sizeof(addr_t) * 4; }
+			}
+
+			chunk = self->chunks[--chunkIndex];
+			if (!chunk) {
+
+				chunk = (AlignedMemoryChunk*)malloc(sizeof(AlignedMemoryChunk));
+				if (!chunk) {
+					log_exit(1, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
+					return 0;
+				}
+				else {
+					self->allocatedBytes += sizeof(AlignedMemoryChunk);
+					self->chunks[chunkIndex] = chunk;
+				}
+				chunk->page = 0;
+				chunk->memory = self;
+				chunk->nextChunk = 0;
+				chunk->pageSize = ((struct stAlignedMemoryHeader*)self)->opts.pageSize;
+				chunk->unitSize = unitSize;
+				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
+
+				if (((Memory*)self)->logger) {
+					Logger_trace(((Memory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
+						, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
+					);
+				}
+			}
+
+		}
+
+		void* unit = 0;
+		unitSize = chunk->unitSize;
+
+		MemoryLookupRefUnit(unit, chunk, unitSize, masks)
+		if (unit) return unit;
+		return AlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
+	}
+	static inline void* AlignedMemory_alloc(AlignedMemory* self, usize_t unitSize, uword_t masks) {
+		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_allocLink(self, unitSize, masks);
+		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return AlignedMemory_allocRef(self,unitSize,masks);
+		return 0;
+	}
+	
 #ifdef __cplusplus 
 }//end extern c
 #endif

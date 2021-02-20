@@ -7,18 +7,18 @@ void testMemory() {
 	Memory* mm = Memory__construct__(0,0,Logger_default);
 	log_assert("Memory.__construct__", mm!=0, "构造内存管理器:%p\n", mm);
 
-	int* obj4 = (int*)Memory_alloc(mm,4);
+	int* obj4 = (int*)Memory_alloc(mm,4, MemoryMask_readwrite);
 	*obj4 = 88;
 	log_assert("Memory.require", obj4!=0,"请求4bytes内存obj4[%p]=%d\n", obj4,*obj4);
 
-	long_t* obj8 = (long_t*)Memory_alloc__virtual__(mm, 8);
+	long_t* obj8 = (long_t*)Memory_alloc__virtual__(mm,  8, MemoryMask_readwrite );
 	*obj8 = 9876543210;
 	log_assert("Memory.require1", obj8 != 0,"请求8bytes内存obj8[%p]=%ld\n", obj8,*obj8);
 
-	void* obj12 = Memory_alloc1(mm,12);
+	void* obj12 = Memory_alloc(mm,12, MemoryMask_readonly);
 	log_assert("Memory.require", obj12 != 0,"请求12bytes内存obj12[%p]\n", obj12);
 
-	void* obj16 = Memory_alloc1__virtual__(mm, 12);
+	void* obj16 = Memory_alloc__virtual__(mm, 12,MemoryMask_writable);
 	log_assert("Memory.require", obj16 != 0,"请求16bytes内存obj16[%p]\n", obj16);
 	
 
@@ -53,11 +53,12 @@ void testAlignedMemory() {
 	opts.pageSize = 36;
 	opts.totalBytes = 0;
 	opts.gcBytes = 0;
+	opts.unitKind = MemoryUnitKind_link;
 
 	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
 	log_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]%d\n", mm,mm->allocatedBytes);
 
-	void* obj1 = AlignedMemory_alloc(mm,6);
+	void* obj1 = AlignedMemory_alloc(mm,6, MemoryMask_readwrite);
 	log_assert("Memory.alloc"
 		// 在第一个插槽中
 		, mm->chunks[0]!=0 
@@ -75,7 +76,7 @@ void testAlignedMemory() {
 		, obj2==((byte_t*)obj1)-sizeof(addr_t)
 		, "分配7个字节的单元[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2,mm->allocatedBytes);
 
-	void* obj3 = AlignedMemory_alloc(mm,6);
+	void* obj3 = AlignedMemory_alloc(mm,6, MemoryMask_readwrite);
 	log_assert("Memory.alloc"
 		// 翻页，有第二页
 		, mm->chunks[0]->page->next!=0 
@@ -91,11 +92,11 @@ void testAlignedMemory() {
 	AlignedMemory_free(mm,obj1);
 	AlignedMemory_free(mm, obj3);
 
-	void* obj4 = AlignedMemory_alloc(mm, 8);
+	void* obj4 = AlignedMemory_alloc(mm, 8, MemoryMask_readwrite);
 	log_assert("Memory.re-alloc",obj4==obj3,"应该在被释放的内存上obj4==obj3");
-	void* obj5 = AlignedMemory_alloc(mm, 8);
+	void* obj5 = AlignedMemory_alloc(mm, 8, MemoryMask_readwrite);
 	log_assert("Memory.re-alloc", obj5 == obj4-8, "内存是连续的obj5==obj4-8");
-	void* obj6 = AlignedMemory_alloc(mm,6);
+	void* obj6 = AlignedMemory_alloc(mm,6, MemoryMask_readwrite);
 	log_assert("Memory.re-alloc", obj6 == obj1, "应该在被释放的内存上obj6==obj1");
 	AlignedMemoryReleaseInfo rs = AlignedMemory_collectGarbages(mm,1 ,0);
 	log_assert("Memory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面");
@@ -117,11 +118,12 @@ void testAlignedMemory() {
 	opts.pageSize = 36;
 	opts.totalBytes = 0;
 	opts.gcBytes=0;
+	opts.unitKind = MemoryUnitKind_link;
 
 	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
 	log_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
 
-	void* obj1 = AlignedMemory_alloc(mm, 6);
+	void* obj1 = AlignedMemory_alloc(mm, 6, MemoryMask_readwrite);
 	AlignedMemoryChunk* chunk = mm->chunks[1];
 	log_assert("Memory.alloc"
 		// 在第一个插槽中
@@ -139,20 +141,20 @@ void testAlignedMemory() {
 		, obj1 == (((byte_t*)chunk->page) + sizeof(AlignedMemoryPage) + 16)
 		, "分配6个字节的单元obj1[%p](total:%d)，会对齐到8个字节的单元\n", obj1, mm->allocatedBytes);
 
-	void* obj2 = AlignedMemory_alloc(mm, 7);
+	void* obj2 = AlignedMemory_alloc(mm, 7, MemoryMask_readwrite);
 	log_assert("Memory.alloc"
 		// 在前面那个单元的前面
 		, obj2 == ((byte_t*)obj1) - 8
 		, "分配7个字节的单元obj2[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
 
-	void* obj3 = AlignedMemory_alloc(mm, 8);
+	void* obj3 = AlignedMemory_alloc(mm, 8, MemoryMask_readwrite);
 	log_assert("Memory.alloc"
 		// 在前面那个单元的前面
 		, obj3 == ((byte_t*)obj2) - 8
 		, "分配7个字节的单元obj3[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
 
 	
-	void* obj4 = AlignedMemory_alloc(mm, 6);
+	void* obj4 = AlignedMemory_alloc(mm, 6, MemoryMask_readwrite);
 	usize_t allocatedSize = sizeof(AlignedMemory) + sizeof(AlignedMemoryChunk) + opts.pageSize * 2;
 	log_assert("Memory.alloc"
 		, chunk->page != 0
@@ -184,14 +186,14 @@ void testAlignedMemory() {
 	AlignedMemory_free(mm, obj1);
 	log_assert("Memory.free", obj1 == chunk->page->next->free , "归还内存obj1[%p]，page上放着空闲块链", obj1);
 
-	void* obj11 = AlignedMemory_alloc(mm, 5);
+	void* obj11 = AlignedMemory_alloc(mm, 5, MemoryMask_readwrite);
 	log_assert("Memory.alloc", obj11 == obj4, "再次分配内存，使用空闲单元obj4==obj11[%p]", obj11);
 
-	void* obj12 = AlignedMemory_alloc(mm, 5);
+	void* obj12 = AlignedMemory_alloc(mm, 5, MemoryMask_readwrite);
 	log_assert("Memory.alloc", obj12 == (byte_t*)obj4 - 8, "分配内存obj12，占据page2[%p]", obj12);
-	void* obj13 = AlignedMemory_alloc(mm, 5);
+	void* obj13 = AlignedMemory_alloc(mm, 5, MemoryMask_readwrite);
 	log_assert("Memory.alloc", obj13 == (byte_t*)obj12 - 8, "分配内存obj13，占据page2[%p]", obj13);
-	void* obj14 = AlignedMemory_alloc(mm, 5);
+	void* obj14 = AlignedMemory_alloc(mm, 5, MemoryMask_readwrite);
 	log_assert("Memory.alloc", obj14 == obj1, "分配内存obj14，重复使用pag1上的空闲块obj14==obj1[%p]", obj14);
 
 	AlignedMemoryReleaseInfo rs = AlignedMemory_collectGarbages(mm,1, 0);

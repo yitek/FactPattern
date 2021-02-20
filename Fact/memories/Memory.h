@@ -26,6 +26,12 @@ extern "C" {
 		MemoryAllocatingDirective_RecheckOrNewPage = 2,
 	} MemoryAllocatingDirectives;
 
+	typedef enum {
+		MemoryMask_readonly = 1,
+		MemoryMask_writable = 2,
+		MemoryMask_readwrite = 3
+	} MemoryMasks;
+
 	
 	typedef struct stMemoryOptions {
 		usize_t totalBytes;
@@ -44,11 +50,10 @@ extern "C" {
 
 	typedef struct stMemoryMETA {
 		struct stObjectMetaLayout;
-		void* (*alloc)(Memory* self,usize_t size);
-		void* (*alloc1)(Memory* self, usize_t size);
+		void* (*alloc)(Memory* self,usize_t size,uword_t masks);
 		bool_t (*free)(Memory* self,void* p);
 		void(*__destruct__)(Memory* self,bool_t existed);
-		MemoryAllocatingDirectives(*allocating)(Memory* memory,usize_t size,void* param);
+		MemoryAllocatingDirectives(*allocating)(Memory* memory,usize_t size,uword_t masks,void* param);
 	} MemoryMETA;
 
 	extern MemoryMETA memoryMETA;
@@ -70,14 +75,12 @@ extern "C" {
 	/// <returns></returns>
 	Memory* Memory__construct__(Memory* self, const MemoryOptions* options, Logger* logger);
 	void Memory__destruct__(Memory* self, bool_t existed);
-	void* Memory_alloc(Memory* self, usize_t size);
-	void* Memory_alloc1(Memory* self, usize_t size);
+	void* Memory_alloc(Memory* self, usize_t size,uword_t mask);
 	bool_t Memory_free(Memory* self, void* obj);
-	MemoryAllocatingDirectives Memory__allocating(Memory* memory, usize_t size, void* param);
+	//MemoryAllocatingDirectives Memory__allocating(Memory* memory, usize_t size, void* param);
 	
 
-	inline static void* Memory_alloc__virtual__(Memory* self, usize_t size) {return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc(self,size);}
-	inline static void* Memory_alloc1__virtual__(Memory* self, usize_t size) { return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc1(self, size); }
+	inline static void* Memory_alloc__virtual__(Memory* self, usize_t size,uword_t masks) {return ((MemoryMETA*)((TObject*)self)->__meta__)->alloc(self,size,masks);}
 	inline static bool_t Memory_free__virtual__(Memory* self, void* p) {return ((MemoryMETA*)((TObject*)self)->__meta__)->free(self, p);}
 	inline static void Memory__destruct____virtual__(Memory* self, bool_t existed) { ((MemoryMETA*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
 
