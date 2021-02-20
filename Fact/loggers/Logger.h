@@ -50,7 +50,7 @@ extern "C" {
 	extern Logger* Logger_default;
 
 	typedef struct stLoggerLayout{ 
-		struct stGCUnitLayout;
+		struct stMemoryRefUnit;
 		struct stLogger;
 	}LoggerGCLayout;
 	extern LoggerGCLayout Logger_defaultInstance;

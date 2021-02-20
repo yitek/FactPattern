@@ -17,7 +17,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	void memories_module(void* p);
+	void memories_module(void* memory, void* vm, void* param);
 #ifdef __cplusplus 
 } //extern "C" 
 #endif

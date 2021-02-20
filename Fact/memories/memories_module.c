@@ -2,10 +2,10 @@
 #include "../loggers/loggers_module.h"
 bool_t memories_initialized = 0;
 
-void memories_module(void* p) {
+void memories_module(void* memory, void* vm, void* param) {
 	if (memories_initialized) return;
 	memories_initialized = 1;
-	loggers_module(p);
+	loggers_module(memory,vm,param);
 	memoryMETA.offset = 0;
 	memoryMETA.allocating = 0;
 	memoryMETA.alloc = &Memory_alloc;

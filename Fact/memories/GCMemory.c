@@ -42,7 +42,7 @@ void GCMemory__markObject(TObject* obj) {
 	// idle或已标记
 
 	// 标记可达性
-	(*((GCUnitLayout*)obj-1)).ref |= markNumber;
+	(*((MemoryRefUnit*)obj-1)).ref |= markNumber;
 	usize_t memberIndex = 0;
 	TType* type = get_type(obj);
 	TField* field = (TField*)(&type->fields + 1);
@@ -59,11 +59,11 @@ void GCMemory__markChunk(AlignedMemoryChunk* chunk) {
 	AlignedMemoryPage* page = chunk->page;
 	
 	while (page) {
-		GCUnitLayout* gcUnit = (GCUnitLayout*)&page->free;
+		MemoryRefUnit* gcUnit = (MemoryRefUnit*)&page->free;
 		for (size_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcUnit->ref == 0 || gcUnit->ref & markNumber) return;
 			GCMemory__markObject((TObject*)(gcUnit +1));
-			gcUnit = (GCUnitLayout*)((byte_t*)gcUnit + chunk->unitSize);
+			gcUnit = (MemoryRefUnit*)((byte_t*)gcUnit + chunk->unitSize);
 		}
 		page = page->next;
 	}

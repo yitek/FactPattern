@@ -14,6 +14,13 @@
 #define __LAYOUT_INCLUDED__
 
 
+typedef struct stMemoryLinkUnit {
+	struct stMemoryLinkUnit* next;
+}MemoryLinkUnit;
+
+typedef struct stMemoryRefUnit {
+	usize_t ref;
+}MemoryRefUnit;
 
 typedef struct stVirtTableLayout {
 	usize_t offset;
@@ -42,9 +49,6 @@ typedef struct stTObject {
 	
 }TObject;
 
-typedef struct stGCUnitLayout {
-	usize_t ref;
-}GCUnitLayout;
 
 typedef struct stObjectLayout{
 	usize_t ref;

@@ -2,7 +2,7 @@
 #include "../../loggers/Logger.h"
 
 void testMemory() {
-	memories_module(0);
+	memories_module(0,0,0);
 	Logger_sectionBegin(0,"Memory","Test start...");
 	Memory* mm = Memory__construct__(0,0,Logger_default);
 	log_assert("Memory.__construct__", mm!=0, "构造内存管理器:%p\n", mm);
@@ -47,7 +47,7 @@ void testMemory() {
 
 #if defined(__64BITS__)
 void testAlignedMemory() {
-	memories_module(0);
+	memories_module(0,0,0);
 	Logger_sectionBegin(0, "AlignedMemory", "Test start（64bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;
@@ -70,7 +70,7 @@ void testAlignedMemory() {
 		&& obj1==(byte_t*)(mm->chunks[0]->page)+sizeof(AlignedMemoryPage)+8
 		, "分配6个字节的单元[%p](total:%d)，会对齐到8个字节的单元\n", obj1,mm->allocatedBytes);
 
-	void* obj2 = AlignedMemory_alloc(mm,7);
+	void* obj2 = AlignedMemory_alloc(mm,7, MemoryMask_readwrite);
 	log_assert("Memory.alloc"
 		// 在前面那个单元的前面
 		, obj2==((byte_t*)obj1)-sizeof(addr_t)
@@ -112,7 +112,7 @@ void testAlignedMemory() {
 
 #if defined(__32BITS__)
 void testAlignedMemory() {
-	memories_module(0);
+	memories_module(0,0,0);
 	Logger_sectionBegin(0, "AlignedMemory", "Test start（32bits）...");
 	AlignedMemoryOptions opts;
 	opts.pageSize = 36;

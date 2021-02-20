@@ -14,7 +14,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	void loggers_module(void* p);
+	void loggers_module(void* memory, void* vm, void* param);
 #ifdef __cplusplus 
 } //extern "C" 
 #endif

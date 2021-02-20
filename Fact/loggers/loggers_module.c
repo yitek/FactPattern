@@ -9,7 +9,7 @@ void loggers_module(void* memory,void* p,void* p1) {
 	loggerMETA.offset = 0;
 	loggerMETA.output = &Logger__output;
 	
-	Logger_default = (Logger*)((byte_t*)&Logger_defaultInstance + sizeof(GCUnitLayout));
+	Logger_default = (Logger*)((byte_t*)&Logger_defaultInstance + sizeof(MemoryRefUnit));
 	Logger__construct__(Logger_default, 0);
 	Logger_defaultInstance.level = 0;
 }

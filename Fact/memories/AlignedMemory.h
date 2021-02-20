@@ -27,9 +27,7 @@ extern "C" {
 
 	
 
-	typedef struct stMemoryLinkUnit {
-		struct stMemoryLinkUnit* next;
-	}MemoryLinkUnit;
+
 
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
@@ -97,7 +95,6 @@ extern "C" {
 	AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts,Logger* logger);
 	void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed);
 	
-	bool_t AlignedMemory_free(AlignedMemory* self, void* p);
 	AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
 	
 #define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);

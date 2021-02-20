@@ -1,7 +1,7 @@
 #include "TestLogger.h"
 #include <stddef.h>
 void testLogger() {
-	loggers_module(0);
+	loggers_module(0,0,0);
 	Logger* logger = Logger_default;
 	Logger_sectionBegin(logger, "Logger", "Test start...");
 	Logger_trace(logger,"Logger.trace","Trace message with number: %d and %d.\n",12,13);
