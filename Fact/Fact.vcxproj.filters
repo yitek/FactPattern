@@ -28,6 +28,9 @@
     <Filter Include="tests\memories">
       <UniqueIdentifier>{3ddb019e-f289-4033-b1ea-05932ff28ce6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="types">
+      <UniqueIdentifier>{d71c206a-6597-46ae-8f27-6ac47bff8d1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h">
@@ -51,9 +54,6 @@
     <ClInclude Include="layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="memories\GCMemory.h">
-      <Filter>memories</Filter>
-    </ClInclude>
     <ClInclude Include="loggers\TLogger.h">
       <Filter>loggers</Filter>
     </ClInclude>
@@ -61,6 +61,15 @@
       <Filter>memories</Filter>
     </ClInclude>
     <ClInclude Include="memories\TAlignedMemory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
+    <ClInclude Include="types\TStream.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\types_module.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="memories\TGCMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,9 +92,6 @@
     <ClCompile Include="memories\memories_module.c">
       <Filter>memories</Filter>
     </ClCompile>
-    <ClCompile Include="memories\GCMemory.c">
-      <Filter>memories</Filter>
-    </ClCompile>
     <ClCompile Include="layout.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -96,6 +102,15 @@
       <Filter>memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\TAlignedMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="types\TStream.c">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="types\types_module.c">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\TGCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>

@@ -55,7 +55,7 @@ void testAlignedMemory() {
 	opts.gcBytes = 0;
 	opts.unitKind = MemoryUnitKind_link;
 
-	AlignedMemory* mm = TAlignedMemory__construct__(0, &opts, TLogger_default);
+	TAlignedMemory* mm = TAlignedMemory__construct__(0, &opts, TLogger_default);
 	Test_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(TAlignedMemory), "构造对齐的内存管理器:[%p]%d\n", mm,mm->allocatedBytes);
 
 	void* obj1 = TAlignedMemory_alloc(mm,6, MemoryKind_normal);
@@ -102,7 +102,7 @@ void testAlignedMemory() {
 	Test_assert("TAlignedMemory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面");
 	TAlignedMemory_free(mm, obj6);
 	TAlignedMemory_free(mm, obj2);
-	rs = AlignedMemory_collectGarbages(mm, 1,0);
+	rs = TAlignedMemory_collectGarbages(mm, 1,0);
 	Test_assert("TAlignedMemory.collectGarbages", rs.bytes == opts.pageSize && rs.pages==1, "释放obj6,obj2,让page1页面空闲，回收一个页面");
 
 	Test_end();

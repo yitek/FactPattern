@@ -23,7 +23,7 @@ typedef struct stMemoryRefUnit {
 }MemoryRefUnit;
 
 typedef struct stVirtTableLayout {
-	usize_t offset;
+	addr_t offset;
 }VirtTableLayout;
 
 typedef struct stVirtualLayout {

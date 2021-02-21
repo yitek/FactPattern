@@ -118,7 +118,7 @@ bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* p) {
 	}
 	return 0;
 }
-inline void TAlignedMemory__destructChunk(TAlignedMemory* self,usize_t index, AlignedMemoryChunk* chunk, AlignedMemoryReleaseInfo*const rs) {
+void TAlignedMemory__destructChunk(TAlignedMemory* self,usize_t index, AlignedMemoryChunk* chunk, AlignedMemoryReleaseInfo*const rs) {
 	usize_t pageCount = 0;
 	
 	AlignedMemoryPage* page = chunk->page;
@@ -175,7 +175,7 @@ void TAlignedMemory__destruct__(TAlignedMemory* self, bool_t existed) {
 	}
 	TMemory__destruct__((TMemory*)self, existed);
 }
-inline bool_t TAlignedMemory__collectChunkLinkGarbages(TAlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
+bool_t TAlignedMemory__collectChunkLinkGarbages(TAlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
 	usize_t pageCount = 0;
 	AlignedMemoryPage* page = chunk->page;
@@ -235,7 +235,7 @@ inline bool_t TAlignedMemory__collectChunkLinkGarbages(TAlignedMemory* self,Alig
 	}
 	return 0;
 }
-inline bool_t TAlignedMemory__collectChunkRefGarbages(TAlignedMemory* self, AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk, AlignedMemoryChunk* prevChunk, usize_t index, AlignedMemoryGCCallback callback) {
+bool_t TAlignedMemory__collectChunkRefGarbages(TAlignedMemory* self, AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk, AlignedMemoryChunk* prevChunk, usize_t index, AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
 	usize_t pageCount = 0;
 	AlignedMemoryPage* page = chunk->page;

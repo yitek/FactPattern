@@ -22,12 +22,12 @@ void memories_module(void* memory, void* vm, void* param) {
 	TAlignedMemory_Meta.allocating =(MemoryAllocatingDirectives (*)(TMemory *, usize_t, uword_t, void * )) TAlignedMemory__allocating;
 	TAlignedMemory_Meta.__destruct__ = (void(*)(TMemory*, bool_t))&TAlignedMemory__destruct__;
 
-	gcMemoryMETA.offset = 0;
-	gcMemoryMETA.alloc = (void* (*)(TMemory*, usize_t,uword_t)) & GCMemory_alloc;
-	gcMemoryMETA.free = (bool_t(*)(TMemory*, void*)) & GCMemory_free;
-	gcMemoryMETA.collectGarbages = (AlignedMemoryReleaseInfo(*)(TAlignedMemory *, bool_t, AlignedMemoryGCCallback))&GCMemory_collectGarbages;
-	gcMemoryMETA.allocating = (MemoryAllocatingDirectives(*)(TMemory*, usize_t, uword_t, void*))GCMemory__allocating;
-	gcMemoryMETA.__destruct__ = (void(*)(TMemory*, bool_t)) & GCMemory__destruct__;
+	TGCMemory__meta__.offset = 0;
+	TGCMemory__meta__.alloc = (void* (*)(TMemory*, usize_t,uword_t)) & TGCMemory_alloc;
+	TGCMemory__meta__.free = (bool_t(*)(TMemory*, void*)) & TGCMemory_free;
+	TGCMemory__meta__.collectGarbages = (AlignedMemoryReleaseInfo(*)(TAlignedMemory *, bool_t, AlignedMemoryGCCallback))&TGCMemory_collectGarbages;
+	TGCMemory__meta__.allocating = (MemoryAllocatingDirectives(*)(TMemory*, usize_t, uword_t, void*))TGCMemory__allocating;
+	TGCMemory__meta__.__destruct__ = (void(*)(TMemory*, bool_t)) & TGCMemory__destruct__;
 	
 }
 

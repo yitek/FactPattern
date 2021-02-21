@@ -97,6 +97,7 @@ extern "C" {
 	
 	AlignedMemoryReleaseInfo TAlignedMemory_collectGarbages(TAlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
 	
+	
 #define AlignedMemory_sfree(self, p) (TAlignedMemory_free(self,p)?p=0,1:0);
 
 	MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);

@@ -176,29 +176,29 @@ loggers/CLogger.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.s
 .PHONY : loggers/CLogger.cpp.s
 
-loggers/Logger.obj: loggers/Logger.c.obj
-.PHONY : loggers/Logger.obj
+loggers/TLogger.obj: loggers/TLogger.c.obj
+.PHONY : loggers/TLogger.obj
 
 # target to build an object file
-loggers/Logger.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.obj
-.PHONY : loggers/Logger.c.obj
+loggers/TLogger.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.obj
+.PHONY : loggers/TLogger.c.obj
 
-loggers/Logger.i: loggers/Logger.c.i
-.PHONY : loggers/Logger.i
+loggers/TLogger.i: loggers/TLogger.c.i
+.PHONY : loggers/TLogger.i
 
 # target to preprocess a source file
-loggers/Logger.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.i
-.PHONY : loggers/Logger.c.i
+loggers/TLogger.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.i
+.PHONY : loggers/TLogger.c.i
 
-loggers/Logger.s: loggers/Logger.c.s
-.PHONY : loggers/Logger.s
+loggers/TLogger.s: loggers/TLogger.c.s
+.PHONY : loggers/TLogger.s
 
 # target to generate assembly for a file
-loggers/Logger.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/Logger.c.s
-.PHONY : loggers/Logger.c.s
+loggers/TLogger.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.s
+.PHONY : loggers/TLogger.c.s
 
 loggers/loggers_module.obj: loggers/loggers_module.c.obj
 .PHONY : loggers/loggers_module.obj
@@ -248,77 +248,77 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-memories/AlignedMemory.obj: memories/AlignedMemory.c.obj
-.PHONY : memories/AlignedMemory.obj
+memories/TAlignedMemory.obj: memories/TAlignedMemory.c.obj
+.PHONY : memories/TAlignedMemory.obj
 
 # target to build an object file
-memories/AlignedMemory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.obj
-.PHONY : memories/AlignedMemory.c.obj
+memories/TAlignedMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.obj
+.PHONY : memories/TAlignedMemory.c.obj
 
-memories/AlignedMemory.i: memories/AlignedMemory.c.i
-.PHONY : memories/AlignedMemory.i
+memories/TAlignedMemory.i: memories/TAlignedMemory.c.i
+.PHONY : memories/TAlignedMemory.i
 
 # target to preprocess a source file
-memories/AlignedMemory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.i
-.PHONY : memories/AlignedMemory.c.i
+memories/TAlignedMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.i
+.PHONY : memories/TAlignedMemory.c.i
 
-memories/AlignedMemory.s: memories/AlignedMemory.c.s
-.PHONY : memories/AlignedMemory.s
+memories/TAlignedMemory.s: memories/TAlignedMemory.c.s
+.PHONY : memories/TAlignedMemory.s
 
 # target to generate assembly for a file
-memories/AlignedMemory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/AlignedMemory.c.s
-.PHONY : memories/AlignedMemory.c.s
+memories/TAlignedMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TAlignedMemory.c.s
+.PHONY : memories/TAlignedMemory.c.s
 
-memories/GCMemory.obj: memories/GCMemory.c.obj
-.PHONY : memories/GCMemory.obj
+memories/TGCMemory.obj: memories/TGCMemory.c.obj
+.PHONY : memories/TGCMemory.obj
 
 # target to build an object file
-memories/GCMemory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.obj
-.PHONY : memories/GCMemory.c.obj
+memories/TGCMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TGCMemory.c.obj
+.PHONY : memories/TGCMemory.c.obj
 
-memories/GCMemory.i: memories/GCMemory.c.i
-.PHONY : memories/GCMemory.i
+memories/TGCMemory.i: memories/TGCMemory.c.i
+.PHONY : memories/TGCMemory.i
 
 # target to preprocess a source file
-memories/GCMemory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.i
-.PHONY : memories/GCMemory.c.i
+memories/TGCMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TGCMemory.c.i
+.PHONY : memories/TGCMemory.c.i
 
-memories/GCMemory.s: memories/GCMemory.c.s
-.PHONY : memories/GCMemory.s
+memories/TGCMemory.s: memories/TGCMemory.c.s
+.PHONY : memories/TGCMemory.s
 
 # target to generate assembly for a file
-memories/GCMemory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/GCMemory.c.s
-.PHONY : memories/GCMemory.c.s
+memories/TGCMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TGCMemory.c.s
+.PHONY : memories/TGCMemory.c.s
 
-memories/Memory.obj: memories/Memory.c.obj
-.PHONY : memories/Memory.obj
+memories/TMemory.obj: memories/TMemory.c.obj
+.PHONY : memories/TMemory.obj
 
 # target to build an object file
-memories/Memory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.obj
-.PHONY : memories/Memory.c.obj
+memories/TMemory.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.obj
+.PHONY : memories/TMemory.c.obj
 
-memories/Memory.i: memories/Memory.c.i
-.PHONY : memories/Memory.i
+memories/TMemory.i: memories/TMemory.c.i
+.PHONY : memories/TMemory.i
 
 # target to preprocess a source file
-memories/Memory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.i
-.PHONY : memories/Memory.c.i
+memories/TMemory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.i
+.PHONY : memories/TMemory.c.i
 
-memories/Memory.s: memories/Memory.c.s
-.PHONY : memories/Memory.s
+memories/TMemory.s: memories/TMemory.c.s
+.PHONY : memories/TMemory.s
 
 # target to generate assembly for a file
-memories/Memory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/Memory.c.s
-.PHONY : memories/Memory.c.s
+memories/TMemory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.s
+.PHONY : memories/TMemory.c.s
 
 memories/memories_module.obj: memories/memories_module.c.obj
 .PHONY : memories/memories_module.obj
@@ -407,24 +407,24 @@ help:
 	@echo ... loggers/CLogger.obj
 	@echo ... loggers/CLogger.i
 	@echo ... loggers/CLogger.s
-	@echo ... loggers/Logger.obj
-	@echo ... loggers/Logger.i
-	@echo ... loggers/Logger.s
+	@echo ... loggers/TLogger.obj
+	@echo ... loggers/TLogger.i
+	@echo ... loggers/TLogger.s
 	@echo ... loggers/loggers_module.obj
 	@echo ... loggers/loggers_module.i
 	@echo ... loggers/loggers_module.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
-	@echo ... memories/AlignedMemory.obj
-	@echo ... memories/AlignedMemory.i
-	@echo ... memories/AlignedMemory.s
-	@echo ... memories/GCMemory.obj
-	@echo ... memories/GCMemory.i
-	@echo ... memories/GCMemory.s
-	@echo ... memories/Memory.obj
-	@echo ... memories/Memory.i
-	@echo ... memories/Memory.s
+	@echo ... memories/TAlignedMemory.obj
+	@echo ... memories/TAlignedMemory.i
+	@echo ... memories/TAlignedMemory.s
+	@echo ... memories/TGCMemory.obj
+	@echo ... memories/TGCMemory.i
+	@echo ... memories/TGCMemory.s
+	@echo ... memories/TMemory.obj
+	@echo ... memories/TMemory.i
+	@echo ... memories/TMemory.s
 	@echo ... memories/memories_module.obj
 	@echo ... memories/memories_module.i
 	@echo ... memories/memories_module.s

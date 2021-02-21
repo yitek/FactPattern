@@ -10,7 +10,7 @@
 
 #include "TMemory.h"
 #include "TAlignedMemory.h"
-#include "GCMemory.h"
+#include "TGCMemory.h"
 
 #ifndef __MEMORIES_INCLUDED__ 
 #define __MEMORIES_INCLUDED__

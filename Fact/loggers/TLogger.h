@@ -58,14 +58,12 @@ extern "C" {
 
 	extern TLoggerMeta Logger__meta__;
 
-	extern TLogger* TLogger_default;
-
 	typedef struct stTLoggerLayout{ 
 		struct stMemoryRefUnit;
 		struct stTLogger;
 	}TLoggerGCLayout;
 	extern TLoggerGCLayout TLogger_defaultInstance;
-	
+	extern TLogger* TLogger_default;
 
 	TLogger* TLogger__construct__(TLogger* self, TLoggerOptions* opts);
 	void TLogger__destruct__(TLogger* self, bool_t existed);
