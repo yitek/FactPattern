@@ -1,46 +1,46 @@
 #include "TestMemory.h"
-#include "../../loggers/Logger.h"
+#include "../../loggers/TLogger.h"
 
 void testMemory() {
 	memories_module(0,0,0);
 	Test_begin("Memory","Test start...");
-	Memory* mm = Memory__construct__(0,0,Logger_default);
+	TMemory* mm = TMemory__construct__(0,0,TLogger_default);
 	Test_assert("Memory.__construct__", mm!=0, "构造内存管理器:%p\n", mm);
 
-	int* obj4 = (int*)Memory_alloc(mm,4, MemoryKind_normal);
+	int* obj4 = (int*)TMemory_alloc(mm,4, MemoryKind_normal);
 	*obj4 = 88;
 	Test_assert("Memory.require", obj4!=0,"请求4bytes内存obj4[%p]=%d\n", obj4,*obj4);
 
-	long_t* obj8 = (long_t*)Memory_alloc__virtual__(mm,  8, MemoryKind_normal);
+	long_t* obj8 = (long_t*)TMemory_alloc__virtual__(mm,  8, MemoryKind_normal);
 	*obj8 = 9876543210;
 	Test_assert("Memory.require1", obj8 != 0,"请求8bytes内存obj8[%p]=%ld\n", obj8,*obj8);
 
-	void* obj12 = Memory_alloc(mm,12, MemoryKind_readonly);
+	void* obj12 = TMemory_alloc(mm,12, MemoryKind_readonly);
 	Test_assert("Memory.require", obj12 != 0,"请求12bytes内存obj12[%p]\n", obj12);
 
-	void* obj16 = Memory_alloc__virtual__(mm, 12, MemoryKind_normal);
+	void* obj16 = TMemory_alloc__virtual__(mm, 12, MemoryKind_normal);
 	Test_assert("Memory.require", obj16 != 0,"请求16bytes内存obj16[%p]\n", obj16);
 	
 
-	Memory_free(mm, obj4);
+	TMemory_free(mm, obj4);
 	Test_assert("Memory.release", obj4 != 0, "释放内存obj4[%p]=%d\n", obj4);
 
-	Memory_free(mm, obj8);
+	TMemory_free(mm, obj8);
 	Test_assert("Memory.release", obj8 != 0, "释放内存obj8[%p]=%ld\n", obj8,*obj8);
 
-	Memory_free__virtual__(mm, obj12);
+	TMemory_free__virtual__(mm, obj12);
 	Test_assert("Memory.release", obj12!=0, "释放内存obj12[%p]\n", obj12);
 
-	Memory_free__virtual__(mm, obj16);
+	TMemory_free__virtual__(mm, obj16);
 	Test_assert("Memory.release", obj16 != 0, "释放内存obj12[%p]\n", obj16);
 
-	Memory__destruct__(mm,0);
+	TMemory__destruct__(mm,0);
 	Test_assert("Memory.__destruct__", mm != 0, "析构内存管理器[%p]\n", mm);
 
-	mm = Memory_default;
-	Test_assert("Memory.default", mm && mm== Memory_default, "获取到默认内存管理器[%p]\n", mm);
-	Memory__destruct__(mm, 0);
-	Test_assert("Memory.__destruct__", Memory_default!=0, "不能释放默认的内存管理器\n", mm);
+	mm = TMemory_default;
+	Test_assert("Memory.default", mm && mm== TMemory_default, "获取到默认内存管理器[%p]\n", mm);
+	TMemory__destruct__(mm, 0);
+	Test_assert("Memory.__destruct__", TMemory_default!=0, "不能释放默认的内存管理器\n", mm);
 
 	Test_end();
 }
@@ -55,7 +55,7 @@ void testAlignedMemory() {
 	opts.gcBytes = 0;
 	opts.unitKind = MemoryUnitKind_link;
 
-	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
+	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, TLogger_default);
 	Test_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]%d\n", mm,mm->allocatedBytes);
 
 	void* obj1 = AlignedMemory_alloc(mm,6, MemoryKind_normal);
@@ -118,7 +118,7 @@ void testAlignedLinkUnitMemory() {
 	opts.totalBytes = 0;
 	opts.gcBytes = 0;
 	opts.unitKind = MemoryUnitKind_link;
-	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
+	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, TLogger_default);
 	Test_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
 
 	void* obj1 = AlignedMemory_alloc(mm, 6, MemoryKind_normal);
@@ -224,7 +224,7 @@ void testAlignedRefUnitMemory() {
 	opts.totalBytes = 0;
 	opts.gcBytes = 0;
 	opts.unitKind = MemoryUnitKind_ref;
-	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, Logger_default);
+	AlignedMemory* mm = AlignedMemory__construct__(0, &opts, TLogger_default);
 	Test_assert("Memory.__construct__", mm && mm->allocatedBytes == sizeof(AlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
 
 	void* obj1 = AlignedMemory_alloc(mm, 6, MemoryKind_normal);

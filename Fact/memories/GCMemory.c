@@ -6,7 +6,7 @@ GCMemoryMETA gcMemoryMETA;
 const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
-GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* logger) {
+GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
 	GCMemory* p = (GCMemory*)AlignedMemory__construct__((AlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
 	((TObject*)p)->__meta__ = (ObjectMetaLayout*)&gcMemoryMETA;
 	if (opts) {

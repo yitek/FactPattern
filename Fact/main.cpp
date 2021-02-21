@@ -39,7 +39,7 @@ void printSysInfo() {
 int main()
 {
     printSysInfo();
-    //CLogger* loggeer = new CLogger();
+    //CTLogger* loggeer = new CTLogger();
     
     //ObjectLayout objInst;
     //objInst = 0; objInst.type = 0;
@@ -52,7 +52,7 @@ int main()
     
     //setlocale(LC_ALL, ""); 
     //setlocale(LC_ALL, "chs");
-    testLogger();
+    testTLogger();
     testMemory();
     testAlignedMemory();
     //testArray();

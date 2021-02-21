@@ -8,26 +8,26 @@ void memories_module(void* memory, void* vm, void* param) {
 	loggers_module(memory,vm,param);
 	memoryMETA.offset = 0;
 	memoryMETA.allocating = 0;
-	memoryMETA.alloc = &Memory_alloc;
-	memoryMETA.free = &Memory_free;
+	memoryMETA.alloc = &TMemory_alloc;
+	memoryMETA.free = &TMemory_free;
 	memoryMETA.allocating = 0;
-	memoryMETA.__destruct__ = &Memory__destruct__;
-	Memory_default = (Memory*)((byte_t*)&Memory_defaultInstance + sizeof(ObjectLayout));
+	memoryMETA.__destruct__ = &TMemory__destruct__;
+	TMemory_default = (TMemory*)((byte_t*)&TMemory_defaultInstance + sizeof(ObjectLayout));
 
 	
 	alignedMemoryMETA.offset = 0;
-	alignedMemoryMETA.alloc =(void* (*)(Memory*, usize_t,uword_t)) &AlignedMemory_alloc;
-	alignedMemoryMETA.free = (bool_t(*)(Memory *, void*))&AlignedMemory_free;
+	alignedMemoryMETA.alloc =(void* (*)(TMemory*, usize_t,uword_t)) &AlignedMemory_alloc;
+	alignedMemoryMETA.free = (bool_t(*)(TMemory *, void*))&AlignedMemory_free;
 	alignedMemoryMETA.collectGarbages = &AlignedMemory_collectGarbages;
-	alignedMemoryMETA.allocating =(MemoryAllocatingDirectives (*)(Memory *, usize_t, uword_t, void * )) AlignedMemory__allocating;
-	alignedMemoryMETA.__destruct__ = (void(*)(Memory*, bool_t))&AlignedMemory__destruct__;
+	alignedMemoryMETA.allocating =(MemoryAllocatingDirectives (*)(TMemory *, usize_t, uword_t, void * )) AlignedMemory__allocating;
+	alignedMemoryMETA.__destruct__ = (void(*)(TMemory*, bool_t))&AlignedMemory__destruct__;
 
 	gcMemoryMETA.offset = 0;
-	gcMemoryMETA.alloc = (void* (*)(Memory*, usize_t,uword_t)) & GCMemory_alloc;
-	gcMemoryMETA.free = (bool_t(*)(Memory*, void*)) & GCMemory_free;
+	gcMemoryMETA.alloc = (void* (*)(TMemory*, usize_t,uword_t)) & GCMemory_alloc;
+	gcMemoryMETA.free = (bool_t(*)(TMemory*, void*)) & GCMemory_free;
 	gcMemoryMETA.collectGarbages = (AlignedMemoryReleaseInfo(*)(AlignedMemory *, bool_t, AlignedMemoryGCCallback))&GCMemory_collectGarbages;
-	gcMemoryMETA.allocating = (MemoryAllocatingDirectives(*)(Memory*, usize_t, uword_t, void*))GCMemory__allocating;
-	gcMemoryMETA.__destruct__ = (void(*)(Memory*, bool_t)) & GCMemory__destruct__;
+	gcMemoryMETA.allocating = (MemoryAllocatingDirectives(*)(TMemory*, usize_t, uword_t, void*))GCMemory__allocating;
+	gcMemoryMETA.__destruct__ = (void(*)(TMemory*, bool_t)) & GCMemory__destruct__;
 	
 }
 

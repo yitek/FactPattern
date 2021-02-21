@@ -28,7 +28,7 @@ static inline void* AlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* ch
 
 void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
 	void* unit=0;
-	MemoryAllocatingDirectives directive = ((MemoryMETA*)chunk->memory->__meta__)->allocating((Memory*)chunk->memory, chunk->pageSize, masks,chunk);
+	MemoryAllocatingDirectives directive = ((TMemoryMETA*)chunk->memory->__meta__)->allocating((TMemory*)chunk->memory, chunk->pageSize, masks,chunk);
 	if (directive == MemoryAllocatingDirective_fail) return 0;
 	if (directive == MemoryAllocatingDirective_lookup || directive == MemoryAllocatingDirective_lookupOrNew) {
 		if (chunk->memory->unitKind == MemoryUnitKind_link) {
@@ -65,7 +65,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 	page->next = chunk->page;
 	chunk->page = page;
 	if (chunk->memory->logger) {
-		Logger_trace(chunk->memory->logger,"AlignedMemory._resolveUnit","<AlignedMemoryPage>[%p] was allocated and initialized:{ size: %ld, capacity: %ld ,!allocatedBytes: %ld }",page, chunk->pageSize,chunk->pageCapacity,chunk->memory->allocatedBytes);
+		TLogger_trace(chunk->memory->logger,"AlignedMemory._resolveUnit","<AlignedMemoryPage>[%p] was allocated and initialized:{ size: %ld, capacity: %ld ,!allocatedBytes: %ld }",page, chunk->pageSize,chunk->pageCapacity,chunk->memory->allocatedBytes);
 	}
 	return unit;
 }
@@ -136,10 +136,10 @@ void AlignedMemory__destructChunk(AlignedMemory* self,usize_t index, AlignedMemo
 		usize_t pageSize = chunk->pageSize;
 		free(chunk);
 		if (index <32) {
-			Logger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemoryChunk>[%d][%p] for NORMAL is released: { pages: %ld, bytes: %ld + %d, units: %ld , unitSize: %ld, pageSize: %ld }.", index, chunk, pageCount, byteCount, sizeof(AlignedMemoryChunk), unitCount, unitSize, pageSize);
+			TLogger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemoryChunk>[%d][%p] for NORMAL is released: { pages: %ld, bytes: %ld + %d, units: %ld , unitSize: %ld, pageSize: %ld }.", index, chunk, pageCount, byteCount, sizeof(AlignedMemoryChunk), unitCount, unitSize, pageSize);
 		}
 		else {
-			Logger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemoryChunk>[%d][%p] for LARGE is released: { pages: %ld, bytes: %ld + %d, units: %ld , unitSize: %ld, pageSize: %ld }.", index, chunk, pageCount, byteCount, sizeof(AlignedMemoryChunk), unitCount, unitSize, pageSize);
+			TLogger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemoryChunk>[%d][%p] for LARGE is released: { pages: %ld, bytes: %ld + %d, units: %ld , unitSize: %ld, pageSize: %ld }.", index, chunk, pageCount, byteCount, sizeof(AlignedMemoryChunk), unitCount, unitSize, pageSize);
 		}
 		
 	}
@@ -171,9 +171,9 @@ void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed) {
 	}
 	self->large = 0;
 	if (self->logger) {
-		Logger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemory>[%p] released: { pages: %ld, bytes: %ld, units: %ld, chunks: %d }.", self, rs.pages,rs.bytes,rs.units,rs.chunkCount);
+		TLogger_trace(self->logger, "AlignedMemory.__destruct__", "<AlignedMemory>[%p] released: { pages: %ld, bytes: %ld, units: %ld, chunks: %d }.", self, rs.pages,rs.bytes,rs.units,rs.chunkCount);
 	}
-	Memory__destruct__((Memory*)self, existed);
+	TMemory__destruct__((TMemory*)self, existed);
 }
 bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
@@ -216,14 +216,14 @@ bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemory
 		rs->pages += pageCount;
 		rs->units = info.units;
 		rs->chunkCount++;
-		if(self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.",index ,chunk,info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
+		if(self->logger)TLogger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.",index ,chunk,info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
 		if (index >= 32 && !chunk->page) {
 			if (prevChunk) prevChunk->nextChunk = chunk->nextChunk;
 			else self->large = chunk->nextChunk;
 			free(chunk);
 			info.bytes += sizeof(AlignedMemoryChunk);
 			rs->bytes += sizeof(AlignedMemoryChunk);
-			if (self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] released self: { unitSize: %d,pageSize: %d }.", index, chunk, info.unitSize, info.pageSize);
+			if (self->logger)TLogger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] released self: { unitSize: %d,pageSize: %d }.", index, chunk, info.unitSize, info.pageSize);
 
 			info.chunkCount = 1;
 		}
@@ -273,14 +273,14 @@ bool_t AlignedMemory__collectChunkRefGarbages(AlignedMemory* self, AlignedMemory
 		rs->pages += pageCount;
 		rs->units = info.units;
 		rs->chunkCount++;
-		if (self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.", index, chunk, info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
+		if (self->logger)TLogger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] memory pages[unitsize=%d] released: { pages: %ld, bytes: %ld, units: %ld, unitSize: %ld, pageSize: %ld }.", index, chunk, info.unitSize, pageCount, info.bytes, info.units, info.unitSize, info.pageSize);
 		if (index >= 32 && !chunk->page) {
 			if (prevChunk) prevChunk->nextChunk = chunk->nextChunk;
 			else self->large = chunk->nextChunk;
 			free(chunk);
 			info.bytes += sizeof(AlignedMemoryChunk);
 			rs->bytes += sizeof(AlignedMemoryChunk);
-			if (self->logger)Logger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] released self: { unitSize: %d,pageSize: %d }.", index, chunk, info.unitSize, info.pageSize);
+			if (self->logger)TLogger_trace(self->logger, "AlignedMemory.collectGarbages", "<AlignedMemoryChunk>[%d][%p] released self: { unitSize: %d,pageSize: %d }.", index, chunk, info.unitSize, info.pageSize);
 
 			info.chunkCount = 1;
 		}
@@ -324,18 +324,18 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	return rs;
 }
 
-AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts, Logger* logger) {
+AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts, TLogger* logger) {
 	if (!self) {
 		self = (AlignedMemory*)m_alloc(sizeof(AlignedMemory),0);
 		if (!self) {
 			(AlignedMemory*)log_exit(ExitCode_memory, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemory));
 		}
 		else {
-			if (logger)  Logger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(AlignedMemory));
+			if (logger)  TLogger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(AlignedMemory));
 		}
 		self->allocatedBytes = sizeof(AlignedMemory);
 	}
-	Memory__construct__((Memory*)self, (MemoryOptions*)opts, logger);
+	TMemory__construct__((TMemory*)self, (MemoryOptions*)opts, logger);
 	self->__meta__ = (ObjectMetaLayout*)&alignedMemoryMETA;
 	if (opts) {
 		self->gcBytes = opts->gcBytes;
@@ -356,7 +356,7 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
 	self->large = 0;
-	if (logger) Logger_trace(logger, "AlignedMemory.__construct__", "<AlignedMemory> constructed.");
+	if (logger) TLogger_trace(logger, "AlignedMemory.__construct__", "<AlignedMemory> constructed.");
 	return self;
 }
 

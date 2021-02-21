@@ -92,7 +92,7 @@ extern "C" {
 
 	
 
-	AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts,Logger* logger);
+	AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts,TLogger* logger);
 	void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed);
 	
 	AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
@@ -171,8 +171,8 @@ extern "C" {
 			if (prev) prev->nextChunk = chunk;
 			else self->large = chunk;
 
-			if (((Memory*)self)->logger) {
-				Logger_trace(((Memory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
+			if (((TMemory*)self)->logger) {
+				TLogger_trace(((TMemory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
 					, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
 				);
 			}
@@ -212,8 +212,8 @@ extern "C" {
 				chunk->unitSize = unitSize;
 				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
-				if (((Memory*)self)->logger) {
-					Logger_trace(((Memory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
+				if (((TMemory*)self)->logger) {
+					TLogger_trace(((TMemory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
 						, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
 					);
 				}
@@ -293,8 +293,8 @@ extern "C" {
 			if (prev) prev->nextChunk = chunk;
 			else self->large = chunk;
 
-			if (((Memory*)self)->logger) {
-				Logger_trace(((Memory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
+			if (((TMemory*)self)->logger) {
+				TLogger_trace(((TMemory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
 					, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
 				);
 			}
@@ -334,8 +334,8 @@ extern "C" {
 				chunk->unitSize = unitSize;
 				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
-				if (((Memory*)self)->logger) {
-					Logger_trace(((Memory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
+				if (((TMemory*)self)->logger) {
+					TLogger_trace(((TMemory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
 						, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
 					);
 				}

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Logger.h"
+#include "TLogger.h"
 #ifndef __LOGGERS_INCLUDED__ 
 #define __LOGGERS_INCLUDED__
 #ifdef __cplusplus 

@@ -40,7 +40,7 @@ extern "C" {
 	}GCMemoryMETA;
 	extern GCMemoryMETA gcMemoryMETA;
 
-	GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, Logger* logger);
+	GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, TLogger* logger);
 	static inline void GCMemory__destruct__(GCMemory* self, bool_t existed) {
 		AlignedMemory__destruct__((AlignedMemory*)self,existed);
 	}

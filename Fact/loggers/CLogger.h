@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "Logger.h"
+#include "TLogger.h"
 #ifndef __CLOGGER_INCLUDED__ 
 #define __CLOGGER_INCLUDED__
 
@@ -17,16 +17,16 @@
 extern "C" {
 #endif
 
-	class CLogger {
+	class CTLogger {
 	private:
 		LogLevels level;
 	public:
-		CLogger() {
+		CTLogger() {
 			this->level = LogLevel_None;
 		}
 	protected:
 		virtual void output(LogLevels lv, const byte_t* category, const byte_t* message, void* args);
-		void message(Logger* self, const byte_t* category, const byte_t* message, ...);
+		void message(TLogger* self, const byte_t* category, const byte_t* message, ...);
 	};
 #ifdef __cplusplus 
 } //extern "C" {

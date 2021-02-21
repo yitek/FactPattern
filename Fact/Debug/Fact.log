@@ -1,4 +1,2 @@
-﻿  Logger.c
-D:\Yitek\FactPattern\Fact\loggers\Logger.c(287,35): warning C4090: “=”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\loggers\Logger.c(326,9): warning C4101: “lv”: 未引用的局部变量
+﻿  TestMemory.c
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe
