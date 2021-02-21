@@ -7,7 +7,7 @@ const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
 GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
-	GCMemory* p = (GCMemory*)AlignedMemory__construct__((AlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
+	GCMemory* p = (GCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
 	((TObject*)p)->__meta__ = (ObjectMetaLayout*)&gcMemoryMETA;
 	if (opts) {
 		p->sweepBytes = opts->sweepBytes;
@@ -19,18 +19,18 @@ GCMemory* GCMemory__construct__(GCMemory* self, GCMemoryOptions* opts, TLogger* 
 
 MemoryAllocatingDirectives GCMemory__allocating(GCMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
 		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}
 
 	if (memory->sweepBytes && memory->allocatedBytes + chunk->pageSize > memory->sweepBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages((AlignedMemory*)memory, 0, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 0, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}

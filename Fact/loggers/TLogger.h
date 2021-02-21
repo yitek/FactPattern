@@ -51,12 +51,12 @@ extern "C" {
 
 	typedef void (*TLoggerOutput)(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 	
-	typedef struct stTLoggerMETA {
+	typedef struct stTLoggerMeta {
 		struct stObjectMetaLayout;
 		TLoggerOutput output;
-	}TLoggerMETA;
+	}TLoggerMeta;
 
-	extern TLoggerMETA loggerMETA;
+	extern TLoggerMeta Logger__meta__;
 
 	extern TLogger* TLogger_default;
 
@@ -83,7 +83,7 @@ extern "C" {
 
 	void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 	static inline void TLogger_output__virtual__(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
-		((TLoggerMETA*)(((TObject*)self)->__meta__))->output(self, lv, category, message, args);
+		((TLoggerMeta*)(((TObject*)self)->__meta__))->output(self, lv, category, message, args);
 	}
 
 	

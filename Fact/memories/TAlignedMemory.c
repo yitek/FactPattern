@@ -1,13 +1,13 @@
-#include "AlignedMemory.h"
+#include "TAlignedMemory.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 
-AlignedMemoryMETA alignedMemoryMETA;
+TAlignedMemoryMeta TAlignedMemory_Meta;
 
 
 
-static inline void* AlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* page, size_t unitSize,uword_t masks) {
+static inline void* TAlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* page, size_t unitSize,uword_t masks) {
 	MemoryLinkUnit* unit = (MemoryLinkUnit*)(page +1);
 	for (usize_t i = 0, j = chunk->pageCapacity - 1;i<j; i++) {
 		unit->next = page->free;
@@ -17,7 +17,7 @@ static inline void* AlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,A
 	return unit;
 }
 
-static inline void* AlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize, uword_t masks) {
+static inline void* TAlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize, uword_t masks) {
 	byte_t* unit = (byte_t*)&page->free;
 	for (usize_t i = 0; i < chunk->pageCapacity; i++) {
 		((ObjectLayout*)unit)->ref = 0;
@@ -26,9 +26,9 @@ static inline void* AlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* ch
 	return (void*)&page->free;
 }
 
-void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
+void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
 	void* unit=0;
-	MemoryAllocatingDirectives directive = ((TMemoryMETA*)chunk->memory->__meta__)->allocating((TMemory*)chunk->memory, chunk->pageSize, masks,chunk);
+	MemoryAllocatingDirectives directive = ((TMemoryMeta*)chunk->memory->__meta__)->allocating((TMemory*)chunk->memory, chunk->pageSize, masks,chunk);
 	if (directive == MemoryAllocatingDirective_fail) return 0;
 	if (directive == MemoryAllocatingDirective_lookup || directive == MemoryAllocatingDirective_lookupOrNew) {
 		if (chunk->memory->unitKind == MemoryUnitKind_link) {
@@ -57,10 +57,10 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 	}
 	page->free = 0;
 	if (chunk->memory->unitKind == MemoryUnitKind_link) {
-		unit = AlignedMemory__initPageLinkUnits(chunk, page, unitSize,masks);
+		unit = TAlignedMemory__initPageLinkUnits(chunk, page, unitSize,masks);
 	}
 	else {
-		unit = AlignedMemoryMemory__initPageRefUnits(chunk, page, unitSize, masks);
+		unit = TAlignedMemoryMemory__initPageRefUnits(chunk, page, unitSize, masks);
 	}
 	page->next = chunk->page;
 	chunk->page = page;
@@ -72,7 +72,7 @@ void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize
 
 
 
-bool_t AlignedMemory_freeLink(AlignedMemory* self, void* p) {
+bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* p) {
 	for (usize_t i = 0; i < 32; i++) {
 		AlignedMemoryChunk* chunk = self->chunks[i];
 		if(!chunk) continue;
@@ -118,7 +118,7 @@ bool_t AlignedMemory_freeLink(AlignedMemory* self, void* p) {
 	}
 	return 0;
 }
-void AlignedMemory__destructChunk(AlignedMemory* self,usize_t index, AlignedMemoryChunk* chunk, AlignedMemoryReleaseInfo*const rs) {
+inline void TAlignedMemory__destructChunk(TAlignedMemory* self,usize_t index, AlignedMemoryChunk* chunk, AlignedMemoryReleaseInfo*const rs) {
 	usize_t pageCount = 0;
 	
 	AlignedMemoryPage* page = chunk->page;
@@ -153,20 +153,20 @@ void AlignedMemory__destructChunk(AlignedMemory* self,usize_t index, AlignedMemo
 	rs->chunkCount++;
 }
 
-void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed) {
+void TAlignedMemory__destruct__(TAlignedMemory* self, bool_t existed) {
 	AlignedMemoryReleaseInfo rs;
 	rs.bytes = rs.pages = rs.pageSize = rs.units = rs.chunkCount =rs.unitSize = 0;
 	usize_t i = 0;
 	for (; i < 32; i++) {
 		AlignedMemoryChunk* chunk = self->chunks[i];
 		if (chunk) {
-			AlignedMemory__destructChunk(self,i,chunk,(AlignedMemoryReleaseInfo*const)&rs);
+			TAlignedMemory__destructChunk(self,i,chunk,(AlignedMemoryReleaseInfo*const)&rs);
 			
 		}
 	}
 	AlignedMemoryChunk* chunk = self->large;
 	while (chunk) {
-		AlignedMemory__destructChunk(self, i, chunk, (AlignedMemoryReleaseInfo* const)&rs);
+		TAlignedMemory__destructChunk(self, i, chunk, (AlignedMemoryReleaseInfo* const)&rs);
 		i++;
 	}
 	self->large = 0;
@@ -175,7 +175,7 @@ void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed) {
 	}
 	TMemory__destruct__((TMemory*)self, existed);
 }
-bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
+inline bool_t TAlignedMemory__collectChunkLinkGarbages(TAlignedMemory* self,AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk,AlignedMemoryChunk* prevChunk, usize_t index,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
 	usize_t pageCount = 0;
 	AlignedMemoryPage* page = chunk->page;
@@ -235,7 +235,7 @@ bool_t AlignedMemory__collectChunkLinkGarbages(AlignedMemory* self,AlignedMemory
 	}
 	return 0;
 }
-bool_t AlignedMemory__collectChunkRefGarbages(AlignedMemory* self, AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk, AlignedMemoryChunk* prevChunk, usize_t index, AlignedMemoryGCCallback callback) {
+inline bool_t TAlignedMemory__collectChunkRefGarbages(TAlignedMemory* self, AlignedMemoryReleaseInfo* rs, AlignedMemoryChunk* chunk, AlignedMemoryChunk* prevChunk, usize_t index, AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo info;
 	usize_t pageCount = 0;
 	AlignedMemoryPage* page = chunk->page;
@@ -292,7 +292,7 @@ bool_t AlignedMemory__collectChunkRefGarbages(AlignedMemory* self, AlignedMemory
 	}
 	return 0;
 }
-AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_t releasePage ,AlignedMemoryGCCallback callback) {
+AlignedMemoryReleaseInfo TAlignedMemory_collectGarbages(TAlignedMemory* self,bool_t releasePage ,AlignedMemoryGCCallback callback) {
 	AlignedMemoryReleaseInfo rs;
 	rs.bytes = rs.pages = rs.pageSize = rs.units = rs.chunkCount = rs.unitSize = 0;
 	
@@ -301,8 +301,8 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	for (i = 0; i < 32; i++) {
 		chunk = self->chunks[i];
 		if (chunk) {
-			if(self->unitKind == MemoryUnitKind_link)AlignedMemory__collectChunkLinkGarbages(self, &rs, chunk,0,i, callback);
-			else if (self->unitKind == MemoryUnitKind_ref)AlignedMemory__collectChunkRefGarbages(self, &rs, chunk, 0, i, callback);
+			if(self->unitKind == MemoryUnitKind_link)TAlignedMemory__collectChunkLinkGarbages(self, &rs, chunk,0,i, callback);
+			else if (self->unitKind == MemoryUnitKind_ref)TAlignedMemory__collectChunkRefGarbages(self, &rs, chunk, 0, i, callback);
 		}
 	}
 
@@ -311,8 +311,8 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	while (chunk) {
 		AlignedMemoryChunk* nextChunk = chunk->nextChunk;
 		bool_t chunkCollectRs = 0;
-		if (self->unitKind == MemoryUnitKind_link)AlignedMemory__collectChunkLinkGarbages(self, &rs, chunk, prevChunk, i, callback);
-		else if (self->unitKind == MemoryUnitKind_ref)AlignedMemory__collectChunkRefGarbages(self, &rs, chunk, prevChunk, i, callback);
+		if (self->unitKind == MemoryUnitKind_link)TAlignedMemory__collectChunkLinkGarbages(self, &rs, chunk, prevChunk, i, callback);
+		else if (self->unitKind == MemoryUnitKind_ref)TAlignedMemory__collectChunkRefGarbages(self, &rs, chunk, prevChunk, i, callback);
 		if (chunkCollectRs==0) {
 			// chunk 没被移除
 			prevChunk = chunk;
@@ -324,19 +324,19 @@ AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self,bool_
 	return rs;
 }
 
-AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts, TLogger* logger) {
+TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryOptions* opts, TLogger* logger) {
 	if (!self) {
-		self = (AlignedMemory*)m_alloc(sizeof(AlignedMemory),0);
+		self = (TAlignedMemory*)m_alloc(sizeof(TAlignedMemory),0);
 		if (!self) {
-			(AlignedMemory*)log_exit(ExitCode_memory, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemory));
+			(TAlignedMemory*)log_exit(ExitCode_memory, "AlignedMemory.__construct__", "Cannot alloc memory:%ld", (long)sizeof(TAlignedMemory));
 		}
 		else {
-			if (logger)  TLogger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(AlignedMemory));
+			if (logger)  TLogger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(TAlignedMemory));
 		}
-		self->allocatedBytes = sizeof(AlignedMemory);
+		self->allocatedBytes = sizeof(TAlignedMemory);
 	}
 	TMemory__construct__((TMemory*)self, (MemoryOptions*)opts, logger);
-	self->__meta__ = (ObjectMetaLayout*)&alignedMemoryMETA;
+	self->__meta__ = (ObjectMetaLayout*)&TAlignedMemory_Meta;
 	if (opts) {
 		self->gcBytes = opts->gcBytes;
 		self->pageSize = opts->pageSize;
@@ -360,14 +360,14 @@ AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOpti
 	return self;
 }
 
-MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
+MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
 		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMETA*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}

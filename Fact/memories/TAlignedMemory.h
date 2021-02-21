@@ -8,7 +8,7 @@
 ******************************************************/
 
 #pragma once
-#include "Memory.h"
+#include "TMemory.h"
 #ifndef __ALIGNEDMEMORY_INCLUDED__ 
 #define __ALIGNEDMEMORY_INCLUDED__
 #ifdef __cplusplus 
@@ -77,36 +77,37 @@ extern "C" {
 		AlignedMemoryChunk* large;
 		AlignedMemoryChunk* chunks[32+1];
 
-	}AlignedMemory;
+	}TAlignedMemory;
 
-	typedef struct stAlignedMemoryMETA {
-		struct stMemoryMETA;
+	typedef struct stAlignedMemoryMeta {
+		struct stMemoryMeta;
 		
 		void* (*initPageUnits)(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, usize_t size);
-		AlignedMemoryReleaseInfo(*collectGarbages)(AlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
-	} AlignedMemoryMETA;
+		AlignedMemoryReleaseInfo(*collectGarbages)(TAlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
+	} TAlignedMemoryMeta;
 
-	extern AlignedMemoryMETA alignedMemoryMETA;
-
-	
+	extern TAlignedMemoryMeta TAlignedMemory_Meta;
 
 	
 
-	AlignedMemory* AlignedMemory__construct__(AlignedMemory* self, AlignedMemoryOptions* opts,TLogger* logger);
-	void AlignedMemory__destruct__(AlignedMemory* self, bool_t existed);
 	
-	AlignedMemoryReleaseInfo AlignedMemory_collectGarbages(AlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
-	
-#define AlignedMemory_sfree(self, p) (AlignedMemory_free(self,p)?p=0,1:0);
 
-	MemoryAllocatingDirectives AlignedMemory__allocating(AlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);
-	void* AlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
-	bool_t AlignedMemory_freeLink(AlignedMemory* self, void* obj);
-	static inline bool_t AlignedMemory_freeRef(AlignedMemory* self, void* obj) {
+	TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryOptions* opts,TLogger* logger);
+	void TAlignedMemory__destruct__(TAlignedMemory* self, bool_t existed);
+	
+	AlignedMemoryReleaseInfo TAlignedMemory_collectGarbages(TAlignedMemory* self, bool_t releasePage,AlignedMemoryGCCallback callback);
+	
+#define AlignedMemory_sfree(self, p) (TAlignedMemory_free(self,p)?p=0,1:0);
+
+	MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);
+	void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
+
+	bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* obj);
+	static inline bool_t AlignedMemory_freeRef(TAlignedMemory* self, void* obj) {
 		return ((MemoryRefUnit*)obj)->ref=0,1;
 	}
-	static inline bool_t AlignedMemory_free(AlignedMemory* self, void* obj) {
-		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_freeLink(self,obj);
+	static inline bool_t TAlignedMemory_free(TAlignedMemory* self, void* obj) {
+		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_freeLink(self,obj);
 		else if(((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return AlignedMemory_freeRef(self, obj);
 		return 0;
 	}
@@ -122,7 +123,7 @@ extern "C" {
 	}\
 
 
-	static inline void* AlignedMemory_allocLink(AlignedMemory* self, usize_t unitSize,uword_t masks) {
+	static inline void* TAlignedMemory_allocLink(TAlignedMemory* self, usize_t unitSize,uword_t masks) {
 
 		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
@@ -226,7 +227,7 @@ extern "C" {
 
 		MemoryLookupLinkUnit(unit, chunk, unitSize, masks)
 		if (unit) return unit;
-		return AlignedMemory__chunkResolveUnit(chunk, unitSize,masks);
+		return TAlignedMemory__chunkResolveUnit(chunk, unitSize,masks);
 	}
 
 #define MemoryLookupRefUnit(unit, chunk, unitSize,masks) \
@@ -244,7 +245,7 @@ extern "C" {
 		lookupPage = lookupPage->next;\
 	}\
 
-	static inline void* AlignedMemory_allocRef(AlignedMemory* self, usize_t unitSize, uword_t masks) {
+	static inline void* TAlignedMemory_allocRef(TAlignedMemory* self, usize_t unitSize, uword_t masks) {
 
 		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
@@ -361,11 +362,11 @@ extern "C" {
 
 		}
 		if (unit) return unit;
-		return AlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
+		return TAlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
 	}
-	static inline void* AlignedMemory_alloc(AlignedMemory* self, usize_t unitSize, uword_t masks) {
-		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return AlignedMemory_allocLink(self, unitSize, masks);
-		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return AlignedMemory_allocRef(self,unitSize,masks);
+	static inline void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t unitSize, uword_t masks) {
+		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_allocLink(self, unitSize, masks);
+		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return TAlignedMemory_allocRef(self,unitSize,masks);
 		return 0;
 	}
 	

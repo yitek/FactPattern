@@ -48,9 +48,6 @@
     <ClInclude Include="memories\memories_module.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="memories\AlignedMemory.h">
-      <Filter>memories</Filter>
-    </ClInclude>
     <ClInclude Include="layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -61,6 +58,9 @@
       <Filter>loggers</Filter>
     </ClInclude>
     <ClInclude Include="memories\TMemory.h">
+      <Filter>memories</Filter>
+    </ClInclude>
+    <ClInclude Include="memories\TAlignedMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,9 +83,6 @@
     <ClCompile Include="memories\memories_module.c">
       <Filter>memories</Filter>
     </ClCompile>
-    <ClCompile Include="memories\AlignedMemory.c">
-      <Filter>memories</Filter>
-    </ClCompile>
     <ClCompile Include="memories\GCMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
       <Filter>loggers</Filter>
     </ClCompile>
     <ClCompile Include="memories\TMemory.c">
+      <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="memories\TAlignedMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
   </ItemGroup>

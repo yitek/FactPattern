@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-TLoggerMETA loggerMETA;
+TLoggerMeta Logger__meta__;
 
 TLoggerGCLayout TLogger_defaultInstance;
 TLogger* TLogger_default =0;
@@ -262,7 +262,7 @@ TLogger* TLogger__construct__(TLogger* self, TLoggerOptions* opts) {
 			log_exit(ExitCode_memory,"TLogger.__construct__","Cannot allocate memory.");
 		}
 	}
-	self->__meta__ = (ObjectMetaLayout*)&loggerMETA;
+	self->__meta__ = (ObjectMetaLayout*)&Logger__meta__;
 	if (opts) {
 		m_copy(&self->level,opts,sizeof(TLoggerOptions));
 	}

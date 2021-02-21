@@ -1,9 +1,9 @@
-#include "Memory.h"
+#include "TMemory.h"
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-TMemoryMETA memoryMETA;
+TMemoryMeta TMemory__meta__;
 
 TMemoryGCLayout TMemory_defaultInstance;
 
@@ -16,7 +16,7 @@ void* TMemory_alloc(TMemory* self, usize_t size,uword_t masks) {
 		if (self && self->logger) TLogger_notice(self->logger,"Memory.alloc","parameter size is required.");
 		return 0;
 	}
-	if (!self || ((TMemoryMETA*)self->__meta__)->allocating == 0 || ((TMemoryMETA*)self->__meta__)->allocating(self, size,masks,0)>0) {
+	if (!self || ((TMemoryMeta*)self->__meta__)->allocating == 0 || ((TMemoryMeta*)self->__meta__)->allocating(self, size,masks,0)>0) {
 		void* p = m_alloc(size,masks);
 		if (self && self->logger) {
 			if (p)TLogger_trace(self->logger, "Memory.alloc", "Memory[%p] allocated:%ld", p, (long)size);
@@ -65,7 +65,7 @@ TMemory* TMemory__construct__(TMemory* self, const MemoryOptions* options,TLogge
 			}
 		}
 	}
-	self->__meta__ = (ObjectMetaLayout*)&memoryMETA;
+	self->__meta__ = (ObjectMetaLayout*)&TMemory__meta__;
 	if (options) {
 		self->totalBytes = options->totalBytes;
 	}

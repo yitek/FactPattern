@@ -49,15 +49,15 @@ extern "C" {
 		
 	} TMemory;
 
-	typedef struct stMemoryMETA {
+	typedef struct stMemoryMeta {
 		struct stObjectMetaLayout;
 		void* (*alloc)(TMemory* self,usize_t size,uword_t masks);
 		bool_t (*free)(TMemory* self,void* p);
 		void(*__destruct__)(TMemory* self,bool_t existed);
 		MemoryAllocatingDirectives(*allocating)(TMemory* memory,usize_t size,uword_t masks,void* param);
-	} TMemoryMETA;
+	} TMemoryMeta;
 
-	extern TMemoryMETA memoryMETA;
+	extern TMemoryMeta TMemory__meta__;
 
 	/// <summary>
 	/// 唯一的默认内存管理器，
@@ -81,9 +81,9 @@ extern "C" {
 	//MemoryAllocatingDirectives Memory__allocating(Memory* memory, usize_t size, void* param);
 	
 
-	inline static void* TMemory_alloc__virtual__(TMemory* self, usize_t size,uword_t masks) {return ((TMemoryMETA*)((TObject*)self)->__meta__)->alloc(self,size,masks);}
-	inline static bool_t TMemory_free__virtual__(TMemory* self, void* p) {return ((TMemoryMETA*)((TObject*)self)->__meta__)->free(self, p);}
-	inline static void TMemory__destruct____virtual__(TMemory* self, bool_t existed) { ((TMemoryMETA*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
+	inline static void* TMemory_alloc__virtual__(TMemory* self, usize_t size,uword_t masks) {return ((TMemoryMeta*)((TObject*)self)->__meta__)->alloc(self,size,masks);}
+	inline static bool_t TMemory_free__virtual__(TMemory* self, void* p) {return ((TMemoryMeta*)((TObject*)self)->__meta__)->free(self, p);}
+	inline static void TMemory__destruct____virtual__(TMemory* self, bool_t existed) { ((TMemoryMeta*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
 
 	static inline bool_t TMemory_copy(void* dest, const void* src, usize_t size) { return (dest && src && size) ? m_copy(dest, src, size), 1 : 0; }
 	static inline bool_t TMemory_repeat(void* dest, usize_t times, void* value, usize_t size) { return (dest&&times&&value&&size)?m_repeat(dest,times,value,size),1:0; }
