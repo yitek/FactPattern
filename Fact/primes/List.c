@@ -150,6 +150,7 @@ Array* List_toArray(List* self, Array* target, const usize_t itemSize, TMemory* 
 
 
 #undef ALLOC
+#undef ALLOC1
 #undef FREE
 
 

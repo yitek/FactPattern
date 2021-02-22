@@ -80,9 +80,9 @@ typedef unsigned int addr_t;
 #endif // endif _WIN64
 
 #if defined(__WIN__)
-typedef unsigned short lchar_t;
+typedef unsigned short schar_t;
 #elif defined(__LINUX__)
-typedef unsigned int lchar_t;
+typedef unsigned int schar_t;
 #endif
 
 typedef char byte_t;

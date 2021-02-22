@@ -303,6 +303,29 @@ static inline bool_t m_equal(void* dest, const void* src, usize_t size) {
 }
 static inline bool_t TMemory_equal(void* dest, const void* src, usize_t size) { return m_equal(dest,src,size); }
 
+static inline int m_compare(const void* leftBuffer, const void* rightBuffer) {
+	if (leftBuffer == rightBuffer) return 0;
+	if (leftBuffer) {
+		if (rightBuffer) {
+			usize_t at = 0;
+			for (;; at++) {
+				ubyte_t lc = *(ubyte_t*)leftBuffer; ubyte_t rc = *(ubyte_t*)rightBuffer;
+				if (lc > rc) return 1;
+				if (lc < rc) return -1;
+				if (lc == 0) return 0;
+				leftBuffer =((ubyte_t*)leftBuffer)+1; rightBuffer= ((ubyte_t*)rightBuffer)+1;
+			}
+		}
+		else return 1;
+	}
+	else {
+		return -1;
+	}
+}
+
+static inline bool_t TMemory_compare(const void* left, const void* right) { return m_compare(left, right); }
+
+
 static inline usize_t m_strlen(const char* str) {
 	usize_t len = 0;
 	while (*str++)++len;
