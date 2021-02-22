@@ -5,6 +5,7 @@
 
 TAlignedMemoryMeta TAlignedMemory__meta__ = {
 	.alloc = (void* (*)(TMemory*, usize_t,void*,MemoryKinds))TAlignedMemory_alloc,
+	.alloc1 = (void* (*)(TMemory*, usize_t,void*,MemoryKinds))TAlignedMemory_alloc1,
 	.allocating = TAlignedMemory__allocating,
 	.collectGarbages = TAlignedMemory_collectGarbages,
 	.free = (bool_t(*)(TMemory*, void*))TAlignedMemory_free,
@@ -34,7 +35,7 @@ static inline void* TAlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* c
 	return (void*)&page->free;
 }
 
-void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
+void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,MemoryKinds masks) {
 	void* unit=0;
 	MemoryAllocatingDirectives directive = ((TAlignedMemoryMeta*)chunk->memory->__meta__)->allocating(chunk->memory, chunk->pageSize, masks,chunk);
 	if (directive == MemoryAllocatingDirective_fail) return 0;

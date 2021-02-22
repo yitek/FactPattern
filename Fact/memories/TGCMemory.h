@@ -40,10 +40,16 @@ extern "C" {
 		TAlignedMemory__destruct__((TAlignedMemory*)self,existed);
 	}
 
-	static inline void* TGCMemory_alloc(TGCMemory* self, usize_t size,void* mInitArgs,MemoryKinds masks) {
-		void* p = TAlignedMemory_allocRef((TAlignedMemory*)self, size + sizeof(MTObjUnit),masks);
+	static inline void* TGCMemory_alloc(TGCMemory* self, usize_t size,void* mInitArgs,MemoryKinds mkind) {
+		void* p = TAlignedMemory_allocRef((TAlignedMemory*)self, size + sizeof(MTObjUnit), mkind);
 		
 		//(*((GCUnitLayout*)p-1)).type = type;
+		return p;
+	}
+
+	static inline void* TGCMemory_alloc1(TGCMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
+		MRefUnit* p = (MRefUnit*)TGCMemory_alloc(self, size, mInitArgs, mkind);
+		p->__ref__ = 1;
 		return p;
 	}
 	

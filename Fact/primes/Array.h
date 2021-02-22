@@ -27,15 +27,15 @@ extern "C" {
 	const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind);
 	void Array__destruct__(Array* self, bool_t existed);
 
-	inline usize_t Array_length(const Array* self) { return self ? self->length : 0; }
+	inline static usize_t Array_length(const Array* self) { return self ? self->length : 0; }
 
 	const Array* Array_concat(const Array* left, const Array* right, usize_t unitSize,const Array* empty,  TMemory* mm, void* mInitArgs, MemoryKinds mkind);
 
 	const Array* Array_clip(const Array* arr, const usize_t start, const usize_t length, const usize_t unitSize,const Array* empty, TMemory* mm, void* mInitArgs, MemoryKinds mkind);
 
-	inline void* Array_buffer(const Array* self) { return (char*)self + sizeof(Array); }
+	inline static void* Array_buffer(const Array* self) { return (char*)self + sizeof(Array); }
 
-	inline void* Array__get__(const Array* self, usize_t index, usize_t unitSize) {
+	inline static void* Array__get__(const Array* self, usize_t index, usize_t unitSize) {
 		return  (self &&index < self->length) ?  ((char*)self + sizeof(Array) + index * unitSize):0;
 	}
 	usize_t Array_index(const Array* self, void* item, usize_t unitSize,usize_t start);

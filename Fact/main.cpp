@@ -7,9 +7,10 @@
 #include "tests/memories/TestMemory.h"
 #include "tests/primes/TestArray.h" 
 #include "tests/primes/TestLink.h" 
+#include "tests/primes/TestList.h"
 //#include "tests/TestString.h"
 //#include "tests/TestLink.h"
-//#include "tests/TestList.h"
+
  
 void printSysInfo() {
 #if defined(__WIN__)
@@ -57,9 +58,10 @@ int main()
     testAlignedMemory();
     testArray();
     testLink();
+    testList();
     //testString();
     //testLink();
-    //testList();
+    //
     std::cout << "程序员xxx.press any key to continue...\n";
     char key = std::getchar();
 }

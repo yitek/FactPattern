@@ -24,12 +24,12 @@ aux_source_directory(memories DIR_MEMORIES)
 # aux_source_directory(tests DIR_TESTS)
 aux_source_directory(tests/loggers DIR_TESTS_LOGGERS)
 aux_source_directory(tests/memories DIR_TESTS_MEMORIES)
-
+aux_source_directory(tests/primes DIR_TESTS_PRIMES)
 
 # 指定生成目标
 add_executable(Fact ${DIR_ROOT} 
 	${DIR_PRIMES} ${DIR_MEMORIES} 
-	${DIR_TESTS_LOGGERS} ${DIR_TESTS_MEMORIES}
+	${DIR_TESTS_LOGGERS} ${DIR_TESTS_MEMORIES}  ${DIR_TESTS_PRIMES} ${DIR_TESTS_PRIMES}
 )
 
 # 添加 tests 子目录 链接用

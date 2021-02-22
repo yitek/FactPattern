@@ -159,6 +159,7 @@ typedef struct stTMemory {
 typedef struct stTMemoryMeta {
 	struct stClazzMeta;
 	void* (*alloc)(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
+	void* (*alloc1)(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
 	bool_t(*free)(TMemory* mm, void* p);
 	void (*__destruct__)(TMemory* mm, bool_t existed);
 }TMemoryMeta;
@@ -176,10 +177,14 @@ extern TMemory* TMemory_default;
 TMemory* TMemory__construct__(TMemory* self);
 void TMemory__destruct__(TMemory* self,bool_t exsited);
 void* TMemory_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
+void* TMemory_alloc1(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
 bool_t TMemory_free(TMemory* mm,void*p);
 
 static inline void* m_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds) {
 	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc(mm, size, mInitArgs, mkinds);
+}
+static inline void* m_alloc1(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds) {
+	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc1(mm, size, mInitArgs, mkinds);
 }
 static inline bool_t m_free(TMemory* mm, void* p) {
 	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->free(mm, p);

@@ -19,7 +19,7 @@ extern "C" {
 
 	typedef struct {
 		struct stLink;
-		int no;
+		word_t no;
 		const byte_t* name;
 		int age;
 	}LinkStudent;

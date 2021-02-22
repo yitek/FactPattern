@@ -13,6 +13,7 @@ TMemoryMeta TMemory__meta__ = {
 	.offset = 0,
 	.get_type = 0,
 	.alloc = TMemory_alloc,
+	.alloc1 = TMemory_alloc1,
 	.free = TMemory_free,
 	.__destruct__ = 0,
 };
@@ -30,6 +31,17 @@ void* TMemory_alloc(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mk
 	}
 	else {
 		log_exit(ExitCode_memory, "TMemory.alloc", "Cannot allocate memory!");
+		exit(1);
+	}
+}
+
+void* TMemory_alloc1(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
+	void* p = malloc(size);
+	if (p) {
+		return p;
+	}
+	else {
+		log_exit(ExitCode_memory, "TMemory.alloc1", "Cannot allocate memory!");
 		exit(1);
 	}
 }

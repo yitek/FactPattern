@@ -3,7 +3,7 @@
 *
 * author:yiy
 *
-* description: 链表类的测试代码
+* description: 閾捐〃绫荤殑娴嬭瘯浠ｇ爜
 *
 ******************************************************/
 
@@ -16,8 +16,8 @@ extern "C" {
 #endif
 
 	typedef struct {
-		int no;
-		char_t* name;
+		word_t no;
+		char* name;
 		int age;
 	}ListStudent;
 

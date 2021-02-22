@@ -3,13 +3,13 @@
 *
 * author:yiy
 *
-* description: Á´±íÀà
+* description: é“¾è¡¨ç±»
 *
 ******************************************************/
 #pragma once
 
-#include "Array.h"
 #include "link.h"
+#include "Array.h"
 #ifndef __LIST_INCLUDED__ 
 #define __LIST_INCLUDED__
 
@@ -20,33 +20,33 @@ extern "C" {
 	
 
 	typedef struct stList {
-		size_t length;
+		usize_t length;
 		Link* head;
 		Link* tail;
 
 	} List;
 
-	List* List___construct__(List* self, void* mmArgs, Memory* memory);
-	void List___destruct__(List* self, Memory* memory);
-	void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory);
-	inline void* List_push(List* self, size_t itemSize, void* mmArgs, Memory* memory) { return List_append(self,itemSize,mmArgs,memory); }
-	void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory);
-	inline void* List_searchByIndex(List* self, size_t index) {
+	List* List__construct__(List* self, TMemory* memory, void* itemType, MemoryKinds mkind);
+	void List__destruct__(List* self, bool_t existed, TMemory* memory);
+	void* List_append(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind);
+	inline static void* List_push(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind) { return List_append(self,itemSize,memory,itemType,mkind); }
+	void* List_unshift(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind);
+	inline static void* List_searchByIndex(List* self, usize_t index) {
 		return self->head && index<self->length ? (void*)(Link_searchByIndex(self->head, index)+1) : 0;
 	}
-	inline LinkSearchResult List_searchByValue(List* self, word_t value) {
+	inline static LinkSearchResult List_searchByValue(List* self, word_t value) {
 		if (self && self->head) return Link_searchByValue(self->head, value);
 		LinkSearchResult rs;
 		rs.index = -1; rs.item = 0;
 		return rs; 
 	}
-	inline LinkSearchResult List_searchByItem(List* self, void* item,size_t itemSize) {
+	inline static LinkSearchResult List_searchByItem(List* self, void* item,usize_t itemSize) {
 		if (self && self->head) return Link_searchByItem(self->head, item,itemSize);
 		LinkSearchResult rs;
 		rs.index = -1; rs.item = 0;
 		return rs;
 	}
-	inline LinkSearchResult List_searchByPredicate(List* self, LinkPredicate predicate, void* predicateArgs) {
+	inline static LinkSearchResult List_searchByPredicate(List* self, LinkPredicate predicate, void* predicateArgs) {
 		LinkSearchResult rs;
 		if (!self->head) { rs.index = -1; rs.item = 0; }
 		else {
@@ -57,50 +57,62 @@ extern "C" {
 	}
 	
 
-	inline bool_t List_internalRemove(List* self, LinkRemoveResult rrs, Memory* memory) {
-		if (rrs.link) {
-			if (rrs.link == self->head) {
-				self->head = rrs.link->next;
-			}
-			if (rrs.link == self->tail) {
-				self->tail = rrs.prev;
-			}
-			if (!memory) memory = Memory_default();
-			memory->decrease(memory,rrs.link);
-			self->length--;
+	bool_t List__internalRemove(List* self, LinkRemoveResult rrs, TMemory* memory);
+
+	inline static bool_t List_removeByIndex(List* self, usize_t index, TMemory* memory) {
+		return (self && self->head) ? List__internalRemove(self, Link_removeByIndex((Link*)self, index), memory) : 0;
+	}
+	inline static bool_t List_removeByValue(List* self, word_t value, TMemory* memory) {
+		return(self && self->head) ? List__internalRemove(self, Link_removeByIndex((Link*)self, value), memory) : 0;
+	}
+
+	inline static bool_t List_removeByItem(List* self, void* item, usize_t itemSize, TMemory* memory) {
+		return (self && self->head) ? List__internalRemove(self, Link_removeByItem((Link*)self, item, itemSize), memory) : 0;
+	}
+
+	inline static bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* searchArgs, TMemory* memory) {
+		return (self && self->head) ? List__internalRemove(self, Link_removeByPredicate((Link*)self, predicate, searchArgs), memory) : 0;
+	}
+	bool_t List_pop(List* self,void* item,usize_t itemSize, TMemory* memory);
+	bool_t List_shift(List* self, void* item, usize_t itemSize, TMemory* memory);
+	word_t List_popValue(List* self, TMemory* memory);
+	word_t List_shiftValue(List* self, TMemory* memory);
+	
+
+	static inline void* List__get__(List* self, usize_t index) {
+		return self && self->head && self->length>index ? (void*)(Link_searchByIndex(self->head, index) + 1) : 0;
+	}
+
+
+	static inline bool_t List__getValue__(List* self, usize_t index, word_t value) {
+		void* p = List__get__(self, index);
+		if (p) {
+			*((word_t*)p) = value;
+			return 1;
+		}
+		return 0;
+		}
+
+	static inline bool_t  List__set__(List* self, usize_t index, void* item, usize_t itemSize) {
+		if (!item || !itemSize) return 0;
+		void* p = List__get__(self, index);
+		if (p) {
+			TMemory_copy(p, item, itemSize);
+			return 1;
+		}return 0;
+
+	}
+
+	static inline bool_t  List__setValue__(List* self, usize_t index, word_t value) {
+		void* p = List__get__(self, index);
+		if (p) {
+			*((word_t*)p) = value;
 			return 1;
 		}
 		return 0;
 	}
-
-	inline bool_t List_removeByIndex(List* self, size_t index, Memory* memory) {
-		return (self && self->head) ? List_internalRemove(self, Link_removeByIndex((Link*)self, index), memory) : 0;
-	}
-	inline bool_t List_removeByValue(List* self, word_t value, Memory* memory) {
-		return(self && self->head) ? List_internalRemove(self, Link_removeByIndex((Link*)self, value), memory) : 0;
-	}
-
-	inline bool_t List_removeByItem(List* self, void* item, size_t itemSize, Memory* memory) {
-		return (self && self->head) ? List_internalRemove(self, Link_removeByItem((Link*)self, item, itemSize), memory) : 0;
-	}
-
-	inline bool_t List_removeByPredicate(List* self, LinkPredicate predicate, void* searchArgs, Memory* memory) {
-		return (self && self->head) ? List_internalRemove(self, Link_removeByPredicate((Link*)self, predicate, searchArgs), memory) : 0;
-	}
-	bool_t List_pop(List* self,void* item,size_t itemSize, Memory* memory);
-	bool_t List_shift(List* self, void* item, size_t itemSize, Memory* memory);
-	word_t List_popValue(List* self, Memory* memory);
-	word_t List_shiftValue(List* self, Memory* memory);
-	
-
-	inline void* List___INDEXGETER__(List* self, size_t index) {
-		return self && self->head && self->length>index ? (void*)(Link_searchByIndex(self->head, index) + 1) : 0;
-	}
-
-	bool_t List___INDEXSETTER__(List* self, size_t index, void* item, size_t itemSize);
-	bool_t List___INDEX_value__(List* self, size_t index, word_t value);
-	Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* mallocator);
-	inline size_t List_length(List* self) { return self?self->length:0; };
+	Array* List_toArray(List* self, Array* target, const usize_t itemSize ,TMemory* memory, void* arrType, MemoryKinds mkind);
+	inline static usize_t List_length(List* self) { return self?self->length:0; };
 
 #ifdef __cplusplus 
 }//extern "C" 

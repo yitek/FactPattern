@@ -1,32 +1,35 @@
 
 #include "List.h"
-#include <string.h>
+#define ALLOC(mm,size,arg,kind) m_alloc(mm,size,arg,kind)
+#define ALLOC1(mm,size,arg,kind) m_alloc1(mm,size,arg,kind)
+#define FREE(mm,p) m_free(mm,p)
 
 
 
 
-List* List___construct__(List* self, void* mmArgs, Memory* memory) {
-	if (!memory)memory = Memory_default();
-	if (!self) self = memory->require(memory, sizeof(List), mmArgs);
+List* List__construct__(List* self,TMemory* memory,void* listType,MemoryKinds mkind) {
+	if (!memory)memory = TMemory_default;
+	if (!self) self = ALLOC(memory, sizeof(List), listType,mkind);
 	//self->itemSize = itemSize > 0 ? itemSize : sizeof(void*);
 	self->head = self->tail = 0;
 	self->length = 0;
 	return self;
 }
 
-void List___destruct__(List* self, Memory* memory) {
-	if (!memory)memory = Memory_default();
+void List__destruct__(List* self,bool_t existed, TMemory* memory) {
+	if (!memory)memory = TMemory_default;
 	Link* node = self->head;
 	while (node) {
 		Link* next = node->next;
-		memory->decrease(memory,node);
+		FREE(memory,node);
 		node = next;
 	}
+	if (!existed)  FREE(memory,self);
 	//memory->release(memory, self);
 }
-void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
-	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require1(memory,itemSize + sizeof(Link), mmArgs);
+void* List_append(List* self, usize_t itemSize,  TMemory* memory,void* itemType,MemoryKinds mkind) {
+	if (!memory)memory = TMemory_default;
+	Link* node = (Link*)ALLOC1(memory,itemSize + sizeof(Link), itemType,mkind);
 	if (self->tail) self->tail = (self->tail->next = node);
 	else self->head = self->tail = node;
 	node->next = 0;
@@ -34,9 +37,9 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	return node + 1;
 }
 
- void* List_unshift(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
-	if (!memory)memory = Memory_default();
-	Link* node = (Link*)memory->require1(memory, itemSize + sizeof(Link), mmArgs);
+ void* List_unshift(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind) {
+	if (!memory)memory = TMemory_default;
+	Link* node = (Link*)ALLOC1(memory, itemSize + sizeof(Link), itemType, mkind);
 	if (self->head) {
 		node->next = self->head;
 		self->head = node;
@@ -49,7 +52,7 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
 	return (void*)(node + 1);
 }
 
- inline Link* List_popLink(List* self) {
+ Link* List_popLink(List* self) {
 	 Link* node;
 	 if (self->tail == self->head) {
 		 node = self->head;
@@ -71,57 +74,73 @@ void* List_append(List* self, size_t itemSize, void* mmArgs, Memory* memory) {
  }
 
 
-bool_t List_pop(List* self, void* item, size_t itemSize, Memory* memory) {
+bool_t List_pop(List* self, void* item, usize_t itemSize, TMemory* memory) {
 	if (!self->tail) return 0;
 	Link* link = List_popLink(self);
-	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
+	if (item && itemSize) TMemory_copy(item, link + 1, itemSize);
 	else return 0;
-	if (!memory)memory = Memory_default();
-	memory->decrease(memory, link);
+	if (!memory)memory = TMemory_default;
+	FREE(memory, link);
 	return 1;
 	
 }
-word_t List_popValue(List* self, Memory* memory) {
-	if (!self->tail) return invalidWordValue();
+word_t List_popValue(List* self, TMemory* memory) {
+	if (!self->tail) return ~((word_t)0);
 	Link* link = List_popLink(self);
 	word_t rs = *((word_t*)(link + 1));
-	if (!memory)memory = Memory_default();
-	memory->decrease(memory, link);
+	if (!memory)memory = TMemory_default;
+	FREE(memory, link);
 	return rs;
 
 }
-bool_t List_shift(List* self, void* item, size_t itemSize, Memory* memory) {
+bool_t List_shift(List* self, void* item, usize_t itemSize, TMemory* memory) {
 	if (!self->head) return 0;
 	Link* link = self->head;
 	if (!(self->head = link->next)) self->tail = 0;
-	if (item && itemSize) Memory_copy(item, link + 1, itemSize);
+	if (item && itemSize) TMemory_copy(item, link + 1, itemSize);
 	else return 0;
-	if (!memory)memory = Memory_default();
-	memory->decrease(memory, link);
+	if (!memory)memory = TMemory_default;
+	FREE(memory, link);
 	self->length--;
 	return 1;
 
 }
-word_t List_shiftValue(List* self, Memory* memory) {
-	if (!self->head) return invalidWordValue();
+word_t List_shiftValue(List* self, TMemory* memory) {
+	if (!self->head) return ~((word_t)0);
 	Link* link = self->head;
 	if (!(self->head = link->next)) self->tail = 0;
 	word_t rs = *((word_t*)(link + 1));
-	if (!memory)memory = Memory_default();
-	memory->decrease(memory, link);
+	if (!memory)memory = TMemory_default;
+	FREE(memory, link);
 	self->length--;
 	return rs;
 
 }
 
-Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmArgs, Memory* memory) {
+bool_t List__internalRemove(List* self, LinkRemoveResult rrs, TMemory* memory) {
+	if (rrs.link) {
+		if (rrs.link == self->head) {
+			self->head = rrs.link->next;
+		}
+		if (rrs.link == self->tail) {
+			self->tail = rrs.prev;
+		}
+		if (!memory) memory = TMemory_default;
+		FREE(memory, rrs.link);
+		self->length--;
+		return 1;
+	}
+	return 0;
+}
+
+Array* List_toArray(List* self, Array* target, const usize_t itemSize, TMemory* memory,void* arrType,MemoryKinds mkind) {
 	if (!target) {
-		target = (Array*)Array_construct(0, 0, self->length, itemSize, mmArgs, memory);
+		target = (Array*)Array__construct__(0, 0, self->length, itemSize, memory,arrType,mkind);
 	}
 	char* item = (char*)self->head;
 	char* dest = (char*)(target + 1);
 	while (item) {
-		Memory_copy(dest, item + sizeof(Link), itemSize);
+		TMemory_copy(dest, item + sizeof(Link), itemSize);
 		item = (char*)(((Link*)item)->next);
 		dest += itemSize;
 	}
@@ -129,17 +148,9 @@ Array* List_toArray(List* self, Array* target, const size_t itemSize, void* mmAr
 
 }
 
-bool_t List___INDEX_value__(List* self, size_t index, word_t value) {
-	void* p = List___INDEXGETER__(self, index);
-	if (!p) return 0;
-	*((word_t*)p) = value;
-	return 1;
-}
 
-bool_t  List___INDEXSETTER__(List* self, size_t index, void* item, size_t itemSize) {
-	void* p = List___INDEXGETER__(self,index);
-	return Memory_copy(p,item,itemSize);
-}
+#undef ALLOC
+#undef FREE
 
 
 

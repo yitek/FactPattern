@@ -272,6 +272,54 @@ primes/Array.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Array.c.s
 .PHONY : primes/Array.c.s
 
+primes/Link.obj: primes/Link.c.obj
+.PHONY : primes/Link.obj
+
+# target to build an object file
+primes/Link.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Link.c.obj
+.PHONY : primes/Link.c.obj
+
+primes/Link.i: primes/Link.c.i
+.PHONY : primes/Link.i
+
+# target to preprocess a source file
+primes/Link.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Link.c.i
+.PHONY : primes/Link.c.i
+
+primes/Link.s: primes/Link.c.s
+.PHONY : primes/Link.s
+
+# target to generate assembly for a file
+primes/Link.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Link.c.s
+.PHONY : primes/Link.c.s
+
+primes/List.obj: primes/List.c.obj
+.PHONY : primes/List.obj
+
+# target to build an object file
+primes/List.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/List.c.obj
+.PHONY : primes/List.c.obj
+
+primes/List.i: primes/List.c.i
+.PHONY : primes/List.i
+
+# target to preprocess a source file
+primes/List.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/List.c.i
+.PHONY : primes/List.c.i
+
+primes/List.s: primes/List.c.s
+.PHONY : primes/List.s
+
+# target to generate assembly for a file
+primes/List.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/List.c.s
+.PHONY : primes/List.c.s
+
 primes/TType.obj: primes/TType.c.obj
 .PHONY : primes/TType.obj
 
@@ -392,6 +440,78 @@ tests/memories/TestMemory.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/memories/TestMemory.c.s
 .PHONY : tests/memories/TestMemory.c.s
 
+tests/primes/TestArray.obj: tests/primes/TestArray.c.obj
+.PHONY : tests/primes/TestArray.obj
+
+# target to build an object file
+tests/primes/TestArray.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestArray.c.obj
+.PHONY : tests/primes/TestArray.c.obj
+
+tests/primes/TestArray.i: tests/primes/TestArray.c.i
+.PHONY : tests/primes/TestArray.i
+
+# target to preprocess a source file
+tests/primes/TestArray.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestArray.c.i
+.PHONY : tests/primes/TestArray.c.i
+
+tests/primes/TestArray.s: tests/primes/TestArray.c.s
+.PHONY : tests/primes/TestArray.s
+
+# target to generate assembly for a file
+tests/primes/TestArray.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestArray.c.s
+.PHONY : tests/primes/TestArray.c.s
+
+tests/primes/TestLink.obj: tests/primes/TestLink.c.obj
+.PHONY : tests/primes/TestLink.obj
+
+# target to build an object file
+tests/primes/TestLink.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestLink.c.obj
+.PHONY : tests/primes/TestLink.c.obj
+
+tests/primes/TestLink.i: tests/primes/TestLink.c.i
+.PHONY : tests/primes/TestLink.i
+
+# target to preprocess a source file
+tests/primes/TestLink.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestLink.c.i
+.PHONY : tests/primes/TestLink.c.i
+
+tests/primes/TestLink.s: tests/primes/TestLink.c.s
+.PHONY : tests/primes/TestLink.s
+
+# target to generate assembly for a file
+tests/primes/TestLink.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestLink.c.s
+.PHONY : tests/primes/TestLink.c.s
+
+tests/primes/TestList.obj: tests/primes/TestList.c.obj
+.PHONY : tests/primes/TestList.obj
+
+# target to build an object file
+tests/primes/TestList.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestList.c.obj
+.PHONY : tests/primes/TestList.c.obj
+
+tests/primes/TestList.i: tests/primes/TestList.c.i
+.PHONY : tests/primes/TestList.i
+
+# target to preprocess a source file
+tests/primes/TestList.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestList.c.i
+.PHONY : tests/primes/TestList.c.i
+
+tests/primes/TestList.s: tests/primes/TestList.c.s
+.PHONY : tests/primes/TestList.s
+
+# target to generate assembly for a file
+tests/primes/TestList.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestList.c.s
+.PHONY : tests/primes/TestList.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -419,6 +539,12 @@ help:
 	@echo ... primes/Array.obj
 	@echo ... primes/Array.i
 	@echo ... primes/Array.s
+	@echo ... primes/Link.obj
+	@echo ... primes/Link.i
+	@echo ... primes/Link.s
+	@echo ... primes/List.obj
+	@echo ... primes/List.i
+	@echo ... primes/List.s
 	@echo ... primes/TType.obj
 	@echo ... primes/TType.i
 	@echo ... primes/TType.s
@@ -434,6 +560,15 @@ help:
 	@echo ... tests/memories/TestMemory.obj
 	@echo ... tests/memories/TestMemory.i
 	@echo ... tests/memories/TestMemory.s
+	@echo ... tests/primes/TestArray.obj
+	@echo ... tests/primes/TestArray.i
+	@echo ... tests/primes/TestArray.s
+	@echo ... tests/primes/TestLink.obj
+	@echo ... tests/primes/TestLink.i
+	@echo ... tests/primes/TestLink.s
+	@echo ... tests/primes/TestList.obj
+	@echo ... tests/primes/TestList.i
+	@echo ... tests/primes/TestList.s
 .PHONY : help
 
 

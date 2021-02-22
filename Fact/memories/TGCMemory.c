@@ -7,6 +7,7 @@ TGCMemoryMeta TGCMemory__meta__;
 
 TGCMemoryMeta TGCMemory__meta__ = {
 	.alloc = (void* (*)(TMemory*, usize_t,void*,MemoryKinds))TGCMemory_alloc,
+	.alloc1 = (void* (*)(TMemory*, usize_t,void*,MemoryKinds))TGCMemory_alloc1,
 	.allocating = (MemoryAllocatingDirectives(*)(TAlignedMemory*, usize_t, MemoryKinds, AlignedMemoryChunk*)) TGCMemory__allocating,
 	.collectGarbages = (AlignedMemoryReleaseInfo(*)(TAlignedMemory*, bool_t, AlignedMemoryGCCallback))TGCMemory_collectGarbages,
 	.free = (bool_t(*)(TMemory*, void*))TGCMemory_free,

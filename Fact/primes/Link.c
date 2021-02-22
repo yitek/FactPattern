@@ -8,6 +8,8 @@ LinkSearchResult Link_searchByValue(Link* link, word_t value) {
 	LinkSearchResult rs;
 	usize_t c = 0;
 	while (link) {
+		//void* lk = link+1;
+		//word_t val = *((word_t*)(link + 1));
 		if (*((word_t*)(link + 1)) == value) {
 			rs.index = c;
 			rs.item = link;

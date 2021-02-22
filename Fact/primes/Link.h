@@ -34,12 +34,12 @@ extern "C" {
 
 	usize_t Link_length(Link* link);
 
-	inline Link* Link_last(Link* link) {
+	inline static Link* Link_last(Link* link) {
 		Link* result = 0;
 		while (link) { link = (result = link)->next; }
 		return result;
 	}
-	inline Link* Link_append(Link* head, Link* item, Link* tail) {
+	inline static Link* Link_append(Link* head, Link* item, Link* tail) {
 		item->next = 0;
 		if (!head) return 0;
 		if (!tail) tail = Link_last(head);
@@ -47,7 +47,7 @@ extern "C" {
 		return 0;
 	}
 
-	inline Link* Link_searchByIndex(Link* link, usize_t index) {
+	inline static Link* Link_searchByIndex(Link* link, usize_t index) {
 		usize_t c = 0;
 		while (link) {
 			if (c == index) return link;
@@ -65,7 +65,7 @@ extern "C" {
 	LinkRemoveResult Link_removeByValue(Link* link, word_t value);
 	LinkRemoveResult Link_removeByItem(Link* link, void* compareItem, usize_t itemSize);
 	LinkRemoveResult Link_removeByPredicate(Link* link, LinkPredicate predicate, void* predicateArgs);
-	inline void* Link__get__(Link* link, usize_t index) {
+	inline static void* Link__get__(Link* link, usize_t index) {
 		return (void*)(Link_searchByIndex(link,index) +1);
 	}
 #ifdef __cplusplus 

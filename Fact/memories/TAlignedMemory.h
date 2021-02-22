@@ -107,7 +107,7 @@ extern "C" {
 #define AlignedMemory_sfree(self, p) (TAlignedMemory_free(self,p)?p=0,1:0);
 
 	MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,MemoryKinds masks ,AlignedMemoryChunk* chunk);
-	void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
+	void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize, MemoryKinds masks);
 
 	bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(TAlignedMemory* self, void* obj) {
@@ -235,6 +235,10 @@ extern "C" {
 		MemoryLookupLinkUnit(unit, chunk, unitSize, masks)
 		if (unit) return unit;
 		return TAlignedMemory__chunkResolveUnit(chunk, unitSize,masks);
+	}
+
+	static inline void* TAlignedMemory_alloc1Link(TAlignedMemory* self, usize_t unitSize, MemoryKinds mkind) {
+		return TAlignedMemory_allocLink(self,unitSize, mkind);
 	}
 
 #define MemoryLookupRefUnit(unit, chunk, unitSize,masks) \
@@ -371,9 +375,19 @@ extern "C" {
 		if (unit) return unit;
 		return TAlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
 	}
+
+	static inline void* TAlignedMemory_alloc1Ref(TAlignedMemory* self, usize_t unitSize, MemoryKinds mkind) {
+		MRefUnit* p = (MRefUnit*)TAlignedMemory_allocRef(self,unitSize,mkind);
+		p->__ref__ = 1; return p;
+	}
 	static inline void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t unitSize,void* mInitArgs, MemoryKinds masks) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_allocLink(self, unitSize, masks);
 		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return TAlignedMemory_allocRef(self,unitSize,masks);
+		return 0;
+	}
+	static inline void* TAlignedMemory_alloc1(TAlignedMemory* self, usize_t unitSize, void* mInitArgs, MemoryKinds masks) {
+		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_alloc1Link(self, unitSize, masks);
+		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return TAlignedMemory_alloc1Ref(self, unitSize, masks);
 		return 0;
 	}
 	

@@ -5,6 +5,7 @@
 
 
 const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind) {
+	if (unitSize == 0) log_exit(ExitCode_argument, "Array.__construct__", "unitSize is required.");
 	//如果未分配，就自己申请一片内存
 	if (self == 0) {
 		if (!mm)mm = TMemory_default;
@@ -14,7 +15,7 @@ const Array* Array__construct__(Array* self, const void* buffer, const usize_t c
 	}
 	// 写入长度
 	self->length = count;
-	m_copy(self + 1, buffer, count * unitSize);
+	if(count && buffer)m_copy(self + 1, buffer, count * unitSize);
 	
 	return self;
 }

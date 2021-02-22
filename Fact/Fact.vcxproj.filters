@@ -78,6 +78,12 @@
     <ClInclude Include="tests\primes\TestLink.h">
       <Filter>tests\primes</Filter>
     </ClInclude>
+    <ClInclude Include="primes\List.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\primes\TestList.h">
+      <Filter>tests\primes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -120,6 +126,12 @@
       <Filter>primes</Filter>
     </ClCompile>
     <ClCompile Include="tests\primes\TestLink.c">
+      <Filter>tests\primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\List.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\primes\TestList.c">
       <Filter>tests\primes</Filter>
     </ClCompile>
   </ItemGroup>
