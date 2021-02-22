@@ -28,7 +28,7 @@
     <Filter Include="tests\memories">
       <UniqueIdentifier>{3ddb019e-f289-4033-b1ea-05932ff28ce6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="types">
+    <Filter Include="primes">
       <UniqueIdentifier>{d71c206a-6597-46ae-8f27-6ac47bff8d1e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -42,20 +42,8 @@
     <ClInclude Include="tests\memories\TestMemory.h">
       <Filter>tests\memories</Filter>
     </ClInclude>
-    <ClInclude Include="loggers\CLogger.h">
-      <Filter>loggers</Filter>
-    </ClInclude>
-    <ClInclude Include="loggers\loggers_module.h">
-      <Filter>loggers</Filter>
-    </ClInclude>
     <ClInclude Include="memories\memories_module.h">
       <Filter>memories</Filter>
-    </ClInclude>
-    <ClInclude Include="layout.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="loggers\TLogger.h">
-      <Filter>loggers</Filter>
     </ClInclude>
     <ClInclude Include="memories\TMemory.h">
       <Filter>memories</Filter>
@@ -63,14 +51,20 @@
     <ClInclude Include="memories\TAlignedMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="types\TStream.h">
-      <Filter>types</Filter>
-    </ClInclude>
-    <ClInclude Include="types\types_module.h">
-      <Filter>types</Filter>
-    </ClInclude>
     <ClInclude Include="memories\TGCMemory.h">
       <Filter>memories</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\primes_module.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\TType.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,20 +77,8 @@
     <ClCompile Include="tests\memories\TestMemory.c">
       <Filter>tests\memories</Filter>
     </ClCompile>
-    <ClCompile Include="loggers\CLogger.cpp">
-      <Filter>loggers</Filter>
-    </ClCompile>
-    <ClCompile Include="loggers\loggers_module.c">
-      <Filter>loggers</Filter>
-    </ClCompile>
     <ClCompile Include="memories\memories_module.c">
       <Filter>memories</Filter>
-    </ClCompile>
-    <ClCompile Include="layout.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="loggers\TLogger.c">
-      <Filter>loggers</Filter>
     </ClCompile>
     <ClCompile Include="memories\TMemory.c">
       <Filter>memories</Filter>
@@ -104,14 +86,20 @@
     <ClCompile Include="memories\TAlignedMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
-    <ClCompile Include="types\TStream.c">
-      <Filter>types</Filter>
-    </ClCompile>
-    <ClCompile Include="types\types_module.c">
-      <Filter>types</Filter>
-    </ClCompile>
     <ClCompile Include="memories\TGCMemory.c">
       <Filter>memories</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\primes_module.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\TType.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.c">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

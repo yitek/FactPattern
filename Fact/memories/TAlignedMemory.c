@@ -3,16 +3,16 @@
 #include <stdlib.h>
 
 
-TAlignedMemoryMeta TAlignedMemory_Meta;
+AlignedMemoryMeta TAlignedMemory_Meta;
 
 
 
 static inline void* TAlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,AlignedMemoryPage* page, size_t unitSize,uword_t masks) {
-	MemoryLinkUnit* unit = (MemoryLinkUnit*)(page +1);
+	MLnkUnit* unit = (MLnkUnit*)(page +1);
 	for (usize_t i = 0, j = chunk->pageCapacity - 1;i<j; i++) {
 		unit->next = page->free;
 		page->free = unit;
-		unit = (MemoryLinkUnit*)(((byte_t*)unit) + unitSize);
+		unit = (MLnkUnit*)(((byte_t*)unit) + unitSize);
 	}
 	return unit;
 }
@@ -20,7 +20,7 @@ static inline void* TAlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,
 static inline void* TAlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize, uword_t masks) {
 	byte_t* unit = (byte_t*)&page->free;
 	for (usize_t i = 0; i < chunk->pageCapacity; i++) {
-		((ObjectLayout*)unit)->ref = 0;
+		((MTObjUnit*)unit)->ref = 0;
 		unit = unit + unitSize;
 	}
 	return (void*)&page->free;
@@ -28,7 +28,7 @@ static inline void* TAlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* c
 
 void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, size_t unitSize,uword_t masks) {
 	void* unit=0;
-	MemoryAllocatingDirectives directive = ((TMemoryMeta*)chunk->memory->__meta__)->allocating((TMemory*)chunk->memory, chunk->pageSize, masks,chunk);
+	MemoryAllocatingDirectives directive = ((MemoryMeta*)chunk->memory->__meta__)->allocating((TMemory*)chunk->memory, chunk->pageSize, masks,chunk);
 	if (directive == MemoryAllocatingDirective_fail) return 0;
 	if (directive == MemoryAllocatingDirective_lookup || directive == MemoryAllocatingDirective_lookupOrNew) {
 		if (chunk->memory->unitKind == MemoryUnitKind_link) {
@@ -87,7 +87,7 @@ bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* p) {
 				if (offset % chunk->unitSize) {
 					return 0;
 				}
-				MemoryLinkUnit* unit = (MemoryLinkUnit*)p;
+				MLnkUnit* unit = (MLnkUnit*)p;
 				unit->next = page->free;
 				page->free = unit;
 				return 1;
@@ -107,7 +107,7 @@ bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* p) {
 				if (at % chunk->unitSize) {
 					page = page->next; continue;
 				}
-				MemoryLinkUnit* unit = (MemoryLinkUnit*)p;
+				MLnkUnit* unit = (MLnkUnit*)p;
 				unit->next = page->free;
 				page->free = unit;
 				return 1;
@@ -185,7 +185,7 @@ bool_t TAlignedMemory__collectChunkLinkGarbages(TAlignedMemory* self,AlignedMemo
 		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		usize_t c = 0;
 		next = page->next;
-		MemoryLinkUnit* unit = page->free;
+		MLnkUnit* unit = page->free;
 
 		while (unit) {
 			c++; unit = unit->next;
@@ -246,11 +246,11 @@ bool_t TAlignedMemory__collectChunkRefGarbages(TAlignedMemory* self, AlignedMemo
 		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		usize_t c = 0;
 		next = page->next;
-		MemoryRefUnit* unit = (MemoryRefUnit*)&page->free;
+		MRefUnit* unit = (MRefUnit*)&page->free;
 		bool_t hasAllocated = 0;
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (unit->ref) { hasAllocated = 1; break; }
-			unit = (MemoryRefUnit*)((byte_t*)unit + chunkUnitSize);
+			unit = (MRefUnit*)((byte_t*)unit + chunkUnitSize);
 		}
 		if (!hasAllocated) {
 			if (prev)prev->next = next;
@@ -336,7 +336,7 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 		self->allocatedBytes = sizeof(TAlignedMemory);
 	}
 	TMemory__construct__((TMemory*)self, (MemoryOptions*)opts, logger);
-	self->__meta__ = (ObjectMetaLayout*)&TAlignedMemory_Meta;
+	self->__meta__ = (ClazzMeta*)&TAlignedMemory_Meta;
 	if (opts) {
 		self->gcBytes = opts->gcBytes;
 		self->pageSize = opts->pageSize;
@@ -362,12 +362,12 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 
 MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
-		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
 		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
-		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMeta*)memory->__meta__)->collectGarbages(memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}

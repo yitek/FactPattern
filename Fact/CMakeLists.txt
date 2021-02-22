@@ -19,7 +19,7 @@ include_directories(
 # 查找当前目录下的所有源文件
 # 并将名称保存到 DIR_ROOT 变量
 aux_source_directory(. DIR_ROOT)
-aux_source_directory(loggers DIR_LOGGERS)
+aux_source_directory(primes DIR_PRIMES)
 aux_source_directory(memories DIR_MEMORIES)
 # aux_source_directory(tests DIR_TESTS)
 aux_source_directory(tests/loggers DIR_TESTS_LOGGERS)
@@ -28,7 +28,7 @@ aux_source_directory(tests/memories DIR_TESTS_MEMORIES)
 
 # 指定生成目标
 add_executable(Fact ${DIR_ROOT} 
-	${DIR_LOGGERS} ${DIR_MEMORIES} 
+	${DIR_PRIMES} ${DIR_MEMORIES} 
 	${DIR_TESTS_LOGGERS} ${DIR_TESTS_MEMORIES}
 )
 

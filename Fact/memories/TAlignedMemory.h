@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 	
-	struct stAlignedMemory;
+	struct stTAlignedMemory;
 	struct stAlignedMemoryChunk;
 	struct stAlignedMemoryPage;
 
@@ -31,12 +31,12 @@ extern "C" {
 	typedef struct stAlignedMemoryPage {
 		struct stAlignedMemoryPage* next;
 		MemoryKinds kind;
-		MemoryLinkUnit* free;
+		MLnkUnit* free;
 	}AlignedMemoryPage;
 
 	typedef struct stAlignedMemoryChunk {
 		AlignedMemoryPage* page;
-		struct stAlignedMemory* memory;
+		struct stTAlignedMemory* memory;
 		usize_t unitSize;
 		usize_t pageCapacity;
 		usize_t pageSize;
@@ -66,12 +66,12 @@ extern "C" {
 	}AlignedMemoryOptions;
 
 	struct stAlignedMemoryHeader {
-		struct stMemory;
+		struct stTMemory;
 		struct stAlignedMemoryOpts opts;
 	};
 
-	typedef struct stAlignedMemory {
-		struct stMemory;
+	typedef struct stTAlignedMemory {
+		struct stTMemory;
 		struct stAlignedMemoryOpts;
 		usize_t allocatedBytes;
 		AlignedMemoryChunk* large;
@@ -84,9 +84,9 @@ extern "C" {
 		
 		void* (*initPageUnits)(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, usize_t size);
 		AlignedMemoryReleaseInfo(*collectGarbages)(TAlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
-	} TAlignedMemoryMeta;
+	} AlignedMemoryMeta;
 
-	extern TAlignedMemoryMeta TAlignedMemory_Meta;
+	extern AlignedMemoryMeta TAlignedMemory_Meta;
 
 	
 
@@ -105,7 +105,7 @@ extern "C" {
 
 	bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(TAlignedMemory* self, void* obj) {
-		return ((MemoryRefUnit*)obj)->ref=0,1;
+		return ((MRefUnit*)obj)->ref=0,1;
 	}
 	static inline bool_t TAlignedMemory_free(TAlignedMemory* self, void* obj) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_freeLink(self,obj);
@@ -118,7 +118,7 @@ extern "C" {
 	while (lookupPage) {\
 		if(lookupPage->kind == masks){\
 			unit = (void*)(lookupPage->free);\
-			if (unit) {lookupPage->free = ((MemoryLinkUnit*)unit)->next;break;}\
+			if (unit) {lookupPage->free = ((MLnkUnit*)unit)->next;break;}\
 		}\
 		lookupPage = lookupPage->next;\
 	}\
@@ -235,11 +235,11 @@ extern "C" {
 	AlignedMemoryPage* lookupPage = chunk->page;\
 	while (lookupPage) {\
 		if(lookupPage->kind == masks){\
-			MemoryRefUnit* p_unit = (MemoryRefUnit*)&lookupPage->free;\
+			MRefUnit* p_unit = (MRefUnit*)&lookupPage->free;\
 			usize_t pageCapacity= chunk->pageCapacity; \
 			for(usize_t freeUnitIndex=0;freeUnitIndex<pageCapacity ;freeUnitIndex++){\
 				if (p_unit->ref==0) {unit = p_unit;break;}\
-				p_unit = (MemoryRefUnit*)((byte_t*)p_unit + unitSize);\
+				p_unit = (MRefUnit*)((byte_t*)p_unit + unitSize);\
 			} \
 		}\
 		if (unit) break;\
@@ -351,11 +351,11 @@ extern "C" {
 		AlignedMemoryPage* lookupPage = chunk->page;
 		while (lookupPage) {
 			if (lookupPage->kind == masks) {
-				MemoryRefUnit* p_unit = (MemoryRefUnit*)&lookupPage->free;
+				MRefUnit* p_unit = (MRefUnit*)&lookupPage->free;
 				usize_t pageCapacity = chunk->pageCapacity;
 				for (usize_t freeUnitIndex = 0; freeUnitIndex < pageCapacity; freeUnitIndex++) {
 					if (p_unit->ref == 0) { unit = p_unit; break; }
-					p_unit = (MemoryRefUnit*)((byte_t*)p_unit + unitSize);
+					p_unit = (MRefUnit*)((byte_t*)p_unit + unitSize);
 				}
 			}
 			if (unit) break;

@@ -1,7 +1,6 @@
 #include "TestLogger.h"
 #include <stddef.h>
 void testTLogger() {
-	loggers_module(0,0,0);
 	TLogger* logger = TLogger_default;
 	Test_begin("TLogger", "Test start...");
 	TLogger_trace(logger,"TLogger.trace","Trace message with number: %d and %d.\n",12,13);

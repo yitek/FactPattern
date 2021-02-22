@@ -1,5 +1,4 @@
 #include "TestMemory.h"
-#include "../../loggers/TLogger.h"
 
 void testMemory() {
 	memories_module(0,0,0);
@@ -122,7 +121,7 @@ void testAlignedLinkUnitMemory() {
 	Test_assert("TAlignedMemory.__construct__", mm && mm->allocatedBytes == sizeof(TAlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
 
 	void* obj1 = TAlignedMemory_alloc(mm, 6, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj1+1);
+	ref_inc((MRefUnit*)obj1+1);
 	AlignedMemoryChunk* chunk = mm->chunks[1];
 	Test_assert("TAlignedMemory.alloc"
 		// 在第一个插槽中
@@ -141,14 +140,14 @@ void testAlignedLinkUnitMemory() {
 		, "分配6个字节的单元obj1[%p](total:%d)，会对齐到8个字节的单元\n", obj1, mm->allocatedBytes);
 
 	void* obj2 = TAlignedMemory_alloc(mm, 7, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj2 + 1);
+	ref_inc((MRefUnit*)obj2 + 1);
 	Test_assert("TAlignedMemory.alloc"
 		// 在前面那个单元的前面
 		, obj2 == ((byte_t*)obj1) - 8
 		, "分配7个字节的单元obj2[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
 
 	void* obj3 = TAlignedMemory_alloc(mm, 8, MemoryKind_normal);
-	ref_increase((MemoryRefUnit*)obj3 + 1);
+	ref_increase((MRefUnit*)obj3 + 1);
 	Test_assert("TAlignedMemory.alloc"
 		// 在前面那个单元的前面
 		, obj3 == ((byte_t*)obj2) - 8
@@ -156,7 +155,7 @@ void testAlignedLinkUnitMemory() {
 
 	
 	void* obj4 = TAlignedMemory_alloc(mm, 6, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj4 + 1);
+	ref_inc((MRefUnit*)obj4 + 1);
 	usize_t allocatedSize = sizeof(TAlignedMemory) + sizeof(AlignedMemoryChunk) + opts.pageSize * 2;
 	Test_assert("TAlignedMemory.alloc"
 		, chunk->page != 0
@@ -189,18 +188,18 @@ void testAlignedLinkUnitMemory() {
 	Test_assert("TAlignedMemory.free", obj1 == chunk->page->next->free , "归还内存obj1[%p]，page上放着空闲块链", obj1);
 
 	void* obj11 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj11 + 1);
+	ref_inc((MRefUnit*)obj11 + 1);
 	Test_assert("TAlignedMemory.alloc", obj11 == obj4, "再次分配内存，使用空闲单元obj4==obj11[%p]", obj11);
 
 	void* obj12 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj12 + 1);
+	ref_inc((MRefUnit*)obj12 + 1);
 	Test_assert("TAlignedMemory.alloc", obj12 == (byte_t*)obj4 - 8, "分配内存obj12，占据page2[%p]", obj12);
 	void* obj13 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj13 + 1);
+	ref_inc((MRefUnit*)obj13 + 1);
 	Test_assert("TAlignedMemory.alloc", obj13 == (byte_t*)obj12 - 8, "分配内存obj13，占据page2[%p]", obj13);
 	void* obj14 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
 	Test_assert("TAlignedMemory.alloc", obj14 == obj1, "分配内存obj14，重复使用pag1上的空闲块obj14==obj1[%p]", obj14);
-	ref_inc((MemoryRefUnit*)obj14 + 1);
+	ref_inc((MRefUnit*)obj14 + 1);
 
 	AlignedMemoryReleaseInfo rs = TAlignedMemory_collectGarbages(mm,1, 0);
 	Test_assert("TAlignedMemory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面\r\n");
@@ -228,7 +227,7 @@ void testAlignedRefUnitMemory() {
 	Test_assert("TAlignedMemory.__construct__", mm && mm->allocatedBytes == sizeof(TAlignedMemory), "构造对齐的内存管理器:[%p]\r\n共分配%d字节\r\n", mm, mm->allocatedBytes);
 
 	void* obj1 = TAlignedMemory_alloc(mm, 6, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj1 + 1);
+	ref_inc((MRefUnit*)obj1 + 1);
 	AlignedMemoryChunk* chunk = mm->chunks[1];
 	Test_assert("TAlignedMemory.alloc"
 		// 在第一个插槽中
@@ -245,18 +244,18 @@ void testAlignedRefUnitMemory() {
 		// 处在第一个位置
 		, obj1 == (((byte_t*)&chunk->page->free))
 		// 引用计数为1
-		&& ((MemoryRefUnit*)obj1)->ref==1
+		&& ((MRefUnit*)obj1)->ref==1
 		, "分配6个字节的单元obj1[%p](total:%d)，会对齐到8个字节的单元\n", obj1, mm->allocatedBytes);
 
 	void* obj2 = TAlignedMemory_alloc(mm, 7, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj2 + 1);
+	ref_inc((MRefUnit*)obj2 + 1);
 	Test_assert("TAlignedMemory.alloc"
 		// 在前面那个单元的前面
 		, obj2 == ((byte_t*)obj1) + 8
 		, "分配7个字节的单元obj2[%p](total:%d)，会对齐到8个字节的单元,挨着第一个单元\n", obj2, mm->allocatedBytes);
 
 	void* obj3 = TAlignedMemory_alloc(mm, 8, MemoryKind_normal);
-	ref_increase((MemoryRefUnit*)obj3 + 1);
+	ref_increase((MRefUnit*)obj3 + 1);
 	Test_assert("TAlignedMemory.alloc"
 		// 在前面那个单元的前面
 		, obj3 == ((byte_t*)obj2) + 8
@@ -264,7 +263,7 @@ void testAlignedRefUnitMemory() {
 
 
 	void* obj4 = TAlignedMemory_alloc(mm, 6, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj4 + 1);
+	ref_inc((MRefUnit*)obj4 + 1);
 	usize_t allocatedSize = sizeof(TAlignedMemory) + sizeof(AlignedMemoryChunk) + opts.pageSize * 2;
 	Test_assert("TAlignedMemory.alloc"
 		, chunk->page != 0
@@ -285,38 +284,38 @@ void testAlignedRefUnitMemory() {
 		, "原先的页被移动到了第二页\n");
 
 	TAlignedMemory_free(mm, obj2);
-	Test_assert("TAlignedMemory.free", ((MemoryRefUnit*)obj2)->ref==0 , "归还内存obj2[%p]，引用计数置为0\n", obj2);
+	Test_assert("TAlignedMemory.free", ((MRefUnit*)obj2)->ref==0 , "归还内存obj2[%p]，引用计数置为0\n", obj2);
 	TAlignedMemory_free(mm, obj4);
 	Test_assert("TAlignedMemory.free"
 		// 处在最后一个位置
-		, ((MemoryRefUnit*)obj4)->ref == 0
+		, ((MRefUnit*)obj4)->ref == 0
 		, "归还内存obj4[%p]，引用计数置为0\n", obj4);
 	void* obj11 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj11 + 1);
+	ref_inc((MRefUnit*)obj11 + 1);
 	Test_assert("TAlignedMemory.alloc", obj11 == obj4, "再次分配内存obj11，使用空闲单元obj4==obj11[%p]", obj11);
 
 	void* obj12 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj12 + 1);
+	ref_inc((MRefUnit*)obj12 + 1);
 	Test_assert("TAlignedMemory.alloc", obj12 == (byte_t*)obj11+8, "分配内存obj12，占用obj11后面的空间[%p]", obj12);
 
 	void* obj13 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj13 + 1);
+	ref_inc((MRefUnit*)obj13 + 1);
 	Test_assert("TAlignedMemory.alloc", obj13 == (byte_t*)obj12 + 8, "分配内存obj13，占用obj12后面的空间[%p]", obj12);
 
 	void* obj14 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj14 + 1);
+	ref_inc((MRefUnit*)obj14 + 1);
 	Test_assert("TAlignedMemory.alloc", obj14 == obj2, "分配内存obj13，占用obj2原先的空间[%p]", obj12);
 
 	TAlignedMemory_free(mm, obj3);
-	Test_assert("TAlignedMemory.free", ((MemoryRefUnit*)obj3)->ref == 0, "归还内存obj3[%p]，引用计数置0", obj3);
+	Test_assert("TAlignedMemory.free", ((MRefUnit*)obj3)->ref == 0, "归还内存obj3[%p]，引用计数置0", obj3);
 	TAlignedMemory_free(mm, obj1);
-	Test_assert("TAlignedMemory.free", ((MemoryRefUnit*)obj3)->ref == 0, "归还内存obj1[%p]，引用计数置0", obj1);
+	Test_assert("TAlignedMemory.free", ((MRefUnit*)obj3)->ref == 0, "归还内存obj1[%p]，引用计数置0", obj1);
 
 	void* obj15 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj15 + 1);
+	ref_inc((MRefUnit*)obj15 + 1);
 	Test_assert("TAlignedMemory.alloc", obj15 == obj1, "分配内存obj15，obj15 == obj1[%p]", obj15);
 	void* obj16 = TAlignedMemory_alloc(mm, 5, MemoryKind_normal);
-	ref_inc((MemoryRefUnit*)obj16 + 1);
+	ref_inc((MRefUnit*)obj16 + 1);
 	Test_assert("TAlignedMemory.alloc", obj16 == obj3, "分配内存obj14，重复使用pag1上的空闲块obj16==obj3[%p]", obj16);
 	
 	
@@ -335,6 +334,17 @@ void testAlignedRefUnitMemory() {
 	Test_end(0, "TAlignedMemory(REF unit,32bits)", "Test done!");
 	
 }
+
+struct stTUserForTestType {
+	struct stMRefUnit;
+	struct stTType;
+};
+
+LoggerMeta TUserForTest__meta__ = {
+	.offset = 0,
+	.output = TLogger__output
+};
+
 
 void testAlignedMemory() {
 	memories_module(0, 0, 0);

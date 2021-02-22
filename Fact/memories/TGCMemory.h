@@ -8,7 +8,7 @@
 ******************************************************/
 
 #pragma once
-#include "../layout.h"
+#include "TMemory.h"
 
 #ifndef __GCMEMORY_INCLUDED__ 
 
@@ -30,16 +30,16 @@ extern "C" {
 		struct stAlignedMemoryOptions;
 		struct stGCMemoryOpts;
 	} GCMemoryOptions;
-	typedef struct stGCMemory {
-		struct stAlignedMemory;
+	typedef struct stTGCMemory {
+		struct stTAlignedMemory;
 		struct stGCMemoryOpts;
 		
 	}TGCMemory;
 	typedef struct stGCMemoryMeta {
 		struct stAlignedMemoryMeta;
-	}TGCMemoryMeta;
+	}GCMemoryMeta;
 
-	extern TGCMemoryMeta TGCMemory__meta__;
+	extern GCMemoryMeta TGCMemory__meta__;
 
 
 	TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger);
@@ -48,13 +48,13 @@ extern "C" {
 	}
 
 	static inline void* TGCMemory_alloc(TGCMemory* self, usize_t size,uword_t masks) {
-		void* p = TAlignedMemory_allocRef((TAlignedMemory*)self, size + sizeof(ObjectLayout),masks);
+		void* p = TAlignedMemory_allocRef((TAlignedMemory*)self, size + sizeof(MTObjUnit),masks);
 		//(*((GCUnitLayout*)p-1)).type = type;
 		return p;
 	}
 	
 	static inline bool_t TGCMemory_free(TGCMemory* self, void* obj) {
-		ObjectLayout* p = ((ObjectLayout*)obj -1);
+		MTObjUnit* p = ((MTObjUnit*)obj -1);
 		p->ref = 0;
 		return 1;
 	}

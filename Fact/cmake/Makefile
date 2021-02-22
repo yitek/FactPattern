@@ -128,102 +128,6 @@ Fact/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/build
 .PHONY : Fact/fast
 
-layout.obj: layout.c.obj
-.PHONY : layout.obj
-
-# target to build an object file
-layout.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.obj
-.PHONY : layout.c.obj
-
-layout.i: layout.c.i
-.PHONY : layout.i
-
-# target to preprocess a source file
-layout.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.i
-.PHONY : layout.c.i
-
-layout.s: layout.c.s
-.PHONY : layout.s
-
-# target to generate assembly for a file
-layout.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/layout.c.s
-.PHONY : layout.c.s
-
-loggers/CLogger.obj: loggers/CLogger.cpp.obj
-.PHONY : loggers/CLogger.obj
-
-# target to build an object file
-loggers/CLogger.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.obj
-.PHONY : loggers/CLogger.cpp.obj
-
-loggers/CLogger.i: loggers/CLogger.cpp.i
-.PHONY : loggers/CLogger.i
-
-# target to preprocess a source file
-loggers/CLogger.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.i
-.PHONY : loggers/CLogger.cpp.i
-
-loggers/CLogger.s: loggers/CLogger.cpp.s
-.PHONY : loggers/CLogger.s
-
-# target to generate assembly for a file
-loggers/CLogger.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/CLogger.cpp.s
-.PHONY : loggers/CLogger.cpp.s
-
-loggers/TLogger.obj: loggers/TLogger.c.obj
-.PHONY : loggers/TLogger.obj
-
-# target to build an object file
-loggers/TLogger.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.obj
-.PHONY : loggers/TLogger.c.obj
-
-loggers/TLogger.i: loggers/TLogger.c.i
-.PHONY : loggers/TLogger.i
-
-# target to preprocess a source file
-loggers/TLogger.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.i
-.PHONY : loggers/TLogger.c.i
-
-loggers/TLogger.s: loggers/TLogger.c.s
-.PHONY : loggers/TLogger.s
-
-# target to generate assembly for a file
-loggers/TLogger.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/TLogger.c.s
-.PHONY : loggers/TLogger.c.s
-
-loggers/loggers_module.obj: loggers/loggers_module.c.obj
-.PHONY : loggers/loggers_module.obj
-
-# target to build an object file
-loggers/loggers_module.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.obj
-.PHONY : loggers/loggers_module.c.obj
-
-loggers/loggers_module.i: loggers/loggers_module.c.i
-.PHONY : loggers/loggers_module.i
-
-# target to preprocess a source file
-loggers/loggers_module.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.i
-.PHONY : loggers/loggers_module.c.i
-
-loggers/loggers_module.s: loggers/loggers_module.c.s
-.PHONY : loggers/loggers_module.s
-
-# target to generate assembly for a file
-loggers/loggers_module.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/loggers/loggers_module.c.s
-.PHONY : loggers/loggers_module.c.s
-
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -344,6 +248,78 @@ memories/memories_module.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/memories_module.c.s
 .PHONY : memories/memories_module.c.s
 
+primes/TType.obj: primes/TType.c.obj
+.PHONY : primes/TType.obj
+
+# target to build an object file
+primes/TType.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/TType.c.obj
+.PHONY : primes/TType.c.obj
+
+primes/TType.i: primes/TType.c.i
+.PHONY : primes/TType.i
+
+# target to preprocess a source file
+primes/TType.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/TType.c.i
+.PHONY : primes/TType.c.i
+
+primes/TType.s: primes/TType.c.s
+.PHONY : primes/TType.s
+
+# target to generate assembly for a file
+primes/TType.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/TType.c.s
+.PHONY : primes/TType.c.s
+
+primes/primes_module.obj: primes/primes_module.c.obj
+.PHONY : primes/primes_module.obj
+
+# target to build an object file
+primes/primes_module.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/primes_module.c.obj
+.PHONY : primes/primes_module.c.obj
+
+primes/primes_module.i: primes/primes_module.c.i
+.PHONY : primes/primes_module.i
+
+# target to preprocess a source file
+primes/primes_module.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/primes_module.c.i
+.PHONY : primes/primes_module.c.i
+
+primes/primes_module.s: primes/primes_module.c.s
+.PHONY : primes/primes_module.s
+
+# target to generate assembly for a file
+primes/primes_module.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/primes_module.c.s
+.PHONY : primes/primes_module.c.s
+
+runtime.obj: runtime.c.obj
+.PHONY : runtime.obj
+
+# target to build an object file
+runtime.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/runtime.c.obj
+.PHONY : runtime.c.obj
+
+runtime.i: runtime.c.i
+.PHONY : runtime.i
+
+# target to preprocess a source file
+runtime.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/runtime.c.i
+.PHONY : runtime.c.i
+
+runtime.s: runtime.c.s
+.PHONY : runtime.s
+
+# target to generate assembly for a file
+runtime.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/runtime.c.s
+.PHONY : runtime.c.s
+
 tests/loggers/TestLogger.obj: tests/loggers/TestLogger.c.obj
 .PHONY : tests/loggers/TestLogger.obj
 
@@ -401,18 +377,6 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Fact
-	@echo ... layout.obj
-	@echo ... layout.i
-	@echo ... layout.s
-	@echo ... loggers/CLogger.obj
-	@echo ... loggers/CLogger.i
-	@echo ... loggers/CLogger.s
-	@echo ... loggers/TLogger.obj
-	@echo ... loggers/TLogger.i
-	@echo ... loggers/TLogger.s
-	@echo ... loggers/loggers_module.obj
-	@echo ... loggers/loggers_module.i
-	@echo ... loggers/loggers_module.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
@@ -428,6 +392,15 @@ help:
 	@echo ... memories/memories_module.obj
 	@echo ... memories/memories_module.i
 	@echo ... memories/memories_module.s
+	@echo ... primes/TType.obj
+	@echo ... primes/TType.i
+	@echo ... primes/TType.s
+	@echo ... primes/primes_module.obj
+	@echo ... primes/primes_module.i
+	@echo ... primes/primes_module.s
+	@echo ... runtime.obj
+	@echo ... runtime.i
+	@echo ... runtime.s
 	@echo ... tests/loggers/TestLogger.obj
 	@echo ... tests/loggers/TestLogger.i
 	@echo ... tests/loggers/TestLogger.s

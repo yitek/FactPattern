@@ -9,7 +9,7 @@
 ******************************************************/
 
 #pragma once
-#include "../../Loggers/loggers_module.h"
+#include "../../Test.h"
 #ifndef __TESTLOGGER_INCLUDED__ 
 #define __TESTLOGGER_INCLUDED__
 

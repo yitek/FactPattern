@@ -141,33 +141,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
-    <ClInclude Include="layout.h" />
-    <ClInclude Include="loggers\CLogger.h" />
-    <ClInclude Include="loggers\loggers_module.h" />
-    <ClInclude Include="loggers\TLogger.h" />
+    <ClInclude Include="runtime.h" />
     <ClInclude Include="memories\TAlignedMemory.h" />
     <ClInclude Include="memories\TGCMemory.h" />
     <ClInclude Include="memories\memories_module.h" />
     <ClInclude Include="memories\TMemory.h" />
+    <ClInclude Include="primes\primes_module.h" />
+    <ClInclude Include="primes\TType.h" />
+    <ClInclude Include="Test.h" />
     <ClInclude Include="tests\loggers\TestLogger.h" />
     <ClInclude Include="tests\memories\TestMemory.h" />
-    <ClInclude Include="types\TStream.h" />
-    <ClInclude Include="types\types_module.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="layout.c" />
-    <ClCompile Include="loggers\CLogger.cpp" />
-    <ClCompile Include="loggers\loggers_module.c" />
-    <ClCompile Include="loggers\TLogger.c" />
+    <ClCompile Include="runtime.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\TAlignedMemory.c" />
     <ClCompile Include="memories\TGCMemory.c" />
     <ClCompile Include="memories\memories_module.c" />
     <ClCompile Include="memories\TMemory.c" />
+    <ClCompile Include="primes\primes_module.c" />
+    <ClCompile Include="primes\TType.c" />
+    <ClCompile Include="Test.c" />
     <ClCompile Include="tests\loggers\TestLogger.c" />
     <ClCompile Include="tests\memories\TestMemory.c" />
-    <ClCompile Include="types\TStream.c" />
-    <ClCompile Include="types\types_module.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcproj2cmake.ps1" />

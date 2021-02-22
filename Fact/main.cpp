@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "loggers/CLogger.h"
 #include "tests/loggers/TestLogger.h"
 #include "tests/memories/TestMemory.h"
 //#include "tests/TestArray.h" 

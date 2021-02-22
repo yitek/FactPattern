@@ -1,2 +1,14 @@
-﻿  TGCMemory.c
+﻿  TAlignedMemory.c
+  TGCMemory.c
+  TMemory.c
+D:\Yitek\FactPattern\Fact\memories\TMemory.c(11,1): warning C4133: “初始化”: 从“MemoryMeta *”到“stClazzMeta *”的类型不兼容
+  memories_module.c
+  TType.c
+  primes_module.c
+  runtime.c
+D:\Yitek\FactPattern\Fact\runtime.c(23,1): warning C4133: “初始化”: 从“LoggerMeta *”到“stClazzMeta *”的类型不兼容
+  TestLogger.c
+  TestMemory.c
+  正在生成代码...
+  main.cpp
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

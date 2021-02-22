@@ -10,7 +10,7 @@
 ******************************************************/
 
 #pragma once
-#include "../loggers/TLogger.h"
+#include "../runtime.h"
 #ifndef __TMEMORY_INCLUDED__ 
 #define __TMEMORY_INCLUDED__
 // c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-	struct stMemory;
+	struct stTMemory;
 	typedef enum {
 		MemoryAllocatingDirective_fail = 0,
 		MemoryAllocatingDirective_lookup = -1,
@@ -38,7 +38,7 @@ extern "C" {
 		usize_t totalBytes;
 	}MemoryOptions;
 
-	typedef struct stMemory {
+	typedef struct stTMemory {
 		/// <summary>
 		/// 虚函数指针，直接指向后面的vtbl结构，跟c++的对象布局保持一致
 		/// </summary>
@@ -50,24 +50,21 @@ extern "C" {
 	} TMemory;
 
 	typedef struct stMemoryMeta {
-		struct stObjectMetaLayout;
+		struct stClazzMeta;
 		void* (*alloc)(TMemory* self,usize_t size,uword_t masks);
 		bool_t (*free)(TMemory* self,void* p);
 		void(*__destruct__)(TMemory* self,bool_t existed);
 		MemoryAllocatingDirectives(*allocating)(TMemory* memory,usize_t size,uword_t masks,void* param);
-	} TMemoryMeta;
+	} MemoryMeta;
 
-	extern TMemoryMeta TMemory__meta__;
+	extern MemoryMeta TMemory__meta__;
 
 	/// <summary>
 	/// 唯一的默认内存管理器，
 	/// </summary>
 	extern TMemory* TMemory_default;
-	typedef struct stMemoryGCLayout{
-		struct stObjectLayout __ob__;
-		struct stMemory mm;
-	} TMemoryGCLayout;
-	extern TMemoryGCLayout TMemory_defaultInstance;
+	;
+	extern struct stMemoryGCLayout TMemory_defaultInstance;
 	/// <summary>
 	/// 最近基础的内存管理器的构造函数
 	/// 需要填充stMemory的各个虚函数指针
@@ -81,9 +78,9 @@ extern "C" {
 	//MemoryAllocatingDirectives Memory__allocating(Memory* memory, usize_t size, void* param);
 	
 
-	inline static void* TMemory_alloc__virtual__(TMemory* self, usize_t size,uword_t masks) {return ((TMemoryMeta*)((TObject*)self)->__meta__)->alloc(self,size,masks);}
-	inline static bool_t TMemory_free__virtual__(TMemory* self, void* p) {return ((TMemoryMeta*)((TObject*)self)->__meta__)->free(self, p);}
-	inline static void TMemory__destruct____virtual__(TMemory* self, bool_t existed) { ((TMemoryMeta*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
+	inline static void* TMemory_alloc__virtual__(TMemory* self, usize_t size,uword_t masks) {return ((MemoryMeta*)((TObject*)self)->__meta__)->alloc(self,size,masks);}
+	inline static bool_t TMemory_free__virtual__(TMemory* self, void* p) {return ((MemoryMeta*)((TObject*)self)->__meta__)->free(self, p);}
+	inline static void TMemory__destruct____virtual__(TMemory* self, bool_t existed) { ((MemoryMeta*)((TObject*)self)->__meta__)->__destruct__(self, existed); }
 
 	static inline bool_t TMemory_copy(void* dest, const void* src, usize_t size) { return (dest && src && size) ? m_copy(dest, src, size), 1 : 0; }
 	static inline bool_t TMemory_repeat(void* dest, usize_t times, void* value, usize_t size) { return (dest&&times&&value&&size)?m_repeat(dest,times,value,size),1:0; }
