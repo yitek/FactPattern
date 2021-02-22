@@ -141,11 +141,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
+    <ClInclude Include="primes\Array.h" />
     <ClInclude Include="runtime.h" />
     <ClInclude Include="memories\TAlignedMemory.h" />
     <ClInclude Include="memories\TGCMemory.h" />
     <ClInclude Include="memories\memories_module.h" />
-    <ClInclude Include="memories\TMemory.h" />
     <ClInclude Include="primes\primes_module.h" />
     <ClInclude Include="primes\TType.h" />
     <ClInclude Include="Test.h" />
@@ -153,12 +153,12 @@
     <ClInclude Include="tests\memories\TestMemory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="primes\Array.c" />
     <ClCompile Include="runtime.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\TAlignedMemory.c" />
     <ClCompile Include="memories\TGCMemory.c" />
     <ClCompile Include="memories\memories_module.c" />
-    <ClCompile Include="memories\TMemory.c" />
     <ClCompile Include="primes\primes_module.c" />
     <ClCompile Include="primes\TType.c" />
     <ClCompile Include="Test.c" />

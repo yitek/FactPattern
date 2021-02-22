@@ -8,16 +8,59 @@
 #include <windows.h>
 #endif
 
-void* m_alloc(usize_t size, uword_t memtype){return malloc(size);}
-bool_t m_free(void* p){ free(p); return 1;}
 
-void* Allocator_alloc(void* mm,usize_t size, uword_t memtype) { return malloc(size); }
-bool_t Allocator_free(void* mm, usize_t size, uword_t memtype) { free(size); return 1; }
-Allocator allocatorInstance = {
-	.alloc = Allocator_alloc,
-	.free = Allocator_free,
-	.__mm__ = 0
+TMemoryMeta TMemory__meta__ = {
+	.offset = 0,
+	.get_type = 0,
+	.alloc = TMemory_alloc,
+	.free = TMemory_free,
+	.__destruct__ = 0,
 };
+
+struct stTMemoryLayout TMemory_instance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TMemory__meta__
+};
+TMemory* TMemory_default = (TMemory*)((byte_t*)(&TMemory_instance) + sizeof(MRefUnit));
+
+void* TMemory_alloc(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
+	void* p = malloc(size);
+	if (p) {
+		return p;
+	}
+	else {
+		log_exit(ExitCode_memory, "TMemory.alloc", "Cannot allocate memory!");
+		exit(1);
+	}
+}
+bool_t TMemory_free(TMemory* self, void* p) { free(p); return 1; }
+
+
+TMemory* TMemory__construct__(TMemory* self) {
+	if (!self) {
+		self = (TMemory*)malloc(sizeof(TMemory));
+		if (!self) {
+			log_exit(ExitCode_memory, "TMemory.__construct__", "Cannot allocate memory!");
+			exit(1);
+		}
+	}
+	self->__meta__ = (ClazzMeta*)&TMemory__meta__;
+	return self;
+}
+
+void TMemory__destruct__(TMemory* self,bool_t existed) {
+	if (self == &TMemory_instance.inst ) {
+		TLogger_notice(0,"TMemory.__destruct__","The prime TMemory instance should not be destructed.");
+		return;
+	}
+
+	if (!existed) free(self);
+}
+
+
+
+
+
 
 
 LoggerMeta TLogger__meta__ = {
@@ -31,7 +74,7 @@ struct stLoggerLayout {
 } TLogger_defaultInstance = {
 	.__meta__ = (ClazzMeta*)&TLogger__meta__,
 	.level = 0,
-	.ref = 0
+	.__ref__ = 0
 };
 TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(MRefUnit));
 
@@ -279,10 +322,8 @@ void TLogger_sectionEnd(TLogger* self, const byte_t* category, const byte_t* mes
 
 TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts) {
 	if (!self) {
-		self = m_allocate(TLogger, 0);
-		if (!self) {
-			log_exit(ExitCode_memory, "TLogger.__construct__", "Cannot allocate memory.");
-		}
+		self = ((TLogger*)TMemory_alloc(0,sizeof(TLogger),0, 0));
+		if (!self) exit(0);
 	}
 	self->__meta__ = (ClazzMeta*)&TLogger__meta__;
 	if (opts) {
@@ -295,17 +336,29 @@ TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts) {
 	return self;
 }
 
-void TLogger__destruct__(TLogger* self, bool_t existed) {
-	if (!existed) {
-		if (self != TLogger_default)m_free(self);
-	}
-}
-
 Test* Test__current = 0;
 TLogger* Test__logger = 0;
 
+void TLogger__destruct__(TLogger* self, bool_t existed) {
+	Test* test = Test__current;
+	while (test) {
+		TMemory_free(0, test->category);
+		Test* p = test->parent;
+		TMemory_free(0, test);
+		test = p;
+	}
+	Test__current = 0;
+	if (!existed) {
+		if (self != TLogger_default) {
+			TMemory_free(0, self);
+		}
+	}
+}
+
+
+
 void Test_begin(const byte_t* category, const byte_t* message, ...) {
-	Test* test = m_allocate(Test, 0);
+	Test* test = m_allocate(Test, 0,0,0);
 	test->category = m_cstr(category);
 	if (Test__current) {
 		test->parent = Test__current;
@@ -369,6 +422,6 @@ void Test_end() {
 		word_t lv = LogLevel_Success | LogLevel_SectionEnd;
 		TLogger_log(Test__logger, lv, test->category, "asserts: %d(fail:%d),children: %d(fail:%d)", test->assertCount, test->failCount, test->childCount, test->failedChildCount);
 	}
-	m_free((void*)test->category);
-	m_free(test);
+	TMemory_free(0,(void*)test->category);
+	TMemory_free(0,test);
 }

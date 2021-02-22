@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "TMemory.h"
-#include "TAlignedMemory.h"
 #include "TGCMemory.h"
 
 #ifndef __MEMORIES_INCLUDED__ 

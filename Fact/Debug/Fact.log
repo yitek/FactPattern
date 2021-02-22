@@ -1,9 +1,2 @@
-﻿  TAlignedMemory.c
-  TGCMemory.c
-  TMemory.c
-  memories_module.c
-  TType.c
-  TestMemory.c
-  正在生成代码...
-  main.cpp
+﻿  TGCMemory.c
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

@@ -8,7 +8,7 @@
 ******************************************************/
 
 #pragma once
-#include "TMemory.h"
+#include "../runtime.h"
 #ifndef __ALIGNEDMEMORY_INCLUDED__ 
 #define __ALIGNEDMEMORY_INCLUDED__
 #ifdef __cplusplus 
@@ -19,10 +19,14 @@ extern "C" {
 	struct stAlignedMemoryChunk;
 	struct stAlignedMemoryPage;
 
-	typedef enum{
-		MemoryUnitKind_link,
-		MemoryUnitKind_ref
-	} MemoryUnitKinds;
+	typedef enum {
+		MemoryAllocatingDirective_fail = 0,
+		MemoryAllocatingDirective_lookup = -1,
+		MemoryAllocatingDirective_new = 1,
+		MemoryAllocatingDirective_lookupOrNew = 2,
+	} MemoryAllocatingDirectives;
+
+	
 
 	
 
@@ -61,32 +65,34 @@ extern "C" {
 		usize_t gcBytes;
 	};
 	typedef struct stAlignedMemoryOptions {
-		struct stMemoryOptions;
-		struct stAlignedMemoryOpts;
+		MemoryUnitKinds unitKind;
+		usize_t pageSize;
+		usize_t totalBytes;
+		usize_t gcBytes;
 	}AlignedMemoryOptions;
 
 	struct stAlignedMemoryHeader {
 		struct stTMemory;
-		struct stAlignedMemoryOpts opts;
+		struct stAlignedMemoryOptions opts;
 	};
 
 	typedef struct stTAlignedMemory {
 		struct stTMemory;
-		struct stAlignedMemoryOpts;
+		struct stAlignedMemoryOptions;
+		TLogger* logger;
 		usize_t allocatedBytes;
 		AlignedMemoryChunk* large;
 		AlignedMemoryChunk* chunks[32+1];
 
 	}TAlignedMemory;
 
-	typedef struct stAlignedMemoryMeta {
-		struct stMemoryMeta;
-		
-		void* (*initPageUnits)(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, usize_t size);
+	typedef struct stTAlignedMemoryMeta {
+		struct stTMemoryMeta;
+		MemoryAllocatingDirectives(*allocating)(TAlignedMemory* memory, usize_t size, MemoryKinds masks, AlignedMemoryChunk* param);
 		AlignedMemoryReleaseInfo(*collectGarbages)(TAlignedMemory* self, bool_t releasePage, AlignedMemoryGCCallback callback);
-	} AlignedMemoryMeta;
+	} TAlignedMemoryMeta;
 
-	extern AlignedMemoryMeta TAlignedMemory_Meta;
+	extern TAlignedMemoryMeta TAlignedMemory__meta__;
 
 	
 
@@ -100,12 +106,12 @@ extern "C" {
 	
 #define AlignedMemory_sfree(self, p) (TAlignedMemory_free(self,p)?p=0,1:0);
 
-	MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,uword_t masks ,AlignedMemoryChunk* chunk);
+	MemoryAllocatingDirectives TAlignedMemory__allocating(TAlignedMemory* memory, usize_t size,MemoryKinds masks ,AlignedMemoryChunk* chunk);
 	void* TAlignedMemory__chunkResolveUnit(AlignedMemoryChunk* chunk, usize_t unitSize,uword_t masks);
 
 	bool_t TAlignedMemory_freeLink(TAlignedMemory* self, void* obj);
 	static inline bool_t AlignedMemory_freeRef(TAlignedMemory* self, void* obj) {
-		return ((MRefUnit*)obj)->ref=0,1;
+		return ((MRefUnit*)obj)->__ref__=0,1;
 	}
 	static inline bool_t TAlignedMemory_free(TAlignedMemory* self, void* obj) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_freeLink(self,obj);
@@ -124,7 +130,7 @@ extern "C" {
 	}\
 
 
-	static inline void* TAlignedMemory_allocLink(TAlignedMemory* self, usize_t unitSize,uword_t masks) {
+	static inline void* TAlignedMemory_allocLink(TAlignedMemory* self, usize_t unitSize,MemoryKinds masks) {
 
 		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
@@ -156,7 +162,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
+			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk,0,0, MemoryKind_system);
 			if (!chunk) {
 				log_exit(ExitCode_memory, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -173,8 +179,8 @@ extern "C" {
 			if (prev) prev->nextChunk = chunk;
 			else self->large = chunk;
 
-			if (((TMemory*)self)->logger) {
-				TLogger_trace(((TMemory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
+			if (self->logger) {
+				TLogger_trace(self->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
 					, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
 				);
 			}
@@ -198,7 +204,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
+				chunk = m_allocate(AlignedMemoryChunk,0,0, MemoryKind_system);
 				if (!chunk) {
 					log_exit(ExitCode_memory, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
@@ -214,8 +220,8 @@ extern "C" {
 				chunk->unitSize = unitSize;
 				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
-				if (((TMemory*)self)->logger) {
-					TLogger_trace(((TMemory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
+				if (self->logger) {
+					TLogger_trace(self->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
 						, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
 					);
 				}
@@ -238,7 +244,7 @@ extern "C" {
 			MRefUnit* p_unit = (MRefUnit*)&lookupPage->free;\
 			usize_t pageCapacity= chunk->pageCapacity; \
 			for(usize_t freeUnitIndex=0;freeUnitIndex<pageCapacity ;freeUnitIndex++){\
-				if (p_unit->ref==0) {unit = p_unit;break;}\
+				if (p_unit->__ref__==0) {unit = p_unit;break;}\
 				p_unit = (MRefUnit*)((byte_t*)p_unit + unitSize);\
 			} \
 		}\
@@ -246,7 +252,7 @@ extern "C" {
 		lookupPage = lookupPage->next;\
 	}\
 
-	static inline void* TAlignedMemory_allocRef(TAlignedMemory* self, usize_t unitSize, uword_t masks) {
+	static inline void* TAlignedMemory_allocRef(TAlignedMemory* self, usize_t unitSize, MemoryKinds masks) {
 
 		usize_t chunkIndex;
 		AlignedMemoryChunk* chunk = 0;
@@ -278,7 +284,7 @@ extern "C" {
 					pageCapacity = 1;
 				}
 			}
-			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk,MemoryKind_system);
+			AlignedMemoryChunk* chunk = m_allocate(AlignedMemoryChunk,0,0,MemoryKind_system);
 			if (!chunk) {
 				log_exit(ExitCode_memory, "AlignedMemory._getLargeChunk", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 				return 0;
@@ -295,8 +301,8 @@ extern "C" {
 			if (prev) prev->nextChunk = chunk;
 			else self->large = chunk;
 
-			if (((TMemory*)self)->logger) {
-				TLogger_trace(((TMemory*)self)->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
+			if (self->logger) {
+				TLogger_trace(self->logger, "AlignedMemory._getLargeChunk", "<AlignedMemoryChunk>[%p] for LARGE is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld }"
 					, chunk, (unsigned long)chunk->unitSize, (unsigned long)chunk->pageSize, (unsigned long)chunk->pageCapacity, chunk->memory->allocatedBytes
 				);
 			}
@@ -320,7 +326,7 @@ extern "C" {
 			chunk = self->chunks[--chunkIndex];
 			if (!chunk) {
 
-				chunk = m_allocate(AlignedMemoryChunk, MemoryKind_system);
+				chunk = m_allocate(AlignedMemoryChunk,0,0, MemoryKind_system);
 				if (!chunk) {
 					log_exit(ExitCode_memory, "AlignedMemory.alloc", "Cannot alloc memory:%ld", (long)sizeof(AlignedMemoryChunk));
 					return 0;
@@ -336,8 +342,8 @@ extern "C" {
 				chunk->unitSize = unitSize;
 				chunk->pageCapacity = (chunk->pageSize - sizeof(AlignedMemoryPage)) / unitSize;
 
-				if (((TMemory*)self)->logger) {
-					TLogger_trace(((TMemory*)self)->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
+				if (self->logger) {
+					TLogger_trace(self->logger, "AlignedMemory.alloc", "<AlignedMemoryChunk>[%p] for NORMAL is constructed:{ unitSize: %ld, pageSize: %ld, pageCapacity: $ld ,!allocatedBytes: %ld}"
 						, chunk, chunk->unitSize, chunk->pageSize, chunk->pageCapacity, chunk->memory->allocatedBytes
 					);
 				}
@@ -354,7 +360,7 @@ extern "C" {
 				MRefUnit* p_unit = (MRefUnit*)&lookupPage->free;
 				usize_t pageCapacity = chunk->pageCapacity;
 				for (usize_t freeUnitIndex = 0; freeUnitIndex < pageCapacity; freeUnitIndex++) {
-					if (p_unit->ref == 0) { unit = p_unit; break; }
+					if (p_unit->__ref__ == 0) { unit = p_unit; break; }
 					p_unit = (MRefUnit*)((byte_t*)p_unit + unitSize);
 				}
 			}
@@ -365,7 +371,7 @@ extern "C" {
 		if (unit) return unit;
 		return TAlignedMemory__chunkResolveUnit(chunk, unitSize, masks);
 	}
-	static inline void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t unitSize, uword_t masks) {
+	static inline void* TAlignedMemory_alloc(TAlignedMemory* self, usize_t unitSize,void* mInitArgs, MemoryKinds masks) {
 		if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_link) return TAlignedMemory_allocLink(self, unitSize, masks);
 		else if (((struct stAlignedMemoryHeader*)self)->opts.unitKind == MemoryUnitKind_ref) return TAlignedMemory_allocRef(self,unitSize,masks);
 		return 0;

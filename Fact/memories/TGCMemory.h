@@ -8,13 +8,6 @@
 ******************************************************/
 
 #pragma once
-#include "TMemory.h"
-
-#ifndef __GCMEMORY_INCLUDED__ 
-
-
-
-#endif
 
 #include "TAlignedMemory.h"
 #ifndef __TGCMEMORY_INCLUDED__ 
@@ -28,18 +21,18 @@ extern "C" {
 
 	typedef struct stGCMemoryOptions {
 		struct stAlignedMemoryOptions;
-		struct stGCMemoryOpts;
+		usize_t sweepBytes;
 	} GCMemoryOptions;
 	typedef struct stTGCMemory {
 		struct stTAlignedMemory;
 		struct stGCMemoryOpts;
 		
 	}TGCMemory;
-	typedef struct stGCMemoryMeta {
-		struct stAlignedMemoryMeta;
-	}GCMemoryMeta;
+	typedef struct stTGCMemoryMeta {
+		struct stTAlignedMemoryMeta;
+	}TGCMemoryMeta;
 
-	extern GCMemoryMeta TGCMemory__meta__;
+	extern TGCMemoryMeta TGCMemory__meta__;
 
 
 	TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger);
@@ -47,8 +40,9 @@ extern "C" {
 		TAlignedMemory__destruct__((TAlignedMemory*)self,existed);
 	}
 
-	static inline void* TGCMemory_alloc(TGCMemory* self, usize_t size,uword_t masks) {
+	static inline void* TGCMemory_alloc(TGCMemory* self, usize_t size,void* mInitArgs,MemoryKinds masks) {
 		void* p = TAlignedMemory_allocRef((TAlignedMemory*)self, size + sizeof(MTObjUnit),masks);
+		
 		//(*((GCUnitLayout*)p-1)).type = type;
 		return p;
 	}

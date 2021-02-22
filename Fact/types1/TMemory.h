@@ -26,12 +26,7 @@ extern "C" {
 		MemoryAllocatingDirective_lookupOrNew = 2,
 	} MemoryAllocatingDirectives;
 
-	typedef enum {
-		MemoryKind_normal = 0,
-		MemoryKind_disCollect = 0b1,
-		MemoryKind_readonly = 0b010,
-		MemoryKind_system = 0b100
-	} MemoryKinds;
+	
 
 	
 	typedef struct stMemoryOptions {

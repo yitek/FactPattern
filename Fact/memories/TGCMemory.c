@@ -2,7 +2,19 @@
 
 
 
-GCMemoryMeta TGCMemory__meta__;
+TGCMemoryMeta TGCMemory__meta__;
+
+
+TGCMemoryMeta TGCMemory__meta__ = {
+	.alloc = (void* (*)(TMemory*, usize_t,void*,MemoryKinds))TGCMemory_alloc,
+	.allocating = (MemoryAllocatingDirectives(*)(TAlignedMemory*, usize_t, MemoryKinds, AlignedMemoryChunk*)) TGCMemory__allocating,
+	.collectGarbages = (AlignedMemoryReleaseInfo(*)(TAlignedMemory*, bool_t, AlignedMemoryGCCallback))TGCMemory_collectGarbages,
+	.free = (bool_t(*)(TMemory*, void*))TGCMemory_free,
+	.get_type = 0,
+	.offset = 0,
+	.__destruct__ = (void(*)(TMemory*, bool_t))TGCMemory__destruct__
+};
+
 const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
@@ -14,26 +26,24 @@ TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogge
 	}
 	else self->sweepBytes = 0;
 	self->unitKind = MemoryUnitKind_ref;
-	self->allocator.__mm__ = self;
-	self->allocator.alloc = (AllocatorAlloc)TGCMemory_alloc;
-	self->allocator.free = (AllocatorFree)TGCMemory_free;
+	
 	return self;
 };
 
 MemoryAllocatingDirectives TGCMemory__allocating(TGCMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {
 	if (memory->totalBytes && memory->allocatedBytes + chunk->pageSize > memory->totalBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookup;
 		return MemoryAllocatingDirective_fail;
 	}
 	if (memory->gcBytes && memory->allocatedBytes + chunk->pageSize > memory->gcBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 1, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}
 
 	if (memory->sweepBytes && memory->allocatedBytes + chunk->pageSize > memory->sweepBytes) {
-		AlignedMemoryReleaseInfo rs = ((AlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 0, 0);
+		AlignedMemoryReleaseInfo rs = ((TAlignedMemoryMeta*)memory->__meta__)->collectGarbages((TAlignedMemory*)memory, 0, 0);
 		if (rs.bytes > chunk->pageSize) return MemoryAllocatingDirective_lookupOrNew;
 		else return MemoryAllocatingDirective_new;
 	}
@@ -45,7 +55,7 @@ void TGCMemory__markObject(TObject* obj) {
 	// idle或已标记
 
 	// 标记可达性
-	(*((MRefUnit*)obj-1)).ref |= markNumber;
+	(*((MRefUnit*)obj-1)).__ref__ |= markNumber;
 	usize_t memberIndex = 0;
 	TType* type = get_type(obj);
 	TField* field = (TField*)(&type->fields + 1);
@@ -65,7 +75,7 @@ void TGCMemory__markChunk(AlignedMemoryChunk* chunk) {
 		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		MRefUnit* gcUnit = (MRefUnit*)&page->free;
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
-			if (gcUnit->ref == 0 || gcUnit->ref & markNumber) return;
+			if (gcUnit->__ref__ == 0 || gcUnit->__ref__ & markNumber) return;
 			TGCMemory__markObject((TObject*)(gcUnit +1));
 			gcUnit = (MRefUnit*)((byte_t*)gcUnit + chunk->unitSize);
 		}

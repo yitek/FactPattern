@@ -45,9 +45,6 @@
     <ClInclude Include="memories\memories_module.h">
       <Filter>memories</Filter>
     </ClInclude>
-    <ClInclude Include="memories\TMemory.h">
-      <Filter>memories</Filter>
-    </ClInclude>
     <ClInclude Include="memories\TAlignedMemory.h">
       <Filter>memories</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
     <ClInclude Include="Test.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="primes\Array.h">
+      <Filter>primes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,9 +78,6 @@
       <Filter>tests\memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\memories_module.c">
-      <Filter>memories</Filter>
-    </ClCompile>
-    <ClCompile Include="memories\TMemory.c">
       <Filter>memories</Filter>
     </ClCompile>
     <ClCompile Include="memories\TAlignedMemory.c">
@@ -100,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Test.c">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\Array.c">
+      <Filter>primes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

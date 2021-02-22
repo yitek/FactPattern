@@ -33,12 +33,17 @@ typedef struct stVirtualObject {
 	VFTL* __vftptr__;
 } VirtualObject;
 
+typedef enum {
+	MemoryUnitKind_link,
+	MemoryUnitKind_ref
+} MemoryUnitKinds;
+
 typedef struct stMLnkUnit {
 	struct stMLnkUnit* next;
 }MLnkUnit;
 
 typedef struct stMRefUnit {
-	usize_t ref;
+	usize_t __ref__;
 }MRefUnit;
 
 struct stTType;
@@ -127,20 +132,60 @@ typedef struct stTField {
 static inline TType* get_type(TObject* obj) {
 	return (TType*)obj->__meta__->get_type();
 }
-static inline void* ref_increase(void* obj) { return (((MRefUnit*)obj-1)->ref++,obj); }
-#define ref_inc(obj) (((MRefUnit*)obj-1)->ref++,obj)
-static inline void* ref_decrease(void* obj) { return (--(((MRefUnit*)obj - 1)->ref) >= 0 ? obj : ((((MRefUnit*)obj - 1)->ref=0,obj))); }
-#define ref_dec(obj) (--(((MRefUnit*)obj - 1)->ref) >= 0 ? obj : ((((MRefUnit*)obj - 1)->ref=0,obj)))
+static inline void* ref_increase(void* obj) { return (((MRefUnit*)obj-1)->__ref__++,obj); }
+#define ref_inc(obj) (((MRefUnit*)obj-1)->__ref__++,obj)
+static inline void* ref_decrease(void* obj) { return (--(((MRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((MRefUnit*)obj - 1)->__ref__=0,obj))); }
+#define ref_dec(obj) (--(((MRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((MRefUnit*)obj - 1)->__ref__=0,obj)))
 
-#define Object_param(obj) ( (*((MTObjUnit*)obj-1)).ref++,obj )
-#define Object_assign(dest,obj) ( (*((MTObjUnit*)(dest=obj)-1)).ref++,obj )
-#define Object_release(obj) ( --(*((MTObjUnit*)obj-1)).ref<=0?(obj=0):obj )
+#define Object_param(obj) ( (*((MTObjUnit*)obj-1)).__ref__++,obj )
+#define Object_assign(dest,obj) ( (*((MTObjUnit*)(dest=obj)-1)).__ref__++,obj )
+#define Object_release(obj) ( --(*((MTObjUnit*)obj-1)).__ref__<=0?(obj=0):obj )
 
 
-void* m_alloc(usize_t size, uword_t mkinds);
-bool_t m_free(void* p);
-#define m_allocate(T,mmkinds) ((T*)m_alloc(sizeof(T),mmkinds));
 
+
+typedef enum {
+	MemoryKind_normal = 0,
+	MemoryKind_disCollect = 1 << 1,
+	MemoryKind_readonly = 1 << 2,
+	MemoryKind_system = 1 << 3,
+	MemoryKind_share = 1 << 4
+} MemoryKinds;
+
+typedef struct stTMemory {
+	struct stTObject;
+}TMemory;
+
+typedef struct stTMemoryMeta {
+	struct stClazzMeta;
+	void* (*alloc)(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
+	bool_t(*free)(TMemory* mm, void* p);
+	void (*__destruct__)(TMemory* mm, bool_t existed);
+}TMemoryMeta;
+
+
+
+struct stTMemoryLayout {
+	struct stMRefUnit;
+	struct stTMemory inst;
+};
+
+extern struct stTMemoryLayout TMemory_instance;
+extern TMemory* TMemory_default;
+
+TMemory* TMemory__construct__(TMemory* self);
+void TMemory__destruct__(TMemory* self,bool_t exsited);
+void* TMemory_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
+bool_t TMemory_free(TMemory* mm,void*p);
+
+static inline void* m_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds) {
+	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc(mm, size, mInitArgs, mkinds);
+}
+static inline bool_t m_free(TMemory* mm, void* p) {
+	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->free(mm, p);
+}
+#define m_allocate(T, mm,mInitArgs,mkind) ((T*)m_alloc(mm?mm:TMemory_default,sizeof(T),mInitArgs, mkind))
+#define m_withdraw(mm,p) m_free(mm?mm:TMemory_default,p)
 
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
@@ -162,6 +207,7 @@ static inline void m_copy(void* dest, const void* src, usize_t size) {
 	}
 
 }
+static inline  void TMemory_copy(void* dest, const void* src, usize_t size) { m_copy(dest,src,size); }
 
 static inline void m_repeat(void* dest, usize_t times, void* value, usize_t size) {
 
@@ -195,6 +241,8 @@ static inline void m_repeat(void* dest, usize_t times, void* value, usize_t size
 
 }
 
+static inline void TMemory_repeat(void* dest, usize_t times, void* value, usize_t size) { m_repeat(dest,times,value,size); }
+
 
 static inline void m_clear(void* dest, usize_t size) {
 	if (size == sizeof(word_t)) {
@@ -216,6 +264,8 @@ static inline void m_clear(void* dest, usize_t size) {
 	}
 
 }
+
+static inline void TMemory_clear(void* dest, usize_t size) {m_clear(dest,size);}
 
 static inline bool_t m_equal(void* dest, const void* src, usize_t size) {
 	if (dest) {
@@ -246,6 +296,7 @@ static inline bool_t m_equal(void* dest, const void* src, usize_t size) {
 		return src ? 0 : 1;
 	}
 }
+static inline bool_t TMemory_equal(void* dest, const void* src, usize_t size) { return m_equal(dest,src,size); }
 
 static inline usize_t m_strlen(const char* str) {
 	usize_t len = 0;
@@ -255,21 +306,11 @@ static inline usize_t m_strlen(const char* str) {
 
 static inline const char* m_cstr(const char* str) {
 	usize_t len = m_strlen(str);
-	char* p = (char*)m_alloc(len+1,0);
+	char* p = (char*)m_alloc(TMemory_default,len+1,0,MemoryKind_normal);
 	m_copy(p,str,len);
 	*(p + len) = 0;
 	return (const char*)p;
 }
-typedef void* (*AllocatorAlloc)(void* mm, usize_t size, uword_t mkinds);
-typedef bool_t(*AllocatorFree)(void* mm, void* p);
-typedef struct stAllocator {
-	void* __mm__;
-	 AllocatorAlloc alloc;
-	 AllocatorFree free;
-}Allocator;
-#define allocate(T,allocator,...) ((T*)allocator->alloc(allocator->__mm__,sizeof(T),0##__VA_ARGS__))
-#define withdraw(allocator,p) (allocator->free(__mm__->__mm__,p))
-extern Allocator allocator;
 
 
 typedef enum {
