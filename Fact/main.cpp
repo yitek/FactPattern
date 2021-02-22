@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include "tests/loggers/TestLogger.h"
 #include "tests/memories/TestMemory.h"
-//#include "tests/TestArray.h" 
+#include "tests/primes/TestArray.h" 
+#include "tests/primes/TestLink.h" 
 //#include "tests/TestString.h"
 //#include "tests/TestLink.h"
 //#include "tests/TestList.h"
@@ -54,7 +55,8 @@ int main()
     testTLogger();
     testMemory();
     testAlignedMemory();
-    //testArray();
+    testArray();
+    testLink();
     //testString();
     //testLink();
     //testList();

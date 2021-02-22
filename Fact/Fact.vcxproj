@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="def.h" />
     <ClInclude Include="primes\Array.h" />
+    <ClInclude Include="primes\Link.h" />
     <ClInclude Include="runtime.h" />
     <ClInclude Include="memories\TAlignedMemory.h" />
     <ClInclude Include="memories\TGCMemory.h" />
@@ -151,9 +152,12 @@
     <ClInclude Include="Test.h" />
     <ClInclude Include="tests\loggers\TestLogger.h" />
     <ClInclude Include="tests\memories\TestMemory.h" />
+    <ClInclude Include="tests\primes\TestArray.h" />
+    <ClInclude Include="tests\primes\TestLink.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="primes\Array.c" />
+    <ClCompile Include="primes\Link.c" />
     <ClCompile Include="runtime.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\TAlignedMemory.c" />
@@ -164,6 +168,8 @@
     <ClCompile Include="Test.c" />
     <ClCompile Include="tests\loggers\TestLogger.c" />
     <ClCompile Include="tests\memories\TestMemory.c" />
+    <ClCompile Include="tests\primes\TestArray.c" />
+    <ClCompile Include="tests\primes\TestLink.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcproj2cmake.ps1" />

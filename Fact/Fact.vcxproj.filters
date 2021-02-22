@@ -31,6 +31,9 @@
     <Filter Include="primes">
       <UniqueIdentifier>{d71c206a-6597-46ae-8f27-6ac47bff8d1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tests\primes">
+      <UniqueIdentifier>{e0c182cd-44bd-46b0-a5be-b1f485e4d563}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h">
@@ -66,6 +69,15 @@
     <ClInclude Include="primes\Array.h">
       <Filter>primes</Filter>
     </ClInclude>
+    <ClInclude Include="tests\primes\TestArray.h">
+      <Filter>tests\primes</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\Link.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\primes\TestLink.h">
+      <Filter>tests\primes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -100,6 +112,15 @@
     </ClCompile>
     <ClCompile Include="primes\Array.c">
       <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\primes\TestArray.c">
+      <Filter>tests\primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\Link.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\primes\TestLink.c">
+      <Filter>tests\primes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

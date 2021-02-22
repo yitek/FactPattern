@@ -24,14 +24,14 @@ extern "C" {
 
 
 
-	const Array* Array_construct(Array* self, const void* buffer, const usize_t count, usize_t unitSize,TMemory* memory);
-	void Array_destruct(Array* self, bool_t existed);
+	const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind);
+	void Array__destruct__(Array* self, bool_t existed);
 
 	inline usize_t Array_length(const Array* self) { return self ? self->length : 0; }
 
-	const Array* Array_concat(const Array* left, const Array* right, usize_t unitSize,const Array* empty, void* mmArgs, TMemory* memory);
+	const Array* Array_concat(const Array* left, const Array* right, usize_t unitSize,const Array* empty,  TMemory* mm, void* mInitArgs, MemoryKinds mkind);
 
-	const Array* Array_clip(const Array* arr, const usize_t start, const usize_t length, const usize_t unitSize,const Array* empty, void* mmArgs, TMemory* memory);
+	const Array* Array_clip(const Array* arr, const usize_t start, const usize_t length, const usize_t unitSize,const Array* empty, TMemory* mm, void* mInitArgs, MemoryKinds mkind);
 
 	inline void* Array_buffer(const Array* self) { return (char*)self + sizeof(Array); }
 

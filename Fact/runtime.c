@@ -342,7 +342,7 @@ TLogger* Test__logger = 0;
 void TLogger__destruct__(TLogger* self, bool_t existed) {
 	Test* test = Test__current;
 	while (test) {
-		TMemory_free(0, test->category);
+		TMemory_free(0, (void*)test->category);
 		Test* p = test->parent;
 		TMemory_free(0, test);
 		test = p;

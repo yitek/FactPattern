@@ -128,6 +128,30 @@ Fact/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/build
 .PHONY : Fact/fast
 
+Test.obj: Test.c.obj
+.PHONY : Test.obj
+
+# target to build an object file
+Test.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/Test.c.obj
+.PHONY : Test.c.obj
+
+Test.i: Test.c.i
+.PHONY : Test.i
+
+# target to preprocess a source file
+Test.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/Test.c.i
+.PHONY : Test.c.i
+
+Test.s: Test.c.s
+.PHONY : Test.s
+
+# target to generate assembly for a file
+Test.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/Test.c.s
+.PHONY : Test.c.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -200,30 +224,6 @@ memories/TGCMemory.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TGCMemory.c.s
 .PHONY : memories/TGCMemory.c.s
 
-memories/TMemory.obj: memories/TMemory.c.obj
-.PHONY : memories/TMemory.obj
-
-# target to build an object file
-memories/TMemory.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.obj
-.PHONY : memories/TMemory.c.obj
-
-memories/TMemory.i: memories/TMemory.c.i
-.PHONY : memories/TMemory.i
-
-# target to preprocess a source file
-memories/TMemory.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.i
-.PHONY : memories/TMemory.c.i
-
-memories/TMemory.s: memories/TMemory.c.s
-.PHONY : memories/TMemory.s
-
-# target to generate assembly for a file
-memories/TMemory.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/TMemory.c.s
-.PHONY : memories/TMemory.c.s
-
 memories/memories_module.obj: memories/memories_module.c.obj
 .PHONY : memories/memories_module.obj
 
@@ -247,6 +247,30 @@ memories/memories_module.s: memories/memories_module.c.s
 memories/memories_module.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/memories/memories_module.c.s
 .PHONY : memories/memories_module.c.s
+
+primes/Array.obj: primes/Array.c.obj
+.PHONY : primes/Array.obj
+
+# target to build an object file
+primes/Array.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Array.c.obj
+.PHONY : primes/Array.c.obj
+
+primes/Array.i: primes/Array.c.i
+.PHONY : primes/Array.i
+
+# target to preprocess a source file
+primes/Array.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Array.c.i
+.PHONY : primes/Array.c.i
+
+primes/Array.s: primes/Array.c.s
+.PHONY : primes/Array.s
+
+# target to generate assembly for a file
+primes/Array.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/Array.c.s
+.PHONY : primes/Array.c.s
 
 primes/TType.obj: primes/TType.c.obj
 .PHONY : primes/TType.obj
@@ -377,6 +401,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Fact
+	@echo ... Test.obj
+	@echo ... Test.i
+	@echo ... Test.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
@@ -386,12 +413,12 @@ help:
 	@echo ... memories/TGCMemory.obj
 	@echo ... memories/TGCMemory.i
 	@echo ... memories/TGCMemory.s
-	@echo ... memories/TMemory.obj
-	@echo ... memories/TMemory.i
-	@echo ... memories/TMemory.s
 	@echo ... memories/memories_module.obj
 	@echo ... memories/memories_module.i
 	@echo ... memories/memories_module.s
+	@echo ... primes/Array.obj
+	@echo ... primes/Array.i
+	@echo ... primes/Array.s
 	@echo ... primes/TType.obj
 	@echo ... primes/TType.i
 	@echo ... primes/TType.s

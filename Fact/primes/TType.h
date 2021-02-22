@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../memories/TMemory.h"
+#include "../runtime.h"
 #ifndef __TTYPE_INCLUDED__ 
 #define __TTYPE_INCLUDED__
 #ifdef __cplusplus 

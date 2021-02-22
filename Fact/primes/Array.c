@@ -1,12 +1,15 @@
 #include "Array.h"
 
+#define ALLOC(mm,size,arg,kind) m_alloc(mm,size,arg,kind)
+#define FREE(mm,p) m_free(mm,p)
 
-const Array* Array_construct(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm) {
+
+const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind) {
 	//如果未分配，就自己申请一片内存
 	if (self == 0) {
 		if (!mm)mm = TMemory_default;
 		if (!self) {
-			self = m_alloc(mm, sizeof(Array) + count * unitSize,0,0);
+			self = ALLOC(mm, sizeof(Array) + count * unitSize,mInitArgs,mkind);
 		}
 	}
 	// 写入长度
@@ -41,7 +44,7 @@ usize_t Array_index(const Array* self, void* item, usize_t unitSize, usize_t sta
 }
 
 
-const Array* Array_concat(const Array* left, const Array* right, const usize_t unitSize,const Array* empty,void* mmArgs, TMemory* memory) {
+const Array* Array_concat(const Array* left, const Array* right, const usize_t unitSize,const Array* empty, TMemory* mm, void* mInitArgs, MemoryKinds mkind) {
 	// 右边的没有，返回左边的
 	if (right == 0 || right->length == 0) return left;
 	// 左边的没有，返回右边的
@@ -54,8 +57,8 @@ const Array* Array_concat(const Array* left, const Array* right, const usize_t u
 	// 内存大小等于长度乘单元大小
 
 	// 构造一个新数组
-	if (!memory)memory = TMemory_default;
-	Array* concatedArray = m_alloc(memory, concatedSize, mmArgs,0);
+	if (!mm)mm = TMemory_default;
+	Array* concatedArray = ALLOC(mm, concatedSize, mInitArgs,mkind);
 	concatedArray->length = count;
 
 	// 获取到数组元素的开始位置
@@ -70,7 +73,7 @@ const Array* Array_concat(const Array* left, const Array* right, const usize_t u
 	return (const Array*)concatedArray;
 }
 
-const Array* Array_clip(const Array* arr, const usize_t start, const usize_t count, const usize_t unitSize,const Array* empty, void* mmArgs, TMemory* memory) {
+const Array* Array_clip(const Array* arr, const usize_t start, const usize_t count, const usize_t unitSize,const Array* empty, TMemory* mm, void* mInitArgs, MemoryKinds mkind) {
 	if (!arr)return 0;
 	usize_t len = arr->length;
 	//开始位置比最后一个位置还靠后,什么都无法截取
@@ -87,8 +90,8 @@ const Array* Array_clip(const Array* arr, const usize_t start, const usize_t cou
 	// 构造子数组
 	
 	usize_t size = sizeof(Array) + clipCount * unitSize;
-	if (!memory)memory = TMemory_default;
-	Array* subArray = (Array*)m_alloc(memory, size, mmArgs,0);
+	if (!mm)mm = TMemory_default;
+	Array* subArray = (Array*)ALLOC(mm, size, mInitArgs,mkind);
 	subArray->length = clipCount;
 	const void* src = ((char*)arr + sizeof(Array)) + start * unitSize;
 	byte_t* dest = (char*)subArray + sizeof(Array);
@@ -97,8 +100,11 @@ const Array* Array_clip(const Array* arr, const usize_t start, const usize_t cou
 	return (Array*)subArray;
 }
 
-void Array_destruct(Array* self, bool_t existed) {
+void Array__destruct__(Array* self, bool_t existed) {
 	if (!existed) {
-		m_free(TMemory_default,self);
+		FREE(TMemory_default,self);
 	}
 }
+
+#undef ALLOC
+#undef FREE
