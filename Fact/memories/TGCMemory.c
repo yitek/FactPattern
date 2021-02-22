@@ -7,14 +7,17 @@ const markNumber = 1 << (sizeof(usize_t) - 1);
 const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
 TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
-	TGCMemory* p = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
-	((TObject*)p)->__meta__ = (ClazzMeta*)&TGCMemory__meta__;
+	self = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
+	((TObject*)self)->__meta__ = (ClazzMeta*)&TGCMemory__meta__;
 	if (opts) {
-		p->sweepBytes = opts->sweepBytes;
+		self->sweepBytes = opts->sweepBytes;
 	}
-	else p->sweepBytes = 0;
-	p->unitKind = MemoryUnitKind_ref;
-	return p;
+	else self->sweepBytes = 0;
+	self->unitKind = MemoryUnitKind_ref;
+	self->allocator.__mm__ = self;
+	self->allocator.alloc = (AllocatorAlloc)TGCMemory_alloc;
+	self->allocator.free = (AllocatorFree)TGCMemory_free;
+	return self;
 };
 
 MemoryAllocatingDirectives TGCMemory__allocating(TGCMemory* memory, usize_t size,uword_t masks, AlignedMemoryChunk* chunk) {

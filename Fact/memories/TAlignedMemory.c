@@ -356,6 +356,11 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 
 	for (size_t i = 0; i < 32; i++) self->chunks[i] = 0;
 	self->large = 0;
+
+	self->allocator.__mm__ = self;
+	self->allocator.alloc = (AllocatorAlloc)TAlignedMemory_alloc;
+	self->allocator.free = (AllocatorFree)TAlignedMemory_free;
+
 	if (logger) TLogger_trace(logger, "AlignedMemory.__construct__", "<AlignedMemory> constructed.");
 	return self;
 }

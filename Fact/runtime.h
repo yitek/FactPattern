@@ -4,7 +4,7 @@
 *
 * description: 运行期
 * 定义了TObject（对象） TType(类型)与虚表等的内存布局
-* 封装了内存操作
+* 封装了内存操作,定义了内存分配器Allocator
 * 定义了一个类TLogger ,日志类
 *
 ******************************************************/
@@ -141,6 +141,8 @@ void* m_alloc(usize_t size, uword_t mkinds);
 bool_t m_free(void* p);
 #define m_allocate(T,mmkinds) ((T*)m_alloc(sizeof(T),mmkinds));
 
+
+
 static inline void m_copy(void* dest, const void* src, usize_t size) {
 
 	if (size == sizeof(word_t)) {
@@ -258,7 +260,16 @@ static inline const char* m_cstr(const char* str) {
 	*(p + len) = 0;
 	return (const char*)p;
 }
-
+typedef void* (*AllocatorAlloc)(void* mm, usize_t size, uword_t mkinds);
+typedef bool_t(*AllocatorFree)(void* mm, void* p);
+typedef struct stAllocator {
+	void* __mm__;
+	 AllocatorAlloc alloc;
+	 AllocatorFree free;
+}Allocator;
+#define allocate(T,allocator,...) ((T*)allocator->alloc(allocator->__mm__,sizeof(T),0##__VA_ARGS__))
+#define withdraw(allocator,p) (allocator->free(__mm__->__mm__,p))
+extern Allocator allocator;
 
 
 typedef enum {
@@ -338,6 +349,8 @@ typedef enum {
 word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
 
 
+
+// 基础内存类
 
 
 

@@ -11,6 +11,14 @@
 void* m_alloc(usize_t size, uword_t memtype){return malloc(size);}
 bool_t m_free(void* p){ free(p); return 1;}
 
+void* Allocator_alloc(void* mm,usize_t size, uword_t memtype) { return malloc(size); }
+bool_t Allocator_free(void* mm, usize_t size, uword_t memtype) { free(size); return 1; }
+Allocator allocatorInstance = {
+	.alloc = Allocator_alloc,
+	.free = Allocator_free,
+	.__mm__ = 0
+};
+
 
 LoggerMeta TLogger__meta__ = {
 	.offset = 0,

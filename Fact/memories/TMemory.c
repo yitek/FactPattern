@@ -80,6 +80,9 @@ TMemory* TMemory__construct__(TMemory* self, const MemoryOptions* options,TLogge
 	else {
 		self->totalBytes = 0;
 	}
+	self->allocator.__mm__ = self;
+	self->allocator.alloc = (AllocatorAlloc)TMemory_alloc;
+	self->allocator.free = (AllocatorFree)TMemory_free;
 	self->logger = logger;
 	if (logger) TLogger_trace(logger,"TMemory.__construct__","<TMemory> constructed.");
 	return self;

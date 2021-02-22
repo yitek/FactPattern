@@ -44,7 +44,7 @@ extern "C" {
 		/// </summary>
 		struct stTObject;
 		struct stMemoryOptions;
-		
+		Allocator allocator;
 		TLogger* logger;
 		
 	} TMemory;
