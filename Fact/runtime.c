@@ -20,10 +20,10 @@ void outln(const byte_t* str) {
 	else printf_s("%s\n",str);
 }
 
-void outx(addr_t n, usize_t width) {
-	usize_t factor = 1;
-	usize_t len = 0;
-	uword_t x = n;
+void outx(uint_t n, favor_t width) {
+	uint_t factor = 1;
+	favor_t len = 0;
+	uint_t x = n;
 	do {
 		len++;
 		x = x / 16;
@@ -32,15 +32,15 @@ void outx(addr_t n, usize_t width) {
 	factor /= 16;
 	if (width == -1) width = len;
 	if (width < len) {
-		width -= 3; if ((word_t)width < 0)width = 0;
+		width -= 3; if ((favor_t)width < 0)width = 0;
 		len -= width;
 	}
 	else {
-		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 16;
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 16;
 		len = 0;
 	}
 	while (width) {
-		uword_t t = n / factor;
+		uint_t t = n / (factor?factor:1);
 		if (t >= 10)out('A' + t-10);
 		else out('0' + t);
 		--width; n = n % factor; factor = factor / 16;
@@ -52,10 +52,42 @@ void outx(addr_t n, usize_t width) {
 	}
 }
 
-void outu(uword_t n, usize_t width) {
-	usize_t factor = 1;
-	usize_t len = 0;
-	uword_t x = n;
+void outlx(ulong_t n, favor_t width) {
+	ulong_t factor = 1;
+	favor_t len = 0;
+	ulong_t x = n;
+	do {
+		len++;
+		x = x / 16;
+		factor *= 16;
+	} while (x);
+	factor /= 16;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if ((favor_t)width < 0)width = 0;
+		len -= width;
+	}
+	else {
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 16;
+		len = 0;
+	}
+	while (width) {
+		byte_t t =(byte_t)( n / (factor ? factor : 1));
+		if (t >= 10)out('A' + t - 10);
+		else out('0' + t);
+		--width; n = n % factor; factor = factor / 16;
+	}
+	if (len) {
+
+		out('_');
+		outx(len, 2);
+	}
+}
+
+void outu(uint_t n, favor_t width) {
+	uint_t factor = 1;
+	favor_t len = 0;
+	uint_t x = n;
 	do {
 		len++;
 		x = x / 10;
@@ -64,15 +96,15 @@ void outu(uword_t n, usize_t width) {
 	factor /= 10;
 	if (width == -1) width = len;
 	if (width < len) {
-		width -= 3; if ((word_t)width < 0)width = 0;
+		width -= 3; if ((favor_t)width < 0)width = 0;
 		len -= width;
 	}
 	else {
-		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 10;
 		len = 0;
 	}
 	while (width) {
-		uword_t t = n / factor;
+		uint_t t = n / (factor?factor:1);
 		out('0' + t);
 		--width; n = n % factor; factor = factor / 10;
 	}
@@ -82,13 +114,45 @@ void outu(uword_t n, usize_t width) {
 		outx(len, 2);
 	}
 }
-void outd(word_t n, usize_t width) {
+
+void outlu(ulong_t n, favor_t width) {
+	ulong_t factor = 1;
+	favor_t len = 0;
+	ulong_t x = n;
+	do {
+		len++;
+		x = x / 10;
+		factor *= 10;
+	} while (x);
+	factor /= 10;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if ((favor_t)width < 0)width = 0;
+		len -= width;
+	}
+	else {
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		len = 0;
+	}
+	while (width) {
+		byte_t t = (byte_t)(n / (factor ? factor : 1));
+		out('0' + t);
+		--width; n = n % factor; factor = factor / 10;
+	}
+	if (len) {
+
+		out('_');
+		outx(len, 2);
+	}
+}
+
+void outd(int_t n, favor_t width) {
 	bool_t minus = n < 0;
 	
-	usize_t factor = 1;
-	usize_t len = 0;
+	int_t factor = 1;
+	favor_t len = 0;
 	if (minus) { n = -n; len += 1; }
-	uword_t x = n;
+	int_t x = n;
 	do {
 		len++;
 		x = x / 10;
@@ -99,19 +163,19 @@ void outd(word_t n, usize_t width) {
 	//负号必须输出
 	if (minus) {
 		out('-');
-		if (--((word_t)width) < 0) width = 0;
-		if (--((word_t)len) < 0) len = 1;
+		if (--(width) < 0) width = 0;
+		if (--len < 0) len = 1;
 	}
 	if (width < len) {
-		width -= 3; if ((word_t)width < 0)width = 0;
+		width -= 3; if (width < 0)width = 0;
 		len -= width;
 	}
 	else {
-		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 10;
 		len = 0;
 	}
 	while (width) {
-		uword_t t = n / factor;
+		int_t t = n / (factor?factor:1);
 		out('0' + t);
 		--width; n = n % factor; factor = factor / 10;
 		
@@ -124,10 +188,52 @@ void outd(word_t n, usize_t width) {
 
 }
 
-void outb(uword_t n, usize_t width) {
-	usize_t factor = 1;
-	usize_t len = 0;
-	uword_t x = n;
+void outld(long_t n, favor_t width) {
+	bool_t minus = n < 0;
+
+	long_t factor = 1;
+	favor_t len = 0;
+	if (minus) { n = -n; len += 1; }
+	long_t x = n;
+	do {
+		len++;
+		x = x / 10;
+		factor *= 10;
+	} while (x);
+	factor /= 10;
+	if (width == -1) width = len;
+	//负号必须输出
+	if (minus) {
+		out('-');
+		if (--(width) < 0) width = 0;
+		if (--len < 0) len = 1;
+	}
+	if (width < len) {
+		width -= 3; if (width < 0)width = 0;
+		len -= width;
+	}
+	else {
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		len = 0;
+	}
+	while (width) {
+		byte_t t = (byte_t)(n / (factor ? factor : 1));
+		out('0' + t);
+		--width; n = n % factor; factor = factor / 10;
+
+	}
+	if (len) {
+
+		out('_');
+		outx(len, 2);
+	}
+
+}
+
+void outb(uint_t n, favor_t width) {
+	uint_t factor = 1;
+	favor_t len = 0;
+	uint_t x = n;
 	do {
 		len++;
 		x = x / 2;
@@ -136,15 +242,15 @@ void outb(uword_t n, usize_t width) {
 	factor /= 2;
 	if (width == -1) width = len;
 	if (width < len) {
-		width -= 3; if ((word_t)width < 0)width = 0;
+		width -= 3; if (width < 0)width = 0;
 		len -= width;
 	}
 	else {
-		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 2;
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 2;
 		len = 0;
 	}
 	while (width) {
-		uword_t t = n / factor;
+		uint_t t = n / (factor?factor:1);
 		out(t?'1':'0');
 		--width; n = n % factor; factor = factor / 2;
 	}
@@ -154,7 +260,37 @@ void outb(uword_t n, usize_t width) {
 	}
 }
 
-void outf(double n, usize_t i, usize_t f) {
+void outlb(ulong_t n, favor_t width) {
+	ulong_t factor = 1;
+	favor_t len = 0;
+	ulong_t x = n;
+	do {
+		len++;
+		x = x / 2;
+		factor *= 2;
+	} while (x);
+	factor /= 2;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if (width < 0)width = 0;
+		len -= width;
+	}
+	else {
+		for (favor_t i = 0, j = width - len; i < j; i++) factor *= 2;
+		len = 0;
+	}
+	while (width) {
+		ulong_t t = n / (factor?factor:1);
+		out(t ? '1' : '0');
+		--width; n = n % factor; factor = factor / 2;
+	}
+	if (len) {
+		out('_');
+		outx(len, 2);
+	}
+}
+
+void outf(double n, favor_t i, favor_t f) {
 	printf_s("%g",n);
 }
 
@@ -186,7 +322,7 @@ void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
 	int n1 = 0; int n2 = 0; bool_t isWidth = 0;
 	byte_t ch = *p;
 	bool_t convert = 0;
-	usize_t retCount=0;
+	favor_t retCount=0;
 	while (1) {
 		byte_t ch = *p; p++;
 		bool_t isEnd = ch==0;
@@ -240,21 +376,24 @@ void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
 			if (cmd == '%') { out(cmd);  }
 			else if (cmd == 'c') {
 				if (isWidth) {
-					printf_s("%lc", va_arg((*(va_list*)args), wchar_t));
+					printf_s("%lc", va_arg((*(va_list*)args), int));
 				}
-				else out(va_arg((*(va_list*)args), char));
+				else out(va_arg((*(va_list*)args), int));
 			}
 			else if (cmd == 'd') {
-				outd(va_arg((*(va_list*)args), long), n1 ? n1 : -1);
+				if(isWidth)outld(va_arg((*(va_list*)args), long), n1 ? n1 : -1);
+				else outd(va_arg((*(va_list*)args), int), n1 ? n1 : -1);
 			}
 			else if (cmd == 'u') {
-				outu(va_arg((*(va_list*)args), long), n1 ? n1 : -1);
+				if (isWidth)outlu(va_arg((*(va_list*)args), unsigned long), n1 ? n1 : -1);
+				else outu(va_arg((*(va_list*)args), unsigned int), n1 ? n1 : -1);
 			}
 			else if(cmd == 'x') {
-				outx((uword_t)va_arg((*(va_list*)args), uword_t), n1 ? n1 : -1);
+				if (isWidth)outlx(va_arg((*(va_list*)args), unsigned long), n1 ? n1 : -1);
+				else outx(va_arg((*(va_list*)args), int), n1 ? n1 : -1);
 			}
 			else if (cmd == 'p') {
-				outx((addr_t)va_arg((*(va_list*)args), void*),sizeof(addr_t)*2);
+				out_p(va_arg((*(va_list*)args), void*),sizeof(addr_t)*2);
 			}
 			else if (cmd == 's') {
 				if (isWidth) printf_s("%ls", va_arg((*(va_list*)args), wchar_t*));
@@ -270,7 +409,8 @@ void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
 				outf(va_arg((*(va_list*)args), double),n1,n2);
 			}
 			else if (cmd == 'b') {
-				outb(va_arg((*(va_list*)args), uword_t), n1 ? n1 : -1);
+				if (isWidth)outlb(va_arg((*(va_list*)args), unsigned long), n1 ? n1 : -1);
+				outb(va_arg((*(va_list*)args), unsigned int), n1 ? n1 : -1);
 			}
 			else if (cmd == 't') {
 				outt(0);
@@ -316,7 +456,7 @@ void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
 	}
 }
 
-void outs_fmt(const byte_t* str,...) {
+void outs_fmt(const byte_t* str, ...) {
 	va_list valist;
 	va_start(valist, str);
 	outs_format(str,0,&valist);
@@ -449,17 +589,17 @@ void m_look(const unsigned char* str, usize_t length, MLookTake take) {
 	while (length) {
 		outs_fmt("[%p]:", str);
 		for (usize_t i = 0; i < block; i++) {
-			byte_t b = *(str + i);
+			unsigned char b = *(str + i);
 			outx(b, 2); out(' ');
 		}
 		out('\t');
 		for (usize_t i = 0; i < block; i++) {
-			byte_t b = *(str + i);
+			unsigned char b = *(str + i);
 			outb(b, 8); out(' ');
 		}
 		out('\t');
 		for (usize_t i = 0; i < block; i++) {
-			byte_t b = *(str + i);
+			unsigned char b = *(str + i);
 			if (b == '\n') { out('\\'); out('n'); }
 			else if (b == '\t') { out('\\'); out('t'); }
 			else if (b == '\r') { out('\\'); out('r'); }
@@ -498,63 +638,63 @@ struct stLoggerLayout {
 TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(MRefUnit));
 
 
-inline static uword_t getLevelColor(LogLevels level) {
-	uword_t color = 7;
+inline static OutColors getLevelColor(LogLevels level) {
+	favor_t color = 7;
 
-	if (level & LogLevel_SectionBegin) color = 15 << 4 | 0; // 黄底蓝字
-	if (level & LogLevel_SectionEnd) color = 8; // 黄底蓝字
-	if (level & LogLevel_Error) color = 4 << 4 | 15; // 浅红色
-	if (level & LogLevel_Exception) color = 12; // 浅红色
-	if (level & LogLevel_Warn)color = 6; //黄色
-	if (level & LogLevel_Notice)color = 1; //蓝色
-	if (level & LogLevel_Success) color = 2; //绿色
-	if (level & LogLevel_Info) color = 15; //白色
-	if (level & LogLevel_Message) color = 8; //灰色 7 = 白色
-	if (level & LogLevel_Trace) color = 5; //紫色
+	if (level & LogLevel_sectionBegin) color = 15 << 4 | 0; // 黄底蓝字
+	if (level & LogLevel_sectionEnd) color = 8; // 黄底蓝字
+	if (level & LogLevel_error) color = 4 << 4 | 15; // 浅红色
+	if (level & LogLevel_exception) color = 12; // 浅红色
+	if (level & LogLevel_warn)color = 6; //黄色
+	if (level & LogLevel_notice)color = 1; //蓝色
+	if (level & LogLevel_success) color = 2; //绿色
+	if (level & LogLevel_info) color = 15; //白色
+	if (level & LogLevel_message) color = 8; //灰色 7 = 白色
+	if (level & LogLevel_trace) color = 5; //紫色
 
-	if (level & LogLevel_SectionEnd) color = 7 << 4 | color;
+	if (level & LogLevel_sectionEnd) color = 7 << 4 | color;
 	return color;
 }
 
 
 
-word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...) {
+favor_t log_exit(favor_t code, const byte_t* category, const byte_t* message, ...) {
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(TLogger_default, LogLevel_Error, category, message, &valist);
+	TLogger_output__virtual__(TLogger_default, LogLevel_error, category, message, &valist);
 	va_end(valist);
 	exit(code);
 	return 0;
 }
-usize_t TLogger__tabs = 0;
+ufavor_t TLogger__tabs = 0;
 void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
 	if (lv < self->level) return;
-	if (lv & LogLevel_SectionBegin) out('\n');
-	outcs_fmt(getLevelColor(LogLevel_Message), "%t");
+	if (lv & LogLevel_sectionBegin) out('\n');
+	outcs_fmt(getLevelColor(LogLevel_message), "%t");
 	out(' ');
 
 
-	if (lv & LogLevel_SectionBegin) {
+	if (lv & LogLevel_sectionBegin) {
 		TLogger__tabs++;
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
+		for (ufavor_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 	}
-	else if (lv & LogLevel_SectionEnd) {
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
+	else if (lv & LogLevel_sectionEnd) {
+		for (ufavor_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 		if (TLogger__tabs == 0) log_exit(ExitCode_critical, "TLogger._output", "Not matched SectionBegin.");
 		TLogger__tabs--;
 
 	}
 	else {
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
+		for (ufavor_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 	}
-	uword_t color = getLevelColor(lv);
+	OutColors color = getLevelColor(lv);
 	//灰底白字
 	//outcs_fmt(8<<4 | 15,"[%s]",category?category:"LOG");
 	outcs_fmt(color, "[%s]: ", category ? category : "LOG");
 	//out(' ');
 	outcs_format(color,message,1,args);
 	out('\n');
-	if (lv & LogLevel_SectionEnd) out('\n');
+	if (lv & LogLevel_sectionEnd) out('\n');
 }
 
 void TLogger_log(TLogger* self, LogLevels level, const byte_t* category, const byte_t* message, ...) {
@@ -568,7 +708,7 @@ void TLogger_trace(TLogger* self, const byte_t* category, const byte_t* message,
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Trace, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_trace, category, message, &valist);
 	va_end(valist);
 }
 
@@ -577,28 +717,28 @@ void TLogger_message(TLogger* self, const byte_t* category, const byte_t* messag
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Message, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_message, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_info(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Info, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_info, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_success(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Success, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_success, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_notice(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Notice, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_notice, category, message, &valist);
 	va_end(valist);
 }
 
@@ -606,28 +746,28 @@ void TLogger_warn(TLogger* self, const byte_t* category, const byte_t* message, 
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Warn, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_warn, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_exception(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Exception, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_exception, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_error(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_Error, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_error, category, message, &valist);
 	va_end(valist);
 }
 void TLogger_sectionBegin(TLogger* self, const byte_t* category, const byte_t* message, ...) {
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(self, LogLevel_SectionBegin, category, message, &valist);
+	TLogger_output__virtual__(self, LogLevel_sectionBegin, category, message, &valist);
 	va_end(valist);
 }
 
@@ -635,7 +775,7 @@ void TLogger_sectionEnd(TLogger* self, const byte_t* category, const byte_t* mes
 	if (!self) self = TLogger_default;
 	va_list valist;
 	va_start(valist, message);
-	TLogger__output(self, LogLevel_SectionEnd, category, message, &valist);
+	TLogger__output(self, LogLevel_sectionEnd, category, message, &valist);
 	va_end(valist);
 }
 
@@ -651,7 +791,7 @@ TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts) {
 		m_copy(&self->level, opts, sizeof(LoggerOptions));
 	}
 	else {
-		self->level = LogLevel_None;
+		self->level = LogLevel_none;
 	}
 
 	return self;
@@ -689,7 +829,7 @@ void Test_begin(const byte_t* category, const byte_t* message, ...) {
 	test->childCount = test->failedChildCount = test->assertCount = test->failCount = 0;
 	va_list valist;
 	va_start(valist, message);
-	TLogger_output__virtual__(Test__logger ? Test__logger : TLogger_default, LogLevel_SectionBegin, category, message, &valist);
+	TLogger_output__virtual__(Test__logger ? Test__logger : TLogger_default, LogLevel_sectionBegin, category, message, &valist);
 	va_end(valist);
 	Test__current = test;
 }
@@ -697,13 +837,13 @@ void Test_assert(const byte_t* category, bool_t condition, const byte_t* message
 	Test* test = Test__current;
 	LogLevels rs;
 	if (condition) {
-		rs = LogLevel_Success;
+		rs = LogLevel_success;
 		if (test) {
 			test->assertCount++;
 		}
 	}
 	else {
-		rs = LogLevel_Error;
+		rs = LogLevel_error;
 		if (test) {
 			test->assertCount++;
 			test->failCount++;
@@ -725,7 +865,7 @@ void Test_end() {
 			p->failedChildCount++;
 			p = p->parent;
 		}
-		word_t lv = LogLevel_Exception | LogLevel_SectionEnd;
+		LogLevels lv = LogLevel_exception | LogLevel_sectionEnd;
 		TLogger_log(Test__logger, lv, test->category, "asserts: %d(fail:%d),children: %d(fail:%d)", test->assertCount, test->failCount, test->childCount, test->failedChildCount);
 	}
 	else if (test->failedChildCount) {
@@ -735,29 +875,19 @@ void Test_end() {
 				p->failedChildCount++;
 				p = p->parent;
 			}
-			word_t lv = LogLevel_Warn | LogLevel_SectionEnd;
+			LogLevels lv = LogLevel_error | LogLevel_sectionEnd;
+			TLogger_log(Test__logger, lv, test->category, "asserts: %d(fail:%d),children: %d(fail:%d)", test->assertCount, test->failCount, test->childCount, test->failedChildCount);
+		}
+		else {
+			LogLevels lv = LogLevel_warn | LogLevel_sectionEnd;
 			TLogger_log(Test__logger, lv, test->category, "asserts: %d(fail:%d),children: %d(fail:%d)", test->assertCount, test->failCount, test->childCount, test->failedChildCount);
 		}
 	}
 	else {
-		word_t lv = LogLevel_Success | LogLevel_SectionEnd;
+		LogLevels lv = LogLevel_success | LogLevel_sectionEnd;
 		TLogger_log(Test__logger, lv, test->category, "asserts: %d(fail:%d),children: %d(fail:%d)", test->assertCount, test->failCount, test->childCount, test->failedChildCount);
 	}
 	TMemory_free(0,(void*)test->category);
 	TMemory_free(0,test);
 }
 
-void m_printb(const unsigned char* str, usize_t groupc, usize_t length) {
-	usize_t g = groupc;
-	for (usize_t i = 0; i < length; i++) {
-		utiny_t b = str[i];
-		if (g == groupc) {}
-		for (usize_t j = 0; j < sizeof(utiny_t); j++) {
-			utiny_t mask = 1 << j;
-			if (b & mask) out('1'); else out('0');
-		}
-		g--;
-		if (g == 0) { out('\n'); g = groupc; }
-	}
-	out('\n');
-}

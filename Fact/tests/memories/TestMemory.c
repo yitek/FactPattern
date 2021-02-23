@@ -22,7 +22,7 @@ void testMemory() {
 	
 
 	TMemory_free(mm, obj4);
-	Test_assert("Memory.release", obj4 != 0, "释放内存obj4[%p]=%d\n", obj4);
+	Test_assert("Memory.release", obj4 != 0, "释放内存obj4[%p]=%ld\n", obj4);
 
 	TMemory_free(mm, obj8);
 	Test_assert("TMemory.release", obj8 != 0, "释放内存obj8[%p]=%ld\n", obj8,*obj8);

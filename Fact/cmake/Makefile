@@ -416,29 +416,29 @@ runtime.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/runtime.c.s
 .PHONY : runtime.c.s
 
-tests/loggers/TestLogger.obj: tests/loggers/TestLogger.c.obj
-.PHONY : tests/loggers/TestLogger.obj
+tests/TestRuntime.obj: tests/TestRuntime.c.obj
+.PHONY : tests/TestRuntime.obj
 
 # target to build an object file
-tests/loggers/TestLogger.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.obj
-.PHONY : tests/loggers/TestLogger.c.obj
+tests/TestRuntime.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/TestRuntime.c.obj
+.PHONY : tests/TestRuntime.c.obj
 
-tests/loggers/TestLogger.i: tests/loggers/TestLogger.c.i
-.PHONY : tests/loggers/TestLogger.i
+tests/TestRuntime.i: tests/TestRuntime.c.i
+.PHONY : tests/TestRuntime.i
 
 # target to preprocess a source file
-tests/loggers/TestLogger.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.i
-.PHONY : tests/loggers/TestLogger.c.i
+tests/TestRuntime.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/TestRuntime.c.i
+.PHONY : tests/TestRuntime.c.i
 
-tests/loggers/TestLogger.s: tests/loggers/TestLogger.c.s
-.PHONY : tests/loggers/TestLogger.s
+tests/TestRuntime.s: tests/TestRuntime.c.s
+.PHONY : tests/TestRuntime.s
 
 # target to generate assembly for a file
-tests/loggers/TestLogger.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/loggers/TestLogger.c.s
-.PHONY : tests/loggers/TestLogger.c.s
+tests/TestRuntime.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/TestRuntime.c.s
+.PHONY : tests/TestRuntime.c.s
 
 tests/memories/TestMemory.obj: tests/memories/TestMemory.c.obj
 .PHONY : tests/memories/TestMemory.obj
@@ -605,9 +605,9 @@ help:
 	@echo ... runtime.obj
 	@echo ... runtime.i
 	@echo ... runtime.s
-	@echo ... tests/loggers/TestLogger.obj
-	@echo ... tests/loggers/TestLogger.i
-	@echo ... tests/loggers/TestLogger.s
+	@echo ... tests/TestRuntime.obj
+	@echo ... tests/TestRuntime.i
+	@echo ... tests/TestRuntime.s
 	@echo ... tests/memories/TestMemory.obj
 	@echo ... tests/memories/TestMemory.i
 	@echo ... tests/memories/TestMemory.s

@@ -323,7 +323,7 @@ extern "C" {
 		utf32_t code;
 		usize_t len = UTF8_convertToUTF32(src, &code);
 		if (len == 0) return 0;
-		if (UTF32_convertToUTF16(code, (utf16_t* const)&des) != 1) return 0;
+		if (UTF32_convertToUTF16(code, des) != 1) return 0;
 		return len;
 	}
 
@@ -350,7 +350,7 @@ extern "C" {
 		// 模式串开始位置在主串的哪里
 		usize_t searchAt = 0;
 		usize_t step = searchLength - patternLength;
-		usize_t index = 0;
+		// usize_t index = 0;
 		// 模式串已经匹配到的位置
 		usize_t patternAt;
 		while (searchAt <= step) {
@@ -384,7 +384,7 @@ extern "C" {
 		// 模式串开始位置在主串的哪里
 		usize_t searchAt = 0;
 		usize_t step = searchLength - patternLength;
-		usize_t index = 0;
+		//usize_t index = 0;
 		// 模式串已经匹配到的位置
 		usize_t patternAt;
 		while (searchAt <= step) {
@@ -425,25 +425,16 @@ extern "C" {
 		usize_t patternAt;
 		while (searchAt <= step) {
 			patternAt = 0;
-			if (len) { len--; } else {
-				cc++;
-				utf8_t b= searchBuffer[searchAt];
-				if (b < 0x80)len = 0;
-				else if (b < 0xE0)len = 1;
-				else if (b < 0xF0)len = 2;
-				else if (b < 0xF8)len = 3;
-				else if (b < 0xFC)len = 4;
-				else len = 5;
-			}
+			
 			while (searchBuffer[searchAt + patternAt] == patternBuffer[patternAt]) {
 				patternAt++;
 				// 匹配成功
-				if (patternAt >= searchLength) {
+				if (patternAt >= patternLength) {
 					rs.charCount = cc; rs.byteCount = searchAt;
 					return rs;// return s;由于是utf8，需要转换一下index
 				}
 			}
-			usize_t shiftCount = searchLength + 1;
+			usize_t shiftCount = patternLength + 1;
 			utf8_t c = searchBuffer[searchAt + patternLength];
 			for (usize_t k = 0, q = patternLength; k < q; k++) {
 				if (patternBuffer[k] == c) {
@@ -458,23 +449,24 @@ extern "C" {
 					searchAt += shiftCount; // searchAt+ len + shiftCount-len; 只移动了shiftCount个字节
 					len -= shiftCount; // shiftCount已经被消耗掉了。
 				}
-				while (shiftCount) {
-					if (len) { len--; }
-					else {
-						cc++;
-						utf8_t b = searchBuffer[searchAt];
-						if (b < 0x80)len = 0;
-						else if (b < 0xE0)len = 1;
-						else if (b < 0xF0)len = 2;
-						else if (b < 0xF8)len = 3;
-						else if (b < 0xFC)len = 4;
-						else len = 5;
-					}
-					shiftCount--;
-					searchAt++;
-				}
+				
 			}
-			searchAt += shiftCount;
+			while (shiftCount) {
+				if (len) { len--; }
+				else {
+					cc++;
+					utf8_t b = searchBuffer[searchAt];
+					if (b < 0x80)len = 0;
+					else if (b < 0xE0)len = 1;
+					else if (b < 0xF0)len = 2;
+					else if (b < 0xF8)len = 3;
+					else if (b < 0xFC)len = 4;
+					else len = 5;
+				}
+				shiftCount--;
+				searchAt++;
+			}
+			//searchAt += shiftCount;
 
 		}
 		return rs;

@@ -167,12 +167,20 @@ void outc(OutColors color, byte_t ch);
 void outcs(OutColors color, const byte_t* str);
 void outcln(OutColors color, const byte_t* str);
 
-void outu(uword_t n, usize_t width);
-void outd(word_t n, usize_t width);
-void outx(uword_t n, usize_t width);
-void outb(uword_t n, usize_t width);
-void outf(double n, usize_t i, usize_t f);
+
+void outu(uint_t n, favor_t width);
+void outd(int_t n, favor_t width);
+void outx(uint_t n, favor_t width);
+void outb(uint_t n, favor_t width);
+void outlu(ulong_t n, favor_t width);
+void outld(long_t n, favor_t width);
+void outlx(ulong_t n, favor_t width);
+void outlb(ulong_t n, favor_t width);
+void outf(double n, favor_t i, favor_t f);
 void outt(const byte_t* fmt);
+static inline void out_p(void* p, favor_t width) { 
+	outlx((ulong_t)p,width); 
+}
 void outs_fmt(const byte_t* str, ...);
 void outcs_fmt(OutColors color, const byte_t* str, ...);
 void outcs_fmtln(OutColors color, const byte_t* str, ...);
@@ -382,17 +390,17 @@ void m_look(const unsigned char* str, usize_t length, MLookTake take);
 
 
 typedef enum {
-	LogLevel_None = 0,
-	LogLevel_SectionBegin = 1,
-	LogLevel_SectionEnd = 1 << 1,
-	LogLevel_Trace = 1 << 8,
-	LogLevel_Message = 1 << 9,
-	LogLevel_Info = 1 << 10,
-	LogLevel_Success = 1 << 11,
-	LogLevel_Notice = 1 << 12,
-	LogLevel_Warn = 1 << 13,
-	LogLevel_Exception = 1 << 14,
-	LogLevel_Error = 1 << 15,
+	LogLevel_none = 0,
+	LogLevel_sectionBegin = 1,
+	LogLevel_sectionEnd = 1 << 1,
+	LogLevel_trace = 1 << 8,
+	LogLevel_message = 1 << 9,
+	LogLevel_info = 1 << 10,
+	LogLevel_success = 1 << 11,
+	LogLevel_notice = 1 << 12,
+	LogLevel_warn = 1 << 13,
+	LogLevel_exception = 1 << 14,
+	LogLevel_error = 1 << 15,
 
 
 }LogLevels;
@@ -452,7 +460,7 @@ typedef enum {
 	ExitCode_critical = 2,
 	ExitCode_argument = 3
 } ExitCodes;
-word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...);
+favor_t log_exit(favor_t code, const byte_t* category, const byte_t* message, ...);
 
 
 

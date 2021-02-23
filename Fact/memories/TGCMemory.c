@@ -16,8 +16,8 @@ TGCMemoryMeta TGCMemory__meta__ = {
 	.__destruct__ = (void(*)(TMemory*, bool_t))TGCMemory__destruct__
 };
 
-const markNumber = 1 << (sizeof(usize_t) - 1);
-const unmarkNumber = !(1 << (sizeof(usize_t) - 1));
+const usize_t markNumber = 1 << (sizeof(usize_t) - 1);
+const usize_t unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
 TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
 	self = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);

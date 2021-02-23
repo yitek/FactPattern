@@ -1,2 +1,7 @@
-﻿  runtime.c
+﻿  String.c
+  TestEncoding.c
+D:\Yitek\FactPattern\Fact\tests\primes\TestEncoding.c(22,22): warning C4101: “srs1”: 未引用的局部变量
+D:\Yitek\FactPattern\Fact\tests\primes\TestEncoding.c(20,22): warning C4101: “srs”: 未引用的局部变量
+  正在生成代码...
+  main.cpp
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

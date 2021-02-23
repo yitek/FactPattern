@@ -44,12 +44,12 @@ int main()
 {
     printSysInfo();
     testRuntime();
-    /*testMemory();
+    testMemory();
     testAlignedMemory();
     testArray();
     testLink();
     testList();
-    testEncoding();*/
+    testEncoding();/**/
     //testString();
     //testLink();
     //

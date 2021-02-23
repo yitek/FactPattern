@@ -47,6 +47,8 @@ typedef long long long_t;
 typedef unsigned long long ulong_t;
 typedef unsigned long long addr_t;
 
+typedef int favor_t;
+typedef unsigned int ufavor_t;
 typedef long long word_t;
 typedef unsigned long long uword_t;
 typedef long long dword_t[2];
@@ -58,6 +60,8 @@ typedef long long long_t;
 typedef unsigned long long ulong_t;
 typedef unsigned int addr_t;
 
+typedef int favor_t;
+typedef unsigned int ufavor_t;
 typedef int word_t;
 typedef unsigned int uword_t;
 typedef long long dword_t;
@@ -70,7 +74,8 @@ typedef unsigned long long ulong_t;
 typedef long long large_t[2];
 typedef unsigned long long ularge_t[2];
 typedef unsigned int addr_t;
-
+typedef short favor_t;
+typedef unsigned short ufavor_t;
 typedef short word_t;
 typedef unsigned short uword_t;
 typedef int dword_t;

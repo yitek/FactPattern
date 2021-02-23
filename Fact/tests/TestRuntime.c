@@ -4,6 +4,8 @@
 void testNum() {
 	Test_begin("runtime(out..)","start test:");
 	outln("test %x:");
+	outs("0x0 %x:\t000000==");
+	outx(0x0, 8); out('\n');
 	outs("0xA234BC %x:\tA234BC==");
 	outx(0xA234BC,-1); out('\n');
 	outs("0xA234B0 %x6:\tA234B0==");
@@ -65,7 +67,7 @@ void testFormat() {
 	const char* fstr = "%d7%s,%u8%b %f12.3";
 	outln(fstr);
 	outln("-88,\"hello\",123456789,0b1111,32.3");
-	
+	outb(0b1111,-1);
 	outs_fmt("%d7%s,%u8%b %f12.5\n",-88,"hello",123456789,0b1111,32.3);
 
 	outcs_fmtln(OutBackColor_blue|OutForeColor_red,"hello\n\n %s\n\n","yi");
@@ -73,7 +75,7 @@ void testFormat() {
 }
 void testLook() {
 	Test_begin("m_look", "start test:");
-	const* str = "hello word\n";
+	const char* str = "hello word\n";
 	m_look(str,4,(MLookTake)4);
 	Test_end();
 }

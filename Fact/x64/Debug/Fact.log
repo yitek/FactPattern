@@ -5,33 +5,4 @@ D:\Yitek\FactPattern\Fact\primes\Encoding.h(1,1): warning C4819: 该文件包含
 D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Yitek\FactPattern\Fact\Test.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Yitek\FactPattern\Fact\runtime.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  main.cpp
-D:\Yitek\FactPattern\Fact\main.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\tests\loggers\TestLogger.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\Test.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\runtime.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\def.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\tests\memories\TestMemory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\memories\memories_module.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\memories\TAlignedMemory.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\tests\primes\TestArray.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\primes\Array.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\tests\primes\TestLink.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\primes\List.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\tests\primes\TestEncoding.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\primes\Encoding.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Yitek\FactPattern\Fact\main.cpp(35,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(35,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(36,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(36,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(37,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(37,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(38,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(38,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(39,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(39,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(40,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(40,14): message : 请考虑在格式字符串中使用“%zd”
-D:\Yitek\FactPattern\Fact\main.cpp(41,14): warning C4477: “printf_s”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“size_t”
-D:\Yitek\FactPattern\Fact\main.cpp(41,14): message : 请考虑在格式字符串中使用“%zd”
   Fact.vcxproj -> D:\Yitek\FactPattern\x64\Debug\Fact.exe
