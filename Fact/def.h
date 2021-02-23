@@ -84,9 +84,10 @@ typedef unsigned short schar_t;
 #elif defined(__LINUX__)
 typedef unsigned int schar_t;
 #endif
-
+typedef char ch_t;
 typedef char byte_t;
-typedef unsigned char ubyte_t;
+typedef char tiny_t;
+typedef unsigned char utiny_t;
 typedef short short_t;
 typedef unsigned short ushort_t;
 typedef int int_t;

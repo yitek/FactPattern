@@ -2,12 +2,14 @@
 //
 
 #include <iostream>
+#include <stddef.h>
 #include <stdlib.h>
-#include "tests/loggers/TestLogger.h"
+#include "tests/TestRuntime.h"
 #include "tests/memories/TestMemory.h"
 #include "tests/primes/TestArray.h" 
 #include "tests/primes/TestLink.h" 
 #include "tests/primes/TestList.h"
+#include "tests/primes/TestEncoding.h"
 //#include "tests/TestString.h"
 //#include "tests/TestLink.h"
 
@@ -36,29 +38,18 @@ void printSysInfo() {
     printf_s("sizeof(long): %d\n", sizeof(long));
     printf_s("sizeof(long long): %d\n", sizeof(long long));
     printf_s("sizeof(void*): %d\n", sizeof(void*));
+    printf_s("sizeof(wchar_t): %d\n", sizeof(void*));
 }
 int main()
 {
     printSysInfo();
-    //CTLogger* loggeer = new CTLogger();
-    
-    //ObjectLayout objInst;
-    //objInst = 0; objInst.type = 0;
-   // void* obj = &objInst+1;
-    //Object_param(obj);
-    //void* obj2 = 0;
-
-
-
-    
-    //setlocale(LC_ALL, ""); 
-    //setlocale(LC_ALL, "chs");
-    testTLogger();
-    testMemory();
+    testRuntime();
+    /*testMemory();
     testAlignedMemory();
     testArray();
     testLink();
     testList();
+    testEncoding();*/
     //testString();
     //testLink();
     //

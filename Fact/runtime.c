@@ -8,6 +8,369 @@
 #include <windows.h>
 #endif
 
+void out(byte_t c) {
+	putchar(c);
+}
+void outs(const byte_t* str) {
+	if (!str)return;
+	printf_s("%s", str);
+}
+void outln(const byte_t* str) {
+	if (!str) out('\n');
+	else printf_s("%s\n",str);
+}
+
+void outx(addr_t n, usize_t width) {
+	usize_t factor = 1;
+	usize_t len = 0;
+	uword_t x = n;
+	do {
+		len++;
+		x = x / 16;
+		factor *= 16;
+	} while (x);
+	factor /= 16;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if ((word_t)width < 0)width = 0;
+	}
+	else {
+		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 16;
+	}
+	while (n && width) {
+		uword_t t = n / factor;
+		if (t >= 10)out('A' + t-10);
+		else out('0' + t);
+		--width; n = n % factor; factor = factor / 16;
+	}
+	if (n) {
+		while (n) {
+			width++; n = n / 16;
+		}
+		out('_');
+		outx(width, 2);
+	}
+}
+
+void outu(uword_t n, usize_t width) {
+	usize_t factor = 1;
+	usize_t len = 0;
+	uword_t x = n;
+	do {
+		len++;
+		x = x / 10;
+		factor *= 10;
+	} while (x);
+	factor /= 10;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if ((word_t)width < 0)width = 0;
+	}
+	else {
+		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+	}
+	while (n && width) {
+		uword_t t = n / factor;
+		out('0' + t);
+		--width; n = n % factor; factor = factor / 10;
+	}
+	if (n) {
+		while (n) {
+			width++; n = n / 10;
+		}
+		out('_');
+		outx(width, 2);
+	}
+}
+void outd(word_t n, usize_t width) {
+	bool_t minus = n < 0;
+	if (minus) n = -n;
+	usize_t factor = 1;
+	usize_t len = 0;
+	uword_t x = n;
+	do {
+		len++;
+		x = x / 10;
+		factor *= 10;
+	} while (x);
+	factor /= 10;
+	if (minus) { len++; }
+	if (width == -1) width = len;	
+	if (width < len) {
+		width -= 3; if ((word_t)width < 0)width = 0;
+	}
+	else {
+		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+	}
+	if (minus) {
+		out('-'); if((--(word_t)width)<0)width=0;
+	}
+	while (n && width) {
+		uword_t t = n / factor;
+		out('0' + t);
+		--width; n = n % factor; factor = factor / 10;
+		
+	}
+	if (n) {
+		while (n) {
+			width++; n = n / 10;
+		}
+		out('_');
+		outx(width, 2);
+	}
+
+}
+
+void outb(uword_t n, usize_t width) {
+	usize_t factor = 1;
+	usize_t len = 0;
+	uword_t x = n;
+	do {
+		len++;
+		x >>=1;
+		factor <<= 1;
+	} while (x);
+	factor >>= 1;
+	if (width == -1) width = len;
+	if (width < len) {
+		width -= 3; if ((word_t)width < 0)width = 0;
+	}
+	else {
+		for (usize_t i = 0, j = width - len; i < j; i++) factor <<= 1;
+	}
+	while (n && width) {
+		uword_t t = n & factor;
+		out(t?'1':'0');
+		--width; n =n%factor; factor >>= 1;
+	}
+	if (n) {
+		while (n) {
+			width++; n >>= 1;
+		}
+		out('_');
+		outx(width, 2);
+	}
+}
+
+void outf(double n, usize_t i, usize_t f) {
+	printf_s("%g",n);
+}
+
+void outt(const byte_t* fmt) {
+	time_t  t;
+	time(&t);
+	if (fmt) {}
+	else {
+		char tbuffer[32];
+		ctime_s(tbuffer, 32, &t);
+		char* p = tbuffer;
+		while (*p != '\n') { out(*p); p++; }
+	}
+	
+}
+
+typedef enum {
+	OutFormatState_normal =0,
+	OutFormatState_format = 1,
+	OutFormatState_number1 = 1<<1 | OutFormatState_format,
+	OutFormatState_number2 = 1 << 2 | OutFormatState_number1 | OutFormatState_format,
+} OutFormatStates;
+
+
+
+void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
+	OutFormatStates state = OutFormatState_normal;
+	byte_t cmd=0;
+	int n1 = 0; int n2 = 0; bool_t isWidth = 0;
+	byte_t ch = *p;
+	bool_t convert = 0;
+	usize_t retCount=0;
+	while (1) {
+		byte_t ch = *p; p++;
+		bool_t isEnd = ch==0;
+		
+		bool_t replace = 0;
+		if (state & OutFormatState_format) {
+			if (ch == '%') { 
+				if (*(p - 2) == '%') {
+					cmd = ch; ch = 0;
+				}
+				replace = 1;
+			}
+			else if (ch >= '0' && ch <= '9') {
+				if (cmd == 'd' || cmd == 'f' || cmd == 'u' || cmd=='x' || cmd=='b') {
+					
+					if ((state & OutFormatState_number2) > OutFormatState_number1) {
+						
+						n2 = n2 * 10 + ch - '0';
+					}
+					else if ((state & OutFormatState_number1)> OutFormatState_format) {
+						n1 = n1 * 10 + ch - '0';
+					}
+					else {
+						state |= OutFormatState_number1;
+						n1 = n1 * 10 + ch - '0';
+					}
+					ch = 0;
+				}
+				else {
+					replace = 1;
+				}
+			}
+			else if (ch == '.' && (state & OutFormatState_number1)> OutFormatState_format) {
+				state |= OutFormatState_number2;
+				ch = 0;
+				//state -= OutFormatState_number1;
+			}
+			else if (ch == 'l' && !isWidth) {
+				isWidth = 1;
+				ch = 0;
+			}
+			else if ((ch == 'd' || ch == 'u' || ch == 'p' || ch == 'c' || ch == 'x' || ch == 'b' || ch == 's' || ch == 'f' || ch=='t') & !cmd) {
+				cmd = ch;
+				ch = 0;
+			}
+			else {
+				replace = 1;
+			}
+		}
+		if (replace) {
+			if (cmd == '%') { out(cmd);  }
+			else if (cmd == 'c') {
+				if (isWidth) {
+					printf_s("%lc", va_arg((*(va_list*)args), wchar_t));
+				}
+				else out(va_arg((*(va_list*)args), char));
+			}
+			else if (cmd == 'd') {
+				outd(va_arg((*(va_list*)args), long), n1 ? n1 : -1);
+			}
+			else if (cmd == 'u') {
+				outu(va_arg((*(va_list*)args), long), n1 ? n1 : -1);
+			}
+			else if(cmd == 'x') {
+				outx((uword_t)va_arg((*(va_list*)args), uword_t), n1 ? n1 : -1);
+			}
+			else if (cmd == 'p') {
+				outx((addr_t)va_arg((*(va_list*)args), void*),sizeof(addr_t)/8);
+			}
+			else if (cmd == 's') {
+				if (isWidth) printf_s("%ls", va_arg((*(va_list*)args), wchar_t*));
+				else outs(va_arg((*(va_list*)args), char*));
+			}
+			else if (cmd == 'f') {
+				if ((state & OutFormatState_number2) <= OutFormatState_format) {
+					n2 = -1;
+				}
+				if ((state & OutFormatState_number1) <= OutFormatState_format) {
+					n1 = -1;
+				}
+				outf(va_arg((*(va_list*)args), double),n1,n2);
+			}
+			else if (cmd == 'b') {
+				outb(va_arg((*(va_list*)args), uword_t), n1 ? n1 : -1);
+			}
+			else if (cmd == 't') {
+				outt(0);
+			} else {
+				out('%'); if (isWidth) out('l');
+				out(cmd);
+				if ((state & OutFormatState_number1)> OutFormatState_format || (state & OutFormatState_number2)> OutFormatState_format) {
+					out(ch);
+				}
+			}
+			state = OutFormatState_normal;
+			replace = 0;
+			cmd = 0;
+			isWidth = 0;
+			n1 = n2 = 0;
+		}
+		if (ch) {
+			if (ch == '%') state = OutFormatState_format;
+			else {
+				if (ignoreEndRet) {
+					if (ch == '\n') { retCount++; continue; }
+					else if (!isEnd) {
+						while (retCount) {
+							out('\n'); retCount--;
+						}
+					}
+				}
+				
+				if (convert) {
+					if (ch == '0') out(0);
+					else if (ch == 'n') out('\n');
+					else if (ch == '\\') out('\\');
+					else if (ch == 'r') out('\r');
+					else if (ch == 't') out('\t');
+					else { out('\\'); out(ch); }
+					convert = 0;
+				}
+				else out(ch);
+				//if (ch == '\\') convert = 1;
+			}
+		}
+		if (isEnd)break;
+	}
+}
+
+void outs_fmt(const byte_t* str,...) {
+	va_list valist;
+	va_start(valist, str);
+	outs_format(str,0,&valist);
+	va_end(valist);
+	
+}
+
+
+#if defined(__WIN__)
+void outc(OutColors color, byte_t ch) {
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	out(ch);
+	SetConsoleTextAttribute(handle, 7);//设置颜色
+}
+void outcs(OutColors color, const byte_t* str) {
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	outs(str);
+	SetConsoleTextAttribute(handle,7);//设置颜色
+}
+void outcln(OutColors color, const byte_t* str) {
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	outs(str); 
+	SetConsoleTextAttribute(handle, 7);//设置颜色
+	out('\n');
+}
+
+void outcs_format(OutColors color,const byte_t* str, bool_t ignoreEndRet, void* args) {
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	outs_format(str,ignoreEndRet,args);
+	SetConsoleTextAttribute(handle, 7);//设置颜色
+}
+void outcs_fmt(OutColors color, const byte_t* str, ...) {
+	va_list valist;
+	va_start(valist, str);
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	outs_format(str,0,&valist);
+	SetConsoleTextAttribute(handle, 7);//设置颜色
+	va_end(valist);
+}
+void outcs_fmtln(OutColors color, const byte_t* str, ...) {
+	va_list valist;
+	va_start(valist, str);
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
+	SetConsoleTextAttribute(handle, color);//设置颜色
+	outs_format(str, 1, &valist);
+	SetConsoleTextAttribute(handle, 7);//设置颜色
+	va_end(valist);
+	out('\n');
+}
+#endif
+
 
 TMemoryMeta TMemory__meta__ = {
 	.offset = 0,
@@ -91,13 +454,8 @@ struct stLoggerLayout {
 TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(MRefUnit));
 
 
-void setLevelColor(LogLevels level);
-
-#ifdef __WIN__
-void setLevelColor(LogLevels level) {
-
-
-	WORD color = 7;
+inline static uword_t getLevelColor(LogLevels level) {
+	uword_t color = 7;
 
 	if (level & LogLevel_SectionBegin) color = 15 << 4 | 0; // 黄底蓝字
 	if (level & LogLevel_SectionEnd) color = 8; // 黄底蓝字
@@ -111,97 +469,11 @@ void setLevelColor(LogLevels level) {
 	if (level & LogLevel_Trace) color = 5; //紫色
 
 	if (level & LogLevel_SectionEnd) color = 7 << 4 | color;
-
-	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);//获取当前窗口句柄
-	SetConsoleTextAttribute(handle, color);//设置颜色
-
+	return color;
 }
 
-#endif
 
 
-void TLogger__printf(const byte_t* p, void* args) {
-	bool_t hasPlaceholder = 0;
-	byte_t prev = 0;
-	byte_t ch = 0;
-	while (*p) {
-		ch = *p; p++;
-		if (ch == '\n') {
-			//不打印最后一个回车
-			if (*p == 0) break;
-		}
-		if (ch == L'%') {
-			if (hasPlaceholder) putchar('%');
-			else hasPlaceholder = 1;
-			continue;
-		}
-		if (!hasPlaceholder) {
-			putchar(ch); continue;
-		}
-		if (prev) {
-			if (prev == L'l') {
-				if (ch == 'c') {
-					printf_s("%lc", va_arg((*(va_list*)args), int));
-					hasPlaceholder = 0;
-					continue;
-				}
-				if (ch == 'd') {
-					printf_s("%ld", va_arg((*(va_list*)args), long));
-					hasPlaceholder = 0;
-					continue;
-				}
-				if (ch == 's') {
-					printf_s("%ls", va_arg((*(va_list*)args), wchar_t*));
-					hasPlaceholder = 0;
-					continue;
-				}
-
-			}
-		}
-		else {
-			if (ch == 'c') {
-				printf_s("%c", va_arg((*(va_list*)args), int));
-				hasPlaceholder = 0;
-				continue;
-			}
-			if (ch == 'd') {
-				printf_s("%d", va_arg((*(va_list*)args), int));
-				hasPlaceholder = 0;
-				continue;
-			}
-			if (ch == 's') {
-				printf_s("%s", va_arg((*(va_list*)args), byte_t*));
-				hasPlaceholder = 0;
-				continue;
-			}
-			if (ch == 'p') {
-				printf_s("%p", va_arg((*(va_list*)args), void*));
-				hasPlaceholder = 0;
-				continue;
-			}
-			if (ch == 'f') {
-				printf_s("%f", va_arg((*(va_list*)args), double));
-				hasPlaceholder = 0;
-				continue;
-			}
-			if (ch == 'x') {
-				printf_s("%x", va_arg((*(va_list*)args), word_t));
-				hasPlaceholder = 0;
-				continue;
-			}
-			prev = ch;
-		}
-	}
-}
-
-void printNow() {
-	time_t  t;
-	time(&t);
-	char tbuffer[32];
-	ctime_s(tbuffer, 32, &t);
-	char* p = tbuffer;
-	while (*p != '\n') { putchar(*p); p++; }
-}
 word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...) {
 	va_list valist;
 	va_start(valist, message);
@@ -213,39 +485,32 @@ word_t log_exit(word_t code, const byte_t* category, const byte_t* message, ...)
 usize_t TLogger__tabs = 0;
 void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
 	if (lv < self->level) return;
-	if (lv & LogLevel_SectionBegin) putchar('\n');
-	setLevelColor(LogLevel_Message);
-	printNow();
-	putchar(' ');
+	if (lv & LogLevel_SectionBegin) out('\n');
+	outcs_fmt(getLevelColor(LogLevel_Message), "%t");
+	out(' ');
 
 
 	if (lv & LogLevel_SectionBegin) {
 		TLogger__tabs++;
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) putchar('\t');
+		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 	}
 	else if (lv & LogLevel_SectionEnd) {
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) putchar('\t');
+		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 		if (TLogger__tabs == 0) log_exit(ExitCode_critical, "TLogger._output", "Not matched SectionBegin.");
 		TLogger__tabs--;
 
 	}
 	else {
-		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) putchar('\t');
+		for (usize_t i = 0, j = TLogger__tabs - 1; i < j; i++) out('\t');
 	}
-	setLevelColor(lv);
-	putchar('[');
-	if (category) printf_s("%s", category);
-	else printf_s("LOG");
-	putchar(']'); putchar(':'); putchar(' ');
-	//
-	if (args == 0) {
-		printf_s("%s\n", message);
-		return;
-	}
-	TLogger__printf(message, args);
-	setLevelColor(0);
-	putchar('\n');
-	if (lv & LogLevel_SectionEnd) putchar('\n');
+	uword_t color = getLevelColor(lv);
+	//灰底白字
+	//outcs_fmt(8<<4 | 15,"[%s]",category?category:"LOG");
+	outcs_fmt(color, "[%s]: ", category ? category : "LOG");
+	//out(' ');
+	outcs_format(color,message,1,args);
+	out('\n');
+	if (lv & LogLevel_SectionEnd) out('\n');
 }
 
 void TLogger_log(TLogger* self, LogLevels level, const byte_t* category, const byte_t* message, ...) {
@@ -436,4 +701,36 @@ void Test_end() {
 	}
 	TMemory_free(0,(void*)test->category);
 	TMemory_free(0,test);
+}
+
+typedef usize_t(*MPrintTake)(utiny_t b);
+
+void m_printx(const unsigned char* str, usize_t length, MPrintTake take) {
+	for (usize_t i = 0; i < length; i++) {
+		utiny_t b = str[i];
+		utiny_t rest = b % 6;
+		b = b / 16;
+		if (b > 10) out(b - 10 + 'A');
+		else out('0' + b);
+		if (rest > 10) out(rest - 10 + 'A');
+		else out('0' + rest);
+		
+		out(' ');
+	}
+	out('\n');
+}
+
+void m_printb(const unsigned char* str, usize_t groupc, usize_t length) {
+	usize_t g = groupc;
+	for (usize_t i = 0; i < length; i++) {
+		utiny_t b = str[i];
+		if (g == groupc) {}
+		for (usize_t j = 0; j < sizeof(utiny_t); j++) {
+			utiny_t mask = 1 << j;
+			if (b & mask) out('1'); else out('0');
+		}
+		g--;
+		if (g == 0) { out('\n'); g = groupc; }
+	}
+	out('\n');
 }

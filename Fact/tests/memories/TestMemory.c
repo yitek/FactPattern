@@ -94,15 +94,15 @@ void testAlignedMemory() {
 	void* obj4 = TAlignedMemory_alloc(mm, 8, 0, MemoryKind_normal);
 	Test_assert("TAlignedMemory.re-alloc",obj4==obj3,"应该在被释放的内存上obj4==obj3");
 	void* obj5 = TAlignedMemory_alloc(mm, 8, 0, MemoryKind_normal);
-	Test_assert("Memory.re-alloc", obj5 == obj4-8, "内存是连续的obj5==obj4-8");
+	Test_assert("Memory.re-alloc", obj5 == ((byte_t*)obj4-8), "内存是连续的obj5==obj4-8");
 	void* obj6 = TAlignedMemory_alloc(mm,6, 0, MemoryKind_normal);
 	Test_assert("TAlignedMemory.re-alloc", obj6 == obj1, "应该在被释放的内存上obj6==obj1");
 	AlignedMemoryReleaseInfo rs = TAlignedMemory_collectGarbages(mm,1 ,0);
-	Test_assert("TAlignedMemory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面");
+	Test_assert("TAlignedMemory.collectGarbages", rs.bytes==0, "垃圾回收，所有页面都没有空闲，无法回收页面\0");
 	TAlignedMemory_free(mm, obj6);
 	TAlignedMemory_free(mm, obj2);
 	rs = TAlignedMemory_collectGarbages(mm, 1,0);
-	Test_assert("TAlignedMemory.collectGarbages", rs.bytes == opts.pageSize && rs.pages==1, "释放obj6,obj2,让page1页面空闲，回收一个页面");
+	Test_assert("TAlignedMemory.collectGarbages", rs.bytes == opts.pageSize && rs.pages==1, "释放obj6,obj2,让page1页面空闲，回收一个页面\0");
 
 	Test_end();
 }

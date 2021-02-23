@@ -153,11 +153,12 @@
     <ClInclude Include="primes\primes_module.h" />
     <ClInclude Include="primes\TType.h" />
     <ClInclude Include="Test.h" />
-    <ClInclude Include="tests\loggers\TestLogger.h" />
     <ClInclude Include="tests\memories\TestMemory.h" />
     <ClInclude Include="tests\primes\TestArray.h" />
+    <ClInclude Include="tests\primes\TestEncoding.h" />
     <ClInclude Include="tests\primes\TestLink.h" />
     <ClInclude Include="tests\primes\TestList.h" />
+    <ClInclude Include="tests\TestRuntime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="primes\Array.c" />
@@ -172,11 +173,12 @@
     <ClCompile Include="primes\primes_module.c" />
     <ClCompile Include="primes\TType.c" />
     <ClCompile Include="Test.c" />
-    <ClCompile Include="tests\loggers\TestLogger.c" />
     <ClCompile Include="tests\memories\TestMemory.c" />
     <ClCompile Include="tests\primes\TestArray.c" />
+    <ClCompile Include="tests\primes\TestEncoding.c" />
     <ClCompile Include="tests\primes\TestLink.c" />
     <ClCompile Include="tests\primes\TestList.c" />
+    <ClCompile Include="tests\TestRuntime.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcproj2cmake.ps1" />

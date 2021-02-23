@@ -320,6 +320,30 @@ primes/List.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/List.c.s
 .PHONY : primes/List.c.s
 
+primes/String.obj: primes/String.c.obj
+.PHONY : primes/String.obj
+
+# target to build an object file
+primes/String.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/String.c.obj
+.PHONY : primes/String.c.obj
+
+primes/String.i: primes/String.c.i
+.PHONY : primes/String.i
+
+# target to preprocess a source file
+primes/String.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/String.c.i
+.PHONY : primes/String.c.i
+
+primes/String.s: primes/String.c.s
+.PHONY : primes/String.s
+
+# target to generate assembly for a file
+primes/String.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/primes/String.c.s
+.PHONY : primes/String.c.s
+
 primes/TType.obj: primes/TType.c.obj
 .PHONY : primes/TType.obj
 
@@ -464,6 +488,30 @@ tests/primes/TestArray.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestArray.c.s
 .PHONY : tests/primes/TestArray.c.s
 
+tests/primes/TestEncoding.obj: tests/primes/TestEncoding.c.obj
+.PHONY : tests/primes/TestEncoding.obj
+
+# target to build an object file
+tests/primes/TestEncoding.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestEncoding.c.obj
+.PHONY : tests/primes/TestEncoding.c.obj
+
+tests/primes/TestEncoding.i: tests/primes/TestEncoding.c.i
+.PHONY : tests/primes/TestEncoding.i
+
+# target to preprocess a source file
+tests/primes/TestEncoding.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestEncoding.c.i
+.PHONY : tests/primes/TestEncoding.c.i
+
+tests/primes/TestEncoding.s: tests/primes/TestEncoding.c.s
+.PHONY : tests/primes/TestEncoding.s
+
+# target to generate assembly for a file
+tests/primes/TestEncoding.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestEncoding.c.s
+.PHONY : tests/primes/TestEncoding.c.s
+
 tests/primes/TestLink.obj: tests/primes/TestLink.c.obj
 .PHONY : tests/primes/TestLink.obj
 
@@ -545,6 +593,9 @@ help:
 	@echo ... primes/List.obj
 	@echo ... primes/List.i
 	@echo ... primes/List.s
+	@echo ... primes/String.obj
+	@echo ... primes/String.i
+	@echo ... primes/String.s
 	@echo ... primes/TType.obj
 	@echo ... primes/TType.i
 	@echo ... primes/TType.s
@@ -563,6 +614,9 @@ help:
 	@echo ... tests/primes/TestArray.obj
 	@echo ... tests/primes/TestArray.i
 	@echo ... tests/primes/TestArray.s
+	@echo ... tests/primes/TestEncoding.obj
+	@echo ... tests/primes/TestEncoding.i
+	@echo ... tests/primes/TestEncoding.s
 	@echo ... tests/primes/TestLink.obj
 	@echo ... tests/primes/TestLink.i
 	@echo ... tests/primes/TestLink.s

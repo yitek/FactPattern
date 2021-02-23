@@ -29,7 +29,7 @@ extern "C" {
 		usize_t byteCount;
 	}EncodingCountResult;
 
-	inline EncodingCountResult UTF32_count(const utf32_t* src) {
+	inline static EncodingCountResult UTF32_count(const utf32_t* src) {
 		EncodingCountResult rs;
 		utf32_t b;
 		if (!src || (b = *src) == 0) {
@@ -45,7 +45,7 @@ extern "C" {
 		rs.byteCount = c * sizeof(utf32_t);
 		return rs;
 	}
-	inline const utf32_t* UTF32_get(const utf32_t* src,usize_t index) {
+	inline static const utf32_t* UTF32_get(const utf32_t* src,usize_t index) {
 		utf32_t b;
 		if (!src || (b = *src) == 0) {
 			return 0;
@@ -58,7 +58,7 @@ extern "C" {
 		}
 		return 0;
 	}
-	inline usize_t UTF32_convertToUTF8(utf32_t src, utf8_t* const des)
+	inline static usize_t UTF32_convertToUTF8(utf32_t src, utf8_t* const des)
 	{
 		if (src == 0) return 0;
 
@@ -93,7 +93,7 @@ extern "C" {
 	}
 
 
-	inline usize_t UTF32_convertToUTF16(utf32_t src, utf16_t* const des)
+	inline static usize_t UTF32_convertToUTF16(utf32_t src, utf16_t* const des)
 	{
 		if (src == 0) return 0;
 
@@ -116,7 +116,7 @@ extern "C" {
 	}
 
 
-	inline EncodingCountResult UTF16_count(const utf16_t* const src) {
+	inline static EncodingCountResult UTF16_count(const utf16_t* const src) {
 		EncodingCountResult rs;
 		utf16_t b = 0;
 		if (!src || (b = *src) == 0) {
@@ -138,7 +138,7 @@ extern "C" {
 		return rs;
 	}
 
-	inline const utf16_t* UTF16_get(const utf16_t* const src,usize_t index) {
+	inline static const utf16_t* UTF16_get(const utf16_t* const src,usize_t index) {
 		utf16_t b = 0;
 		if (!src || (b = *src) == 0) return 0;
 		usize_t c = 0;
@@ -156,7 +156,7 @@ extern "C" {
 	}
 
 
-	inline usize_t UTF16_convertToUTF32(const utf16_t* src, utf32_t*const des)
+	inline static usize_t UTF16_convertToUTF32(const utf16_t* src, utf32_t*const des)
 	{
 		if (!src || (*src) == 0) return 0;
 
@@ -185,7 +185,7 @@ extern "C" {
 
 
 
-	inline EncodingCountResult UTF8_count(const utf8_t* const src) {
+	inline static EncodingCountResult UTF8_count(const utf8_t* const src) {
 		EncodingCountResult rs;
 		utf8_t b;
 		if (!src || (b = *src) == 0) {
@@ -212,7 +212,7 @@ extern "C" {
 		return rs;
 	}
 
-	inline const utf8_t* UTF8_get(const utf8_t* const src,usize_t index) {
+	inline static const utf8_t* UTF8_get(const utf8_t* const src,usize_t index) {
 		utf8_t b;
 		if (!src || (b = *src) == 0)return 0;
 		usize_t c = 0;
@@ -235,7 +235,7 @@ extern "C" {
 	}
 
 
-	inline usize_t UTF8_convertToUTF32(const utf8_t* src, utf32_t* const des)
+	inline static usize_t UTF8_convertToUTF32(const utf8_t* src, utf32_t* const des)
 	{
 		utf8_t b;
 		if (!src || (b = *src) == 0) return 0;
@@ -281,7 +281,7 @@ extern "C" {
 	}
 
 
-	inline EncodingCountResult String_countUtf81(const utf8_t* const src) {
+	inline static EncodingCountResult String_countUtf81(const utf8_t* const src) {
 		EncodingCountResult rs;
 		utf8_t b;
 		if (!src || (b = *src) == 0) {
@@ -311,14 +311,14 @@ extern "C" {
 	
 
 
-	inline usize_t UTF16_convertToUTF8(utf16_t src, utf8_t* const des)
+	inline static usize_t UTF16_convertToUTF8(utf16_t src, utf8_t* const des)
 	{
 		utf32_t code;
 		if (UTF16_convertToUTF32(&src, &code) != 1) return 0;
 		return UTF32_convertToUTF8(code, des);
 	}
 
-	inline usize_t UTF8_convertToUTF16(const utf8_t* src, utf16_t* const des)
+	inline static usize_t UTF8_convertToUTF16(const utf8_t* src, utf16_t* const des)
 	{
 		utf32_t code;
 		usize_t len = UTF8_convertToUTF32(src, &code);
@@ -346,7 +346,7 @@ extern "C" {
 
 
 
-	inline static usize_t UTF32_sunday(const utf32_t* searchBuffer, usize_t searchLength, const utf32_t* patternBuffer, usize_t patternLength, TMemory* mm) {
+	inline static usize_t UTF32_sunday(const utf32_t* searchBuffer, usize_t searchLength, const utf32_t* patternBuffer, usize_t patternLength, void* mm) {
 		// 模式串开始位置在主串的哪里
 		usize_t searchAt = 0;
 		usize_t step = searchLength - patternLength;
@@ -380,7 +380,7 @@ extern "C" {
 		return -1;
 	}
 
-	inline static usize_t UTF16_sunday(const utf16_t* searchBuffer, usize_t searchLength, const utf16_t* patternBuffer, usize_t patternLength, TMemory* mm) {
+	inline static usize_t UTF16_sunday(const utf16_t* searchBuffer, usize_t searchLength, const utf16_t* patternBuffer, usize_t patternLength, void* mm) {
 		// 模式串开始位置在主串的哪里
 		usize_t searchAt = 0;
 		usize_t step = searchLength - patternLength;
@@ -411,8 +411,9 @@ extern "C" {
 	}
 
 
-	inline static EncodingCountResult UTF8_sunday(const utf8_t* searchBuffer, usize_t searchLength, const utf8_t* patternBuffer, usize_t patternLength, TMemory* mm) {
-		EncodingCountResult rs = {.byteCount=-1,.charCount=-1};
+	inline static EncodingCountResult UTF8_sunday(const utf8_t* searchBuffer, usize_t searchLength, const utf8_t* patternBuffer, usize_t patternLength, void* mm) {
+		EncodingCountResult rs;
+		rs.byteCount = rs.charCount = (usize_t)-1;
 		// 模式串开始位置在主串的哪里
 		usize_t searchAt = 0;
 		usize_t step = searchLength - patternLength;

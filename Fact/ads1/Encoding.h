@@ -185,14 +185,14 @@ extern "C" {
 
 
 
-	inline EncodingCountResult UTF8_count(const UTF8* const src) {
+	inline static EncodingCountResult UTF8_count(const UTF8* const src) {
 		EncodingCountResult rs;
 		UTF8 b;
 		if (!src || (b = *src) == 0) {
 			rs.byteCount = rs.charCount = 0;
 			return rs;
 		}
-		size_t c = 0;
+		usize_t c = 0;
 		UTF8* p = (UTF8*)src;
 		while (b) {
 			size_t len;

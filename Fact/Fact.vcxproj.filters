@@ -19,9 +19,6 @@
     <Filter Include="tests">
       <UniqueIdentifier>{4123ba81-9a1b-4459-971c-b16f0d9d51ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="tests\loggers">
-      <UniqueIdentifier>{6d4136ff-4abf-47ae-bde3-237a3858f999}</UniqueIdentifier>
-    </Filter>
     <Filter Include="memories">
       <UniqueIdentifier>{08d3fcab-26f1-4e30-8a6a-935e401c1851}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
   <ItemGroup>
     <ClInclude Include="def.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="tests\loggers\TestLogger.h">
-      <Filter>tests\loggers</Filter>
     </ClInclude>
     <ClInclude Include="tests\memories\TestMemory.h">
       <Filter>tests\memories</Filter>
@@ -90,13 +84,16 @@
     <ClInclude Include="primes\String.h">
       <Filter>primes</Filter>
     </ClInclude>
+    <ClInclude Include="tests\primes\TestEncoding.h">
+      <Filter>tests\primes</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\TestRuntime.h">
+      <Filter>tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\loggers\TestLogger.c">
-      <Filter>tests\loggers</Filter>
     </ClCompile>
     <ClCompile Include="tests\memories\TestMemory.c">
       <Filter>tests\memories</Filter>
@@ -142,6 +139,12 @@
     </ClCompile>
     <ClCompile Include="primes\String.c">
       <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\primes\TestEncoding.c">
+      <Filter>tests\primes</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\TestRuntime.c">
+      <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

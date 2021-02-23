@@ -18,6 +18,8 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
+
+	
 /// <summary>
 /// 虚函数表
 /// </summary>
@@ -309,11 +311,11 @@ static inline int m_compare(const void* leftBuffer, const void* rightBuffer) {
 		if (rightBuffer) {
 			usize_t at = 0;
 			for (;; at++) {
-				ubyte_t lc = *(ubyte_t*)leftBuffer; ubyte_t rc = *(ubyte_t*)rightBuffer;
+				utiny_t lc = *(utiny_t*)leftBuffer; utiny_t rc = *(utiny_t*)rightBuffer;
 				if (lc > rc) return 1;
 				if (lc < rc) return -1;
 				if (lc == 0) return 0;
-				leftBuffer =((ubyte_t*)leftBuffer)+1; rightBuffer= ((ubyte_t*)rightBuffer)+1;
+				leftBuffer =((utiny_t*)leftBuffer)+1; rightBuffer= ((utiny_t*)rightBuffer)+1;
 			}
 		}
 		else return 1;
@@ -339,6 +341,43 @@ static inline const char* m_cstr(const char* str) {
 	*(p + len) = 0;
 	return (const char*)p;
 }
+
+typedef enum {
+	OutColor_orign = 0,
+	OutColor_blue = 1,
+	OutColor_green = 2,
+	OutColor_red = 4,
+	OutColor_highline = 8,
+	OutForeColor_blue = 1,
+	OutForeColor_green = 2,
+	OutForeColor_red = 4,
+	OutForeColor_highline = 8,
+	OutBackColor_blue = 1<<4,
+	OutBackColor_green = 2<<4,
+	OutBackColor_red = 4<<4,
+	OutBackColor_highline = 8<<4
+
+}OutColors;
+void out(byte_t ch);
+void outs(const byte_t* str);
+void outln(const byte_t* str);
+
+void outc(OutColors color,byte_t ch);
+void outcs(OutColors color,const byte_t* str);
+void outcln(OutColors color,const byte_t* str);
+
+void outu(uword_t n, usize_t width);
+void outd(word_t n, usize_t width);
+void outx(uword_t n, usize_t width);
+void outb(uword_t n, usize_t width);
+void outf(double n,usize_t i,usize_t f);
+void outt(const byte_t*fmt);
+void outs_fmt(const byte_t* str, ...);
+void outcs_fmt(OutColors color,const byte_t* str, ...);
+void outcs_fmtln(OutColors color, const byte_t* str, ...);
+void outs_format(const byte_t* p,bool_t ignoreEndRet ,void* args);
+void outcs_format(OutColors color, const byte_t* str, bool_t ignoreEndRet, void* args);
+void m_printx(const unsigned char* str,usize_t length);
 
 
 typedef enum {
@@ -405,9 +444,6 @@ void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* categor
 static inline void TLogger_output__virtual__(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
 	((LoggerMeta*)(((TObject*)self)->__meta__))->output(self, lv, category, message, args);
 }
-
-
-void TLogger__printf(const byte_t* p, void* args);
 
 typedef enum {
 
