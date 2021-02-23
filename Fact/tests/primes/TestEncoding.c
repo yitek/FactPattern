@@ -5,7 +5,7 @@ void testUtf8() {
 	Test_begin("UTF8", "test start:");
 	const utiny_t* utf8Str = "H1严2一3呢4\0";
 	printf_s("%s\n", utf8Str);
-	m_printx(utf8Str,20);
+	m_look(utf8Str,8,4);
 	
 	EncodingCountResult rs = UTF8_count(utf8Str);
 	usize_t len = m_strlen(utf8Str);

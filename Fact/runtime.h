@@ -143,7 +143,41 @@ static inline void* ref_decrease(void* obj) { return (--(((MRefUnit*)obj - 1)->_
 #define Object_assign(dest,obj) ( (*((MTObjUnit*)(dest=obj)-1)).__ref__++,obj )
 #define Object_release(obj) ( --(*((MTObjUnit*)obj-1)).__ref__<=0?(obj=0):obj )
 
+typedef enum {
+	OutColor_orign = 0,
+	OutColor_blue = 1,
+	OutColor_green = 2,
+	OutColor_red = 4,
+	OutColor_highline = 8,
+	OutForeColor_blue = 1,
+	OutForeColor_green = 2,
+	OutForeColor_red = 4,
+	OutForeColor_highline = 8,
+	OutBackColor_blue = 1 << 4,
+	OutBackColor_green = 2 << 4,
+	OutBackColor_red = 4 << 4,
+	OutBackColor_highline = 8 << 4
 
+}OutColors;
+void out(byte_t ch);
+void outs(const byte_t* str);
+void outln(const byte_t* str);
+
+void outc(OutColors color, byte_t ch);
+void outcs(OutColors color, const byte_t* str);
+void outcln(OutColors color, const byte_t* str);
+
+void outu(uword_t n, usize_t width);
+void outd(word_t n, usize_t width);
+void outx(uword_t n, usize_t width);
+void outb(uword_t n, usize_t width);
+void outf(double n, usize_t i, usize_t f);
+void outt(const byte_t* fmt);
+void outs_fmt(const byte_t* str, ...);
+void outcs_fmt(OutColors color, const byte_t* str, ...);
+void outcs_fmtln(OutColors color, const byte_t* str, ...);
+void outs_format(const byte_t* p, bool_t ignoreEndRet, void* args);
+void outcs_format(OutColors color, const byte_t* str, bool_t ignoreEndRet, void* args);
 
 
 typedef enum {
@@ -342,42 +376,9 @@ static inline const char* m_cstr(const char* str) {
 	return (const char*)p;
 }
 
-typedef enum {
-	OutColor_orign = 0,
-	OutColor_blue = 1,
-	OutColor_green = 2,
-	OutColor_red = 4,
-	OutColor_highline = 8,
-	OutForeColor_blue = 1,
-	OutForeColor_green = 2,
-	OutForeColor_red = 4,
-	OutForeColor_highline = 8,
-	OutBackColor_blue = 1<<4,
-	OutBackColor_green = 2<<4,
-	OutBackColor_red = 4<<4,
-	OutBackColor_highline = 8<<4
+typedef usize_t(*MLookTake)(utiny_t b);
 
-}OutColors;
-void out(byte_t ch);
-void outs(const byte_t* str);
-void outln(const byte_t* str);
-
-void outc(OutColors color,byte_t ch);
-void outcs(OutColors color,const byte_t* str);
-void outcln(OutColors color,const byte_t* str);
-
-void outu(uword_t n, usize_t width);
-void outd(word_t n, usize_t width);
-void outx(uword_t n, usize_t width);
-void outb(uword_t n, usize_t width);
-void outf(double n,usize_t i,usize_t f);
-void outt(const byte_t*fmt);
-void outs_fmt(const byte_t* str, ...);
-void outcs_fmt(OutColors color,const byte_t* str, ...);
-void outcs_fmtln(OutColors color, const byte_t* str, ...);
-void outs_format(const byte_t* p,bool_t ignoreEndRet ,void* args);
-void outcs_format(OutColors color, const byte_t* str, bool_t ignoreEndRet, void* args);
-void m_printx(const unsigned char* str,usize_t length);
+void m_look(const unsigned char* str, usize_t length, MLookTake take);
 
 
 typedef enum {

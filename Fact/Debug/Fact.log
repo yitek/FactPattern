@@ -1,3 +1,2 @@
 ﻿  runtime.c
-D:\Yitek\FactPattern\Fact\runtime.c(707,74): warning C4029: 声明的形参表不同于定义
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

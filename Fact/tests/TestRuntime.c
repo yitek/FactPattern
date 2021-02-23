@@ -6,8 +6,8 @@ void testNum() {
 	outln("test %x:");
 	outs("0xA234BC %x:\tA234BC==");
 	outx(0xA234BC,-1); out('\n');
-	outs("0xA234BC %x6:\tA234BC==");
-	outx(0xA234BC, 6); out('\n');
+	outs("0xA234B0 %x6:\tA234B0==");
+	outx(0xA234B0, 6); out('\n');
 	outs("0xA234BC %x8:\t00A234BC==");
 	outx(0xA234BC, 8); out('\n');
 	outs("0xA234BC %x2:\t_06==");
@@ -19,8 +19,8 @@ void testNum() {
 	outln("test %u:");
 	outs("123456 %u:\t123456==");
 	outu(123456, -1); out('\n');
-	outs("123456 %u6:\t123456==");
-	outu(123456, 6); out('\n');
+	outs("123450 %u6:\t123450==");
+	outu(123450, 6); out('\n');
 	outs("123456 %u8:\t00123456==");
 	outu(123456, 8); out('\n');
 	outs("123456 %u2:\t_06==");
@@ -30,8 +30,8 @@ void testNum() {
 	outln(0);
 
 	outln("test %d:");
-	outs("-123456 %d:\t-123456==");
-	outd(-123456, -1); out('\n');
+	outs("-123450 %d:\t-123450==");
+	outd(-123450, -1); out('\n');
 	outs("-123456 %d7:\t-123456==");
 	outd(-123456, 7); out('\n');
 	outs("-123456 %d8:\t-0123456==");
@@ -45,13 +45,13 @@ void testNum() {
 	outln("test %b:");
 	outs("0b110011 %b:\t110011==");
 	outb(0b110011, -1); out('\n');
-	outs("0b110011 %b6:\t110011==");
-	outb(0b110011, 6); out('\n');
+	outs("0b110010 %b6:\t110010==");
+	outb(0b110010, 6); out('\n');
 	outs("0b110011 %b8:\t00110011==");
 	outb(0b110011, 8); out('\n');
-	outs("0b110011 %b2:\t-_06==");
+	outs("0b110011 %b2:\t_06==");
 	outb(0b110011, 2); out('\n');
-	outs("0b110011 %b5:\t11_05==");
+	outs("0b110011 %b5:\t11_04==");
 	outb(0b110011, 5); out('\n');
 	outln(0);
 
@@ -71,10 +71,17 @@ void testFormat() {
 	outcs_fmtln(OutBackColor_blue|OutForeColor_red,"hello\n\n %s\n\n","yi");
 	Test_end();
 }
+void testLook() {
+	Test_begin("m_look", "start test:");
+	const* str = "hello word\n";
+	m_look(str,4,(MLookTake)4);
+	Test_end();
+}
 void testIO() {
-	Test_begin("runtime(io)", "start test:");
+	Test_begin("runtime.IO", "start test:");
 	testNum();
 	testFormat();
+	testLook();
 	Test_end();
 }
 void testTLogger() {

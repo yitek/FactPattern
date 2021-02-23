@@ -33,22 +33,22 @@ void outx(addr_t n, usize_t width) {
 	if (width == -1) width = len;
 	if (width < len) {
 		width -= 3; if ((word_t)width < 0)width = 0;
+		len -= width;
 	}
 	else {
 		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 16;
+		len = 0;
 	}
-	while (n && width) {
+	while (width) {
 		uword_t t = n / factor;
 		if (t >= 10)out('A' + t-10);
 		else out('0' + t);
 		--width; n = n % factor; factor = factor / 16;
 	}
-	if (n) {
-		while (n) {
-			width++; n = n / 16;
-		}
+	if (len) {
+		
 		out('_');
-		outx(width, 2);
+		outx(len, 2);
 	}
 }
 
@@ -65,28 +65,29 @@ void outu(uword_t n, usize_t width) {
 	if (width == -1) width = len;
 	if (width < len) {
 		width -= 3; if ((word_t)width < 0)width = 0;
+		len -= width;
 	}
 	else {
 		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		len = 0;
 	}
-	while (n && width) {
+	while (width) {
 		uword_t t = n / factor;
 		out('0' + t);
 		--width; n = n % factor; factor = factor / 10;
 	}
-	if (n) {
-		while (n) {
-			width++; n = n / 10;
-		}
+	if (len) {
+		
 		out('_');
-		outx(width, 2);
+		outx(len, 2);
 	}
 }
 void outd(word_t n, usize_t width) {
 	bool_t minus = n < 0;
-	if (minus) n = -n;
+	
 	usize_t factor = 1;
 	usize_t len = 0;
+	if (minus) { n = -n; len += 1; }
 	uword_t x = n;
 	do {
 		len++;
@@ -94,29 +95,31 @@ void outd(word_t n, usize_t width) {
 		factor *= 10;
 	} while (x);
 	factor /= 10;
-	if (minus) { len++; }
 	if (width == -1) width = len;	
+	//负号必须输出
+	if (minus) {
+		out('-');
+		if (--((word_t)width) < 0) width = 0;
+		if (--((word_t)len) < 0) len = 1;
+	}
 	if (width < len) {
 		width -= 3; if ((word_t)width < 0)width = 0;
+		len -= width;
 	}
 	else {
 		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 10;
+		len = 0;
 	}
-	if (minus) {
-		out('-'); if((--(word_t)width)<0)width=0;
-	}
-	while (n && width) {
+	while (width) {
 		uword_t t = n / factor;
 		out('0' + t);
 		--width; n = n % factor; factor = factor / 10;
 		
 	}
-	if (n) {
-		while (n) {
-			width++; n = n / 10;
-		}
+	if (len) {
+		
 		out('_');
-		outx(width, 2);
+		outx(len, 2);
 	}
 
 }
@@ -127,28 +130,27 @@ void outb(uword_t n, usize_t width) {
 	uword_t x = n;
 	do {
 		len++;
-		x >>=1;
-		factor <<= 1;
+		x = x / 2;
+		factor *= 2;
 	} while (x);
-	factor >>= 1;
+	factor /= 2;
 	if (width == -1) width = len;
 	if (width < len) {
 		width -= 3; if ((word_t)width < 0)width = 0;
+		len -= width;
 	}
 	else {
-		for (usize_t i = 0, j = width - len; i < j; i++) factor <<= 1;
+		for (usize_t i = 0, j = width - len; i < j; i++) factor *= 2;
+		len = 0;
 	}
-	while (n && width) {
-		uword_t t = n & factor;
+	while (width) {
+		uword_t t = n / factor;
 		out(t?'1':'0');
-		--width; n =n%factor; factor >>= 1;
+		--width; n = n % factor; factor = factor / 2;
 	}
-	if (n) {
-		while (n) {
-			width++; n >>= 1;
-		}
+	if (len) {
 		out('_');
-		outx(width, 2);
+		outx(len, 2);
 	}
 }
 
@@ -252,7 +254,7 @@ void outs_format(const byte_t* p,bool_t ignoreEndRet,void* args) {
 				outx((uword_t)va_arg((*(va_list*)args), uword_t), n1 ? n1 : -1);
 			}
 			else if (cmd == 'p') {
-				outx((addr_t)va_arg((*(va_list*)args), void*),sizeof(addr_t)/8);
+				outx((addr_t)va_arg((*(va_list*)args), void*),sizeof(addr_t)*2);
 			}
 			else if (cmd == 's') {
 				if (isWidth) printf_s("%ls", va_arg((*(va_list*)args), wchar_t*));
@@ -431,6 +433,48 @@ void TMemory__destruct__(TMemory* self,bool_t existed) {
 
 	if (!existed) free(self);
 }
+
+
+
+
+void m_look(const unsigned char* str, usize_t length, MLookTake take) {
+	usize_t block;
+	bool_t useTake = length == -1;
+	if (length==-1) {
+		block = take(*str);
+	}
+	else {
+		block = (usize_t)take;
+	}
+	while (length) {
+		outs_fmt("[%p]:", str);
+		for (usize_t i = 0; i < block; i++) {
+			byte_t b = *(str + i);
+			outx(b, 2); out(' ');
+		}
+		out('\t');
+		for (usize_t i = 0; i < block; i++) {
+			byte_t b = *(str + i);
+			outb(b, 8); out(' ');
+		}
+		out('\t');
+		for (usize_t i = 0; i < block; i++) {
+			byte_t b = *(str + i);
+			if (b == '\n') { out('\\'); out('n'); }
+			else if (b == '\t') { out('\\'); out('t'); }
+			else if (b == '\r') { out('\\'); out('r'); }
+			else if (b == '\b') { out('\\'); out('b'); }
+			else out(b);
+		}
+		out('\n');
+		str += block;
+		if (useTake) {
+			if (!(block = take(*str)))break;
+		}
+		else length--;
+	}
+}
+
 
 
 
@@ -701,23 +745,6 @@ void Test_end() {
 	}
 	TMemory_free(0,(void*)test->category);
 	TMemory_free(0,test);
-}
-
-typedef usize_t(*MPrintTake)(utiny_t b);
-
-void m_printx(const unsigned char* str, usize_t length, MPrintTake take) {
-	for (usize_t i = 0; i < length; i++) {
-		utiny_t b = str[i];
-		utiny_t rest = b % 6;
-		b = b / 16;
-		if (b > 10) out(b - 10 + 'A');
-		else out('0' + b);
-		if (rest > 10) out(rest - 10 + 'A');
-		else out('0' + rest);
-		
-		out(' ');
-	}
-	out('\n');
 }
 
 void m_printb(const unsigned char* str, usize_t groupc, usize_t length) {
