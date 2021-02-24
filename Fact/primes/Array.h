@@ -25,7 +25,7 @@ extern "C" {
 
 
 	const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind);
-	void Array__destruct__(Array* self, bool_t existed);
+	void Array__destruct__(Array* self, bool_t existed,TMemory* mm);
 
 	inline static usize_t Array_length(const Array* self) { return self ? self->length : 0; }
 

@@ -99,7 +99,7 @@ typedef unsigned short ushort_t;
 typedef int int_t;
 typedef unsigned int uint_t;
 typedef unsigned int unichar_t;
-typedef word_t bool_t;
+typedef favor_t bool_t;
 
 
 

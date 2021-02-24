@@ -52,7 +52,7 @@ void testArray() {
 
 	clip = Array_clip(concated, 1, -1, sizeof(ArrayStudent), 0, 0, 0, 0);
 	Test_assert("Array.clip", clip->length == 4, "不指定长度(-1),会自动截取到最后[%p](length=%d)\n", clip, Array_length(clip));
-	Array__destruct__((Array*)clip,0);
+	Array__destruct__((Array*)clip,0,0);
 
 	clip = Array_clip(concated,2,2,sizeof(ArrayStudent),0, 0, 0, 0);
 	Test_assert("Array.clip",clip->length==2,"将连接后的数组[%p]切片，从[2]元素开始，取2个元素[%p](length=%d)\n",clip, Array_length(clip));
@@ -63,10 +63,10 @@ void testArray() {
 		,"获取clip[0]的学生: { no: %d, name: %s, age: %d}\n", stu->no, stu->name, stu->age);
 	stu = Array__get__(clip, 1, sizeof(ArrayStudent));
 	Test_assert("Array.get",stu->no==4 && stu->age==14,"获取clip[1]的学生: { no: %d, name: %s, age: %d}\n", stu->no, stu->name, stu->age);
-	Array__destruct__((Array*)clip, 0);
-	Array__destruct__((Array*)concated, 0);
-	Array__destruct__((Array*)first, 0);
-	Array__destruct__((Array*)seconds, 0);
+	Array__destruct__((Array*)clip, 0,0);
+	Array__destruct__((Array*)concated, 0,0);
+	Array__destruct__((Array*)first, 0,0);
+	Array__destruct__((Array*)seconds, 0,0);
 
 	Test_end();
 }

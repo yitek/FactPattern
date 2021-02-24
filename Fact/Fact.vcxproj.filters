@@ -96,6 +96,9 @@
     <ClInclude Include="io\stream.h">
       <Filter>io</Filter>
     </ClInclude>
+    <ClInclude Include="tests\primes\TestString.h">
+      <Filter>tests\primes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -154,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="io\stream.c">
       <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\primes\TestString.c">
+      <Filter>tests\primes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

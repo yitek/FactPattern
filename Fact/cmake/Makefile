@@ -560,6 +560,30 @@ tests/primes/TestList.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestList.c.s
 .PHONY : tests/primes/TestList.c.s
 
+tests/primes/TestString.obj: tests/primes/TestString.c.obj
+.PHONY : tests/primes/TestString.obj
+
+# target to build an object file
+tests/primes/TestString.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestString.c.obj
+.PHONY : tests/primes/TestString.c.obj
+
+tests/primes/TestString.i: tests/primes/TestString.c.i
+.PHONY : tests/primes/TestString.i
+
+# target to preprocess a source file
+tests/primes/TestString.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestString.c.i
+.PHONY : tests/primes/TestString.c.i
+
+tests/primes/TestString.s: tests/primes/TestString.c.s
+.PHONY : tests/primes/TestString.s
+
+# target to generate assembly for a file
+tests/primes/TestString.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Fact.dir\build.make CMakeFiles/Fact.dir/tests/primes/TestString.c.s
+.PHONY : tests/primes/TestString.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -623,6 +647,9 @@ help:
 	@echo ... tests/primes/TestList.obj
 	@echo ... tests/primes/TestList.i
 	@echo ... tests/primes/TestList.s
+	@echo ... tests/primes/TestString.obj
+	@echo ... tests/primes/TestString.i
+	@echo ... tests/primes/TestString.s
 .PHONY : help
 
 

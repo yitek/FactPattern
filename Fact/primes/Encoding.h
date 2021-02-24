@@ -152,7 +152,7 @@ extern "C" {
 
 
 
-	inline static usize_t UTF32_convertToUTF8(utf32_t src, utf8_t* const des)
+	inline static ufavor_t UTF32_convertToUTF8(utf32_t src, utf8_t* const des)
 	{
 		if (src == 0) return 0;
 
@@ -167,7 +167,7 @@ extern "C" {
 			0x80000000      // U+04000000 - U+7FFFFFFF  
 		};
 
-		usize_t i, len = sizeof(CODE_UP) / sizeof(utf32_t);
+		ufavor_t i, len = sizeof(CODE_UP) / sizeof(utf32_t);
 		for (i = 0; i < len; ++i)
 			if (src < CODE_UP[i]) break;
 

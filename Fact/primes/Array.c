@@ -1,7 +1,6 @@
 #include "Array.h"
 
-#define ALLOC(mm,size,arg,kind) m_alloc(mm,size,arg,kind)
-#define FREE(mm,p) m_free(mm,p)
+
 
 
 const Array* Array__construct__(Array* self, const void* buffer, const usize_t count, usize_t unitSize, TMemory* mm, void* mInitArgs, MemoryKinds mkind) {
@@ -10,7 +9,7 @@ const Array* Array__construct__(Array* self, const void* buffer, const usize_t c
 	if (self == 0) {
 		if (!mm)mm = TMemory_default;
 		if (!self) {
-			self = ALLOC(mm, sizeof(Array) + count * unitSize,mInitArgs,mkind);
+			self = m_alloc(sizeof(Array) + count * unitSize,mInitArgs,mkind,mm);
 		}
 	}
 	// 写入长度
@@ -59,7 +58,7 @@ const Array* Array_concat(const Array* left, const Array* right, const usize_t u
 
 	// 构造一个新数组
 	if (!mm)mm = TMemory_default;
-	Array* concatedArray = ALLOC(mm, concatedSize, mInitArgs,mkind);
+	Array* concatedArray = m_alloc( concatedSize, mInitArgs,mkind, mm);
 	concatedArray->length = count;
 
 	// 获取到数组元素的开始位置
@@ -92,7 +91,7 @@ const Array* Array_clip(const Array* arr, const usize_t start, const usize_t cou
 	
 	usize_t size = sizeof(Array) + clipCount * unitSize;
 	if (!mm)mm = TMemory_default;
-	Array* subArray = (Array*)ALLOC(mm, size, mInitArgs,mkind);
+	Array* subArray = (Array*)m_alloc(size, mInitArgs,mkind, mm);
 	subArray->length = clipCount;
 	const void* src = ((char*)arr + sizeof(Array)) + start * unitSize;
 	byte_t* dest = (char*)subArray + sizeof(Array);
@@ -101,9 +100,9 @@ const Array* Array_clip(const Array* arr, const usize_t start, const usize_t cou
 	return (Array*)subArray;
 }
 
-void Array__destruct__(Array* self, bool_t existed) {
+void Array__destruct__(Array* self, bool_t existed,TMemory* mm) {
 	if (!existed) {
-		FREE(TMemory_default,self);
+		m_free(self,mm?mm:TMemory_default);
 	}
 }
 

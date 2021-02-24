@@ -103,17 +103,17 @@ void* TMemory_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkin
 void* TMemory_alloc1(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds);
 bool_t TMemory_free(TMemory* mm,void*p);
 
-static inline void* m_alloc(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds) {
+static inline void* m_alloc(usize_t size, void* mInitArgs, MemoryKinds mkinds, TMemory* mm) {
 	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc(mm, size, mInitArgs, mkinds);
 }
-static inline void* m_alloc1(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mkinds) {
+static inline void* m_alloc1( usize_t size, void* mInitArgs, MemoryKinds mkinds, TMemory* mm) {
 	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc1(mm, size, mInitArgs, mkinds);
 }
-static inline bool_t m_free(TMemory* mm, void* p) {
+static inline bool_t m_free(void* p, TMemory* mm) {
 	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->free(mm, p);
 }
-#define m_allocate(T, mm,mInitArgs,mkind) ((T*)m_alloc(mm?mm:TMemory_default,sizeof(T),mInitArgs, mkind))
-#define m_withdraw(mm,p) m_free(mm?mm:TMemory_default,p)
+#define m_allocate(T,mInitArgs,mkind, mm) ((T*)m_alloc(sizeof(T),mInitArgs, mkind,mm?mm:TMemory_default))
+#define m_withdraw(mm,p) m_free(p,mm?mm:TMemory_default)
 
 
 static inline void m_copy(void* dest, const void* src, usize_t size) {
@@ -257,7 +257,7 @@ static inline usize_t m_strlen(const char* str) {
 
 static inline const char* m_cstr(const char* str) {
 	usize_t len = m_strlen(str);
-	char* p = (char*)m_alloc(TMemory_default,len+1,0,MemoryKind_normal);
+	char* p = (char*)m_alloc(len+1,0,MemoryKind_normal, TMemory_default);
 	m_copy(p,str,len);
 	*(p + len) = 0;
 	return (const char*)p;

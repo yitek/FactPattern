@@ -13,8 +13,9 @@ void testUtf8() {
 	Test_assert("UTF8.count",rs.charCount==11&&rs.byteCount==len,"encode8(\"%s\"):length:%d,bytes:%d,strlen()=%d",utf8Str,rs.charCount,rs.byteCount,len);
 	
 	const char* s1 = "节点";
-	m_look(s1, 4, (MLookTake)4);
 	printf_s("模式串，%s\n", s1);
+	m_look(s1, 4, (MLookTake)4);
+	
 	EncodingCountResult rs1 = UTF8_count(s1);
 	favor_t len1 = m_strlen(s1);
 	Test_assert("UTF8.count", rs1.charCount == 2 && rs1.byteCount == len1, "encode8(\"%s\"):length:%d,bytes:%d,strlen()=%d", s1, rs1.charCount, rs1.byteCount, len1);

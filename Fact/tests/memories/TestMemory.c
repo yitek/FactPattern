@@ -10,27 +10,27 @@ void testMemory() {
 	*obj4 = 88;
 	Test_assert("TMemory.require", obj4!=0,"请求4bytes内存obj4[%p]=%d\n", obj4,*obj4);
 
-	long_t* obj8 = (long_t*)m_alloc(mm,  8,0, MemoryKind_normal);
+	long_t* obj8 = (long_t*)m_alloc(  8,0, MemoryKind_normal, mm);
 	*obj8 = 9876543210;
 	Test_assert("TMemory.require1", obj8 != 0,"请求8bytes内存obj8[%p]=%ld\n", obj8,*obj8);
 
 	void* obj12 = TMemory_alloc(mm,12, 0, MemoryKind_readonly);
 	Test_assert("Memory.require", obj12 != 0,"请求12bytes内存obj12[%p]\n", obj12);
 
-	void* obj16 = m_alloc(mm, 12, 0,MemoryKind_normal);
+	void* obj16 = m_alloc( 12, 0,MemoryKind_normal, mm);
 	Test_assert("TMemory.require", obj16 != 0,"请求16bytes内存obj16[%p]\n", obj16);
 	
 
-	TMemory_free(mm, obj4);
+	TMemory_free(mm,obj4);
 	Test_assert("Memory.release", obj4 != 0, "释放内存obj4[%p]=%ld\n", obj4);
 
-	TMemory_free(mm, obj8);
+	TMemory_free(mm,obj8);
 	Test_assert("TMemory.release", obj8 != 0, "释放内存obj8[%p]=%ld\n", obj8,*obj8);
 
-	m_free(mm, obj12);
+	m_free(obj12, mm);
 	Test_assert("TMemory.release", obj12!=0, "释放内存obj12[%p]\n", obj12);
 
-	m_free(mm, obj16);
+	m_free(obj16, mm);
 	Test_assert("TMemory.release", obj16 != 0, "释放内存obj12[%p]\n", obj16);
 
 	TMemory__destruct__(mm,0);

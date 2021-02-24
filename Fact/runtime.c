@@ -819,7 +819,7 @@ void TLogger__destruct__(TLogger* self, bool_t existed) {
 
 
 void Test_begin(const byte_t* category, const byte_t* message, ...) {
-	Test* test = m_allocate(Test, 0,0,0);
+	Test* test = m_allocate(Test,0,0,0);
 	test->category = m_cstr(category);
 	if (Test__current) {
 		test->parent = Test__current;

@@ -10,7 +10,7 @@
 #include "tests/primes/TestLink.h" 
 #include "tests/primes/TestList.h"
 #include "tests/primes/TestEncoding.h"
-//#include "tests/TestString.h"
+#include "tests/primes/TestString.h"
 //#include "tests/TestLink.h"
 
  
@@ -49,8 +49,8 @@ int main()
     testArray();
     testLink();
     testList();
-    testEncoding();/**/
-    //testString();
+    testEncoding();
+    testString();
     //testLink();
     //
     std::cout << "程序员xxx.press any key to continue...\n";

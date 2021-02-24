@@ -159,6 +159,7 @@
     <ClInclude Include="tests\primes\TestEncoding.h" />
     <ClInclude Include="tests\primes\TestLink.h" />
     <ClInclude Include="tests\primes\TestList.h" />
+    <ClInclude Include="tests\primes\TestString.h" />
     <ClInclude Include="tests\TestRuntime.h" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,7 @@
     <ClCompile Include="tests\primes\TestEncoding.c" />
     <ClCompile Include="tests\primes\TestLink.c" />
     <ClCompile Include="tests\primes\TestList.c" />
+    <ClCompile Include="tests\primes\TestString.c" />
     <ClCompile Include="tests\TestRuntime.c" />
   </ItemGroup>
   <ItemGroup>
