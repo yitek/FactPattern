@@ -16,12 +16,10 @@
 extern "C" {
 #endif
 	///
-	typedef struct stLink {
-		struct stLink* next;
-	}Link;
+	typedef struct stLink Link;
 
 	typedef struct stLinkRemoveResult {
-		Link* prev;
+		struct stLink* prev;
 		Link* link;
 	}LinkRemoveResult;
 

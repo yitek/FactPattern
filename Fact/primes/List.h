@@ -19,12 +19,7 @@ extern "C" {
 #endif
 	
 
-	typedef struct stList {
-		usize_t length;
-		Link* head;
-		Link* tail;
-
-	} List;
+	typedef struct stList List;
 
 	List* List__construct__(List* self, TMemory* memory, void* itemType, MemoryKinds mkind);
 	void List__destruct__(List* self, bool_t existed, TMemory* memory);

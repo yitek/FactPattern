@@ -527,7 +527,7 @@ struct stTMemoryLayout TMemory_instance = {
 	.__ref__ = 0,
 	.inst.__meta__ = (ClazzMeta*)&TMemory__meta__
 };
-TMemory* TMemory_default = (TMemory*)((byte_t*)(&TMemory_instance) + sizeof(MRefUnit));
+TMemory* TMemory_default = (TMemory*)((byte_t*)(&TMemory_instance) + sizeof(struct stMRefUnit));
 
 void* TMemory_alloc(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
 	void* p = malloc(size);
@@ -577,11 +577,11 @@ void TMemory__destruct__(TMemory* self,bool_t existed) {
 
 
 
-void m_look(const unsigned char* str, usize_t length, MLookTake take) {
+void m_look(const void* str, usize_t length, MLookTake take) {
 	usize_t block;
 	bool_t useTake = length == -1;
 	if (length==-1) {
-		block = take(*str);
+		block = take(*(utiny_t*)str);
 	}
 	else {
 		block = (usize_t)take;
@@ -589,17 +589,17 @@ void m_look(const unsigned char* str, usize_t length, MLookTake take) {
 	while (length) {
 		outs_fmt("[%p]:", str);
 		for (usize_t i = 0; i < block; i++) {
-			unsigned char b = *(str + i);
+			unsigned char b = *((utiny_t*)str + i);
 			outx(b, 2); out(' ');
 		}
 		out('\t');
 		for (usize_t i = 0; i < block; i++) {
-			unsigned char b = *(str + i);
+			unsigned char b = *((utiny_t*)str + i);
 			outb(b, 8); out(' ');
 		}
 		out('\t');
 		for (usize_t i = 0; i < block; i++) {
-			unsigned char b = *(str + i);
+			unsigned char b = *((utiny_t*)str + i);
 			if (b == '\n') { out('\\'); out('n'); }
 			else if (b == '\t') { out('\\'); out('t'); }
 			else if (b == '\r') { out('\\'); out('r'); }
@@ -607,9 +607,9 @@ void m_look(const unsigned char* str, usize_t length, MLookTake take) {
 			else out(b);
 		}
 		out('\n');
-		str += block;
+		str =(utiny_t*)str+ block;
 		if (useTake) {
-			if (!(block = take(*str)))break;
+			if (!(block = take(*((utiny_t*)str))))break;
 		}
 		else length--;
 	}
@@ -635,7 +635,7 @@ struct stLoggerLayout {
 	.level = 0,
 	.__ref__ = 0
 };
-TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(MRefUnit));
+TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(struct stMRefUnit));
 
 
 inline static OutColors getLevelColor(LogLevels level) {

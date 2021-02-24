@@ -104,13 +104,13 @@ void* TMemory_alloc1(TMemory* mm, usize_t size, void* mInitArgs, MemoryKinds mki
 bool_t TMemory_free(TMemory* mm,void*p);
 
 static inline void* m_alloc(usize_t size, void* mInitArgs, MemoryKinds mkinds, TMemory* mm) {
-	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc(mm, size, mInitArgs, mkinds);
+	return ((TMemoryMeta*)((struct stTObject*)mm)->__meta__)->alloc(mm, size, mInitArgs, mkinds);
 }
 static inline void* m_alloc1( usize_t size, void* mInitArgs, MemoryKinds mkinds, TMemory* mm) {
-	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->alloc1(mm, size, mInitArgs, mkinds);
+	return ((TMemoryMeta*)((struct stTObject*)mm)->__meta__)->alloc1(mm, size, mInitArgs, mkinds);
 }
 static inline bool_t m_free(void* p, TMemory* mm) {
-	return ((TMemoryMeta*)((TObject*)mm)->__meta__)->free(mm, p);
+	return ((TMemoryMeta*)((struct stTObject*)mm)->__meta__)->free(mm, p);
 }
 #define m_allocate(T,mInitArgs,mkind, mm) ((T*)m_alloc(sizeof(T),mInitArgs, mkind,mm?mm:TMemory_default))
 #define m_withdraw(mm,p) m_free(p,mm?mm:TMemory_default)
@@ -226,7 +226,7 @@ static inline bool_t m_equal(const void* dest, const void* src, usize_t size) {
 }
 static inline bool_t TMemory_equal(void* dest, const void* src, usize_t size) { return m_equal(dest,src,size); }
 
-static inline int m_compare(const void* leftBuffer, const void* rightBuffer) {
+static inline favor_t m_compare(const void* leftBuffer, const void* rightBuffer) {
 	if (leftBuffer == rightBuffer) return 0;
 	if (leftBuffer) {
 		if (rightBuffer) {
@@ -265,7 +265,7 @@ static inline const char* m_cstr(const char* str) {
 
 typedef usize_t(*MLookTake)(utiny_t b);
 
-void m_look(const unsigned char* str, usize_t length, MLookTake take);
+void m_look(const void* str, usize_t length, MLookTake take);
 
 
 typedef enum {
@@ -330,7 +330,7 @@ void TLogger_log(TLogger* self, LogLevels level, const byte_t* category, const b
 
 void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 static inline void TLogger_output__virtual__(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
-	((LoggerMeta*)(((TObject*)self)->__meta__))->output(self, lv, category, message, args);
+	((LoggerMeta*)(((struct stTObject*)self)->__meta__))->output(self, lv, category, message, args);
 }
 
 typedef enum {

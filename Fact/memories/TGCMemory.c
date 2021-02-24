@@ -21,7 +21,7 @@ const usize_t unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
 TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
 	self = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
-	((TObject*)self)->__meta__ = (ClazzMeta*)&TGCMemory__meta__;
+	((struct stTObject*)self)->__meta__ = (ClazzMeta*)&TGCMemory__meta__;
 	if (opts) {
 		self->sweepBytes = opts->sweepBytes;
 	}
@@ -52,17 +52,17 @@ MemoryAllocatingDirectives TGCMemory__allocating(TGCMemory* memory, usize_t size
 }
 
 
-void TGCMemory__markObject(TObject* obj) {
+void TGCMemory__markObject(struct stTObject* obj) {
 	// idle或已标记
 
 	// 标记可达性
 	(*((MRefUnit*)obj-1)).__ref__ |= markNumber;
 	usize_t memberIndex = 0;
-	TType* type = get_type(obj);
-	TField* field = (TField*)(&type->fields + 1);
+	struct stTType* type = get_type(obj);
+	struct stTField* field = (struct stTField*)(&type->fields + 1);
 	for (usize_t i = 0; i < type->fields->length; i++) {
-		if (field->type->decorators & TypeKind_class) {
-			TObject* refObj = (TObject*)(((byte_t*)obj) + field->offset);
+		if (field->type->kind & TypeKind_class) {
+			struct stTObject* refObj = (struct stTObject*)(((byte_t*)obj) + field->offset);
 			TGCMemory__markObject(refObj );
 		}
 	}	
@@ -77,7 +77,7 @@ void TGCMemory__markChunk(AlignedMemoryChunk* chunk) {
 		MRefUnit* gcUnit = (MRefUnit*)&page->free;
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
 			if (gcUnit->__ref__ == 0 || gcUnit->__ref__ & markNumber) return;
-			TGCMemory__markObject((TObject*)(gcUnit +1));
+			TGCMemory__markObject((struct stTObject*)(gcUnit +1));
 			gcUnit = (MRefUnit*)((byte_t*)gcUnit + chunk->unitSize);
 		}
 		page = page->next;

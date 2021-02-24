@@ -21,9 +21,19 @@ void testString() {
 	unichar_t c = String__get__(s12,2);
 	Test_assert("String.__get__", c == '1', "s12[2] =%c", c);
 
+	String* s4 = String__construct__(0, (const byte_t*)"空数1", 0, 0, 0, MemoryKind_normal);
+	favor_t s = String__compare__(s1,s4);
+	Test_assert("String.__compare__",s==0,"s1 == s4");
+	s = String__compare__(s3, s2);
+	Test_assert("String.__compare__", s < 0, "s3 < s2");
+	s = String__compare__(s12, s3);
+	Test_assert("String.__compare__", s > 0, "s12 > s3");
+
+
 	String__destruct__(s1, 0, 0);
 	String__destruct__(s2, 0, 0);
 	String__destruct__(s12, 0, 0);
 	String__destruct__(s3, 0, 0);
+	String__destruct__(s4, 0, 0);
 	Test_end();
 }

@@ -2,31 +2,31 @@
 
 TType* TType__create(const char* name, usize_t mixins, usize_t interfaces, usize_t fields, usize_t methods, usize_t properties, TMemory* mm) {
 	usize_t nameSize = m_strlen(name);
-	usize_t asize = (mixins + interfaces + fields + methods + properties) * sizeof(TArray) + m_strlen(name) + sizeof(TType);
-	TType* type = (TType*)m_alloc(mm, asize,0, MemoryKind_disCollect | MemoryKind_system | MemoryKind_readonly);
+	usize_t asize = (mixins + interfaces + fields + methods + properties) * sizeof(struct stTArray) + m_strlen(name) + sizeof(TType);
+	TType* type = (TType*)m_alloc( asize,0, MemoryKind_disCollect | MemoryKind_system | MemoryKind_readonly,mm);
 	byte_t* buffer = (byte_t*)(type + 1);
 	// name
-	type->name = (TString*)buffer; m_copy(buffer += sizeof(TString), name, nameSize); buffer += nameSize;
+	type->name = (struct stTString*)buffer; m_copy(buffer += sizeof(struct stTString), name, nameSize); buffer += nameSize;
 	type->name->bytes = nameSize; type->name->length = -1;
 	// mixins
-	type->mixins = (TArray*)buffer;
+	type->mixins = (struct stTArray*)buffer;
 	type->mixins->length = mixins;
-	buffer += sizeof(TArray); buffer += sizeof(TType*) * mixins;
+	buffer += sizeof(struct stTArray); buffer += sizeof(TType*) * mixins;
 	// interface
-	type->interfaces = (TArray*)buffer;
+	type->interfaces = (struct stTArray*)buffer;
 	type->mixins->length = interfaces;
-	buffer += sizeof(TArray); buffer += sizeof(TType*) * interfaces;
+	buffer += sizeof(struct stTArray); buffer += sizeof(TType*) * interfaces;
 	//fields
-	type->fields = (TArray*)buffer;
+	type->fields = (struct stTArray*)buffer;
 	type->fields->length = fields;
-	buffer += sizeof(TArray); buffer += sizeof(TField) * fields;
+	buffer += sizeof(struct stTArray); buffer += sizeof(struct stTField) * fields;
 	//fields
-	type->methods = (TArray*)buffer;
+	type->methods = (struct stTArray*)buffer;
 	type->methods->length = methods;
-	buffer += sizeof(TArray); buffer += sizeof(TMethod) * methods;
+	buffer += sizeof(struct stTArray); buffer += sizeof(TMethod) * methods;
 
-	type->properties = (TArray*)buffer;
+	type->properties = (struct stTArray*)buffer;
 	type->properties->length = properties;
-	buffer += sizeof(TArray); buffer += sizeof(TMethod) * properties;
+	buffer += sizeof(struct stTArray); buffer += sizeof(TMethod) * properties;
 	return type;
 }

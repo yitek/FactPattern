@@ -18,9 +18,7 @@
 extern "C" {
 #endif
 	
-	typedef struct stArray {
-		usize_t length;
-	} Array;
+	typedef struct stArray Array;
 
 
 

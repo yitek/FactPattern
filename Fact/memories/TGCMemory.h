@@ -15,6 +15,10 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
+	typedef struct stMLnkUnit MLnkUnit;
+
+	typedef struct stMRefUnit MRefUnit;
+
 	typedef struct stGCMemoryOpts {
 		usize_t sweepBytes;
 	}GCMemoryOpts;

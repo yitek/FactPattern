@@ -112,25 +112,25 @@ typedef struct stVFTL {
 	addr_t offset;
 }VFTL;
 
-typedef struct stVirtualObject {
+typedef struct stVObject {
 	/// <summary>
 		/// 虚函数表指针
 		/// </summary>
 	VFTL* __vftptr__;
-} VirtualObject;
+} VClass;
 
 typedef enum {
 	MemoryUnitKind_link,
 	MemoryUnitKind_ref
 } MemoryUnitKinds;
 
-typedef struct stMLnkUnit {
+struct stMLnkUnit {
 	struct stMLnkUnit* next;
-}MLnkUnit;
+};
 
-typedef struct stMRefUnit {
+struct stMRefUnit {
 	usize_t __ref__;
-}MRefUnit;
+};
 
 struct stTType;
 
@@ -142,30 +142,50 @@ typedef struct stClazzMeta {
 
 } ClazzMeta;
 
-typedef struct stTObject {
+struct stTObject {
 	/// <summary>
 		/// 对象信息指针(结构跟虚函数表一样，只是第一个虚函数固定成get_type函数)
 		/// </summary>
 	struct stClazzMeta* __meta__;
 
-}TObject;
+};
 
 typedef struct stMTObjUnit {
 	usize_t ref;
 	struct stTObject;
 } MTObjUnit;
 
-
-typedef struct stTArray {
-	struct stTObject;
+struct stArray {
 	usize_t length;
-}TArray;
+};
 
-typedef struct stTString {
+struct stTArray {
 	struct stTObject;
+	struct stArray;
+};
+
+struct stString {
 	usize_t length;
 	usize_t bytes;
-}TString;
+};
+
+struct stTString {
+	struct stTObject;
+	struct stString;
+};
+
+struct stLink {
+	struct stLink* next;
+};
+struct stList {
+	usize_t length;
+	struct stLink* head;
+	struct stLink* tail;
+};
+struct stTList {
+	struct stTObject;
+	struct stList;
+};
 
 typedef enum {
 	TypeKind_func=			0b0000001,
@@ -174,19 +194,20 @@ typedef enum {
 	TypeKind_interface =	0b0001000
 }TypeKinds;
 
-typedef struct stTType {
+struct stTType {
 	struct stTObject;
-	TString* name;
-	usize_t size;
-	uword_t decorators;
+	struct stTString* name;
+	favor_t size;
+	TypeKinds kind;
 	struct stTType* base;
-	TArray* mixins;
-	TArray* interfaces;
-	TArray* fields;
-	TArray* methods;
-	TArray* properties;
+	struct stTArray* mixins;
+	struct stTArray* interfaces;
+	struct stTArray* genericArguments;
+	struct stTArray* fields;
+	struct stTArray* methods;
+	struct stTArray* properties;
 	void* extras;
-}TType;
+};
 typedef enum {
 	MemberType_field =		0b01,
 	MemberType_method =		0b10,
@@ -201,30 +222,30 @@ typedef enum {
 	AccessLevel_public=				0b11100000000
 } AccessLevels;
 
-typedef struct stTMember {
+struct stTMember {
 	struct stTObject;
-	TString* name;
+	struct stTString* name;
 	uword_t decorators;
-	TType* type;
-}TMember;
+	struct stTType* type;
+};
 
-typedef struct stTField {
+struct stTField {
 	struct stTMember;
 	usize_t offset;
-}TField;
+};
 
 
 
-static inline TType* get_type(TObject* obj) {
-	return (TType*)obj->__meta__->get_type();
+static inline struct stTType* get_type(struct stTObject* obj) {
+	return (struct stTType*)obj->__meta__->get_type();
 }
-static inline void* ref_increase(void* obj) { return (((MRefUnit*)obj-1)->__ref__++,obj); }
-#define ref_inc(obj) (((MRefUnit*)obj-1)->__ref__++,obj)
-static inline void* ref_decrease(void* obj) { return (--(((MRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((MRefUnit*)obj - 1)->__ref__=0,obj))); }
-#define ref_dec(obj) (--(((MRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((MRefUnit*)obj - 1)->__ref__=0,obj)))
+static inline void* ref_increase(void* obj) { return (((struct stMRefUnit*)obj-1)->__ref__++,obj); }
+#define ref_inc(obj) (((struct stMRefUnit*)obj-1)->__ref__++,obj)
+static inline void* ref_decrease(void* obj) { return (--(((struct stMRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((struct stMRefUnit*)obj - 1)->__ref__=0,obj))); }
+#define ref_dec(obj) (--(((struct stMRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((struct stMRefUnit*)obj - 1)->__ref__=0,obj)))
 
-#define Object_param(obj) ( (*((MTObjUnit*)obj-1)).__ref__++,obj )
-#define Object_assign(dest,obj) ( (*((MTObjUnit*)(dest=obj)-1)).__ref__++,obj )
-#define Object_release(obj) ( --(*((MTObjUnit*)obj-1)).__ref__<=0?(obj=0):obj )
+#define Object_param(obj) ( (*((struct stMTObjUnit*)obj-1)).__ref__++,obj )
+#define Object_assign(dest,obj) ( (*((struct stMTObjUnit*)(dest=obj)-1)).__ref__++,obj )
+#define Object_release(obj) ( --(*((struct stMTObjUnit*)obj-1)).__ref__<=0?(obj=0):obj )
 
 #endif // end ifndef __DEF_INCLUDED__

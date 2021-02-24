@@ -16,10 +16,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
-	typedef struct stString {
-		usize_t length;
-		usize_t bytes;
-	} String;
+	typedef struct stString String;
 
 
 
@@ -70,7 +67,7 @@ extern "C" {
 
 
 
-	static inline int String_compare(const String* left,const String* right) {
+	static inline favor_t String__compare__(const String* left,const String* right) {
 		if (left) {
 			if (right) {
 				return m_compare(left + 1, right + 1);
@@ -83,11 +80,11 @@ extern "C" {
 		}
 	}
 
-	inline static bool_t String_EQ(const String* left, const String* right) { return String_compare(left, right) == 0; }
-	inline static bool_t String_GT(const String* left, const String* right) { return String_compare(left, right) > 0; }
-	inline static bool_t String_LT(const String* left, const String* right) { return String_compare(left, right) < 0; }
-	inline static bool_t String_GTE(const String* left, const String* right) { return String_compare(left, right) >= 0; }
-	inline static bool_t String_LTE(const String* left, const String* right) { return String_compare(left, right) <= 0; }
+	inline static bool_t String_EQ(const String* left, const String* right) { return String__compare__(left, right) == 0; }
+	inline static bool_t String_GT(const String* left, const String* right) { return String__compare__(left, right) > 0; }
+	inline static bool_t String_LT(const String* left, const String* right) { return String__compare__(left, right) < 0; }
+	inline static bool_t String_GTE(const String* left, const String* right) { return String__compare__(left, right) >= 0; }
+	inline static bool_t String_LTE(const String* left, const String* right) { return String__compare__(left, right) <= 0; }
 
 	//void String_cout(const String* self);
 	//void String_coutln(const String* self);

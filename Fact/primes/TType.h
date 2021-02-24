@@ -14,6 +14,7 @@
 #ifdef __cplusplus 
 extern "C" {
 #endif
+	typedef struct stTType TType;
 	typedef struct stTMethod{
 		struct stTMember;
 		void* entry;

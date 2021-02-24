@@ -1,6 +1,7 @@
-﻿  TestString.c
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(7,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(9,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(12,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(15,1): warning C4090: “初始化”: 不同的“const”限定符
+﻿  TAlignedMemory.c
+  TGCMemory.c
+  memories_module.c
+  TestMemory.c
+  正在生成代码...
+  main.cpp
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe
