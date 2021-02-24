@@ -106,7 +106,7 @@ extern "C" {
 	} ;
 
 	typedef struct stMTObjUnit {
-		usize_t ref;
+		struct stMRefUnit;
 		struct stTObject;
 	} MTObjUnit;
 

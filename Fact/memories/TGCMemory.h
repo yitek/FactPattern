@@ -58,8 +58,8 @@ extern "C" {
 	}
 	
 	static inline bool_t TGCMemory_free(TGCMemory* self, void* obj) {
-		MTObjUnit* p = ((MTObjUnit*)obj -1);
-		p->ref = 0;
+		MRefUnit* p = ((MRefUnit*)obj -1);
+		p->__ref__ = 0;
 		return 1;
 	}
 

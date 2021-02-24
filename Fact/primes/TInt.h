@@ -23,7 +23,7 @@ extern "C" {
 	} TInt;
 	extern const struct stTType* const TInt__type__;
 	TInt* TInt__construct__(TInt* self,int_t value, TMemory* mm, MemoryKinds mkind);
-	inline static struct stTType* TInt__gettype__() { return TInt__type__; }
+	inline static const struct stTType* TInt__gettype__() { return TInt__type__; }
 	
 #ifdef __cplusplus 
 }//end extern c

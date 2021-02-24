@@ -1,8 +1,10 @@
-﻿  runtime.c
-D:\Yitek\FactPattern\Fact\runtime.c(561,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\runtime.c(568,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\runtime.c(576,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\runtime.c(692,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\runtime.c(706,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\runtime.c(819,1): warning C4090: “初始化”: 不同的“const”限定符
+﻿  String.c
+  TestString.c
+D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(7,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(9,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(12,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(15,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(24,1): warning C4090: “初始化”: 不同的“const”限定符
+  正在生成代码...
+  main.cpp
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

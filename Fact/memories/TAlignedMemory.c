@@ -29,7 +29,7 @@ static inline void* TAlignedMemory__initPageLinkUnits(AlignedMemoryChunk* chunk,
 static inline void* TAlignedMemoryMemory__initPageRefUnits(AlignedMemoryChunk* chunk, AlignedMemoryPage* page, size_t unitSize, uword_t masks) {
 	byte_t* unit = (byte_t*)&page->free;
 	for (usize_t i = 0; i < chunk->pageCapacity; i++) {
-		((MTObjUnit*)unit)->ref = 0;
+		((MTObjUnit*)unit)->__ref__ = 0;
 		unit = unit + unitSize;
 	}
 	return (void*)&page->free;

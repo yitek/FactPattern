@@ -108,7 +108,7 @@ const TArray* TArray_clip(const TArray* arr, const usize_t start, const usize_t 
 
 void TArray__destruct__(TArray* self, bool_t existed, TMemory* mm) {
 	if (!existed) {
-		m_free(self, mm ? mm : TMemory_default);
+		_FREE_(self, mm ? mm : TMemory_default);
 	}
 }
 

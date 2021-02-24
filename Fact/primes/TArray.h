@@ -10,7 +10,7 @@
 ******************************************************/
 
 #pragma once
-#include "../runtime.h"
+#include "Array.h"
 #ifndef __TARRAY_INCLUDED__ 
 #define __TARRAY_INCLUDED__
 // c语言整合进cpp的标准用法,指定里面的符号按照c语言方式产生
@@ -20,7 +20,9 @@ extern "C" {
 	
 	typedef struct stTArray TArray;
 
+	extern const struct stTObjectMeta TArray__metaInstance;
 
+	extern const struct stTType* const TArray__type__;
 
 	const TArray* TArray__construct__(TArray* self, const void* buffer, const usize_t count, TMemory* mm, struct stTType* type, MemoryKinds mkind);
 
@@ -35,7 +37,7 @@ extern "C" {
 	inline static void* TArray_buffer(const TArray* self) { return (char*)self + sizeof(TArray); }
 
 	inline static void* TArray__get__(const TArray* self, usize_t index) {
-		return  (self &&index < ((struct stArray*)self)->length) ?  (char*)self + sizeof(TArray) + index * get_genericArgument((struct stTObject*)self,0)->size :0;
+		return  (self &&index < ((struct stTArray*)self)->length) ?  (char*)self + sizeof(TArray) + index * get_genericArgument((struct stTObject*)self,0)->size :0;
 	}
 	usize_t TArray_index(const TArray* self, void* item, usize_t unitSize,usize_t start);
 	

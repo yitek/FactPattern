@@ -95,13 +95,13 @@ usize_t TGCMemory__sweepChunk(AlignedMemoryChunk* chunk) {
 		if (page->kind & MemoryKind_disCollect) { page = page->next; continue; }
 		MTObjUnit* gcObj = (MTObjUnit*)((byte_t*)page + sizeof(AlignedMemoryPage));
 		for (usize_t i = 0, j = chunk->pageCapacity; i < j; i++) {
-			if (gcObj->ref | markNumber) {
+			if (gcObj->__ref__ | markNumber) {
 				//标记过，有引用,还原引用计数
-				gcObj->ref &= unmarkNumber;
+				gcObj->__ref__ &= unmarkNumber;
 			}
 			//否则引用计数设0
 			else {
-				gcObj->ref = 0;
+				gcObj->__ref__ = 0;
 				count++;
 			}
 

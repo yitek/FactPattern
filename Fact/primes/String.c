@@ -1,13 +1,12 @@
 #include "String.h"
 
 
-struct {
-	struct stString;
-	unichar_t endl;
-} String_emptyInstance = {
-	.bytes=0,.length=0,.endl=0
+const struct stStringEmpty String__emptyInstance = {
+	.inst.bytes=0,.inst.length=0,.endl=0,
+	.__ref__ =0,
+	.__ob__.__meta__ = (struct stClazzMeta*)&TString__metaInstance
 };
-const String*const String_empty =(const String*const)&String_emptyInstance;
+const String*const String_empty =(const String*const)&String__emptyInstance.inst;
 const String* String__construct__(String* self, const byte_t* buffer, usize_t byteCount, TMemory* memory, void* type, MemoryKinds mkind) {
 	usize_t charCount = -1;
 

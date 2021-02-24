@@ -17,23 +17,27 @@
 extern "C" {
 #endif
 	typedef struct stString String;
-
+	struct stStringEmpty {
+		struct stMRefUnit;
+		struct stTObject __ob__;
+		struct stString inst;
+		unichar_t endl;
+	};
 
 
 	extern const String*const String_empty;
-
+	extern const struct stStringEmpty String__emptyInstance;
 
 	//const String* UTF32String_construct(String* self, const UTF32* buffer, usize_t byteCount, void* mmArgs, Memory* memory);
 	//const String* UTF16String_construct(String* self, const UTF16* buffer, usize_t byteCount, void* mmArgs, Memory* memory);
 	const String* String__construct__(String* self, const byte_t* buffer, usize_t byteCount, TMemory* memory, void* type, MemoryKinds mkind);
+	const String* String_concat(const String* left, const String* right, TMemory* memory, void* type, MemoryKinds mkind);
+	const String* String_clip(const String* arr, const usize_t start, usize_t length, TMemory* memory, void* type, MemoryKinds mkind);
 	inline static void String__destruct__(String* self, bool_t existed,TMemory* memory) {
 		if (!existed) m_free(self,memory?memory:TMemory_default);
 	}
 	inline static usize_t String_length(const String* self) { return self ? self->length : 0; }
 	inline static  byte_t* String_buffer(const String* self) { return self ? (byte_t*)(self + 1) : 0; }
-	const String* String_concat(const String* left, const String* right, TMemory* memory,void* type,MemoryKinds mkind);
-
-	const String* String_clip(const String* arr, const usize_t start, usize_t length, TMemory* memory, void* type, MemoryKinds mkind);
 	inline static usize_t String_find(const String* search, utf32_t ch, usize_t start, TMemory* mm) {
 		if (search && search->length) {
 			if (ch < 128 && start==0) for (utf8_t* str = (utf8_t*)(search + 1); *str; str++) {
