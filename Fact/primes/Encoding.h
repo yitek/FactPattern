@@ -45,6 +45,74 @@ extern "C" {
 		rs.byteCount = c * sizeof(utf32_t);
 		return rs;
 	}
+
+	inline static EncodingCountResult UTF16_count(const utf16_t* const src) {
+		EncodingCountResult rs;
+		utf16_t b = 0;
+		if (!src || (b = *src) == 0) {
+			rs.byteCount = rs.charCount = 0;
+			return rs;
+		}
+		usize_t c = 0;
+		const utf16_t* p = (const utf16_t*)src;
+		while (b) {
+			if (b >= 0xD800 && b <= 0xDFFF) {
+				p += 1;
+			}
+			p += 1;
+			b = *src;
+			c++;
+		}
+		rs.charCount = c;
+		rs.byteCount = ((usize_t)(p - src)) * sizeof(utf16_t);
+		return rs;
+	}
+
+	inline static EncodingCountResult UTF8_count(const utf8_t* const src) {
+		EncodingCountResult rs;
+		utf8_t b;
+		if (!src || (b = *src) == 0) {
+			rs.byteCount = rs.charCount = 0;
+			return rs;
+		}
+		usize_t c = 0;
+		utf8_t* p = (utf8_t*)src;
+		while (b) {
+			usize_t len;
+			if (b < 0x80)len = 1;
+			else if (b < 0xE0)len = 2;
+			else if (b < 0xF0)len = 3;
+			else if (b < 0xF8)len = 4;
+			else if (b < 0xFC)len = 5;
+			else len = 6;
+			//你1好2吗3.4I5'6a7m8 9Y0i1.
+			p += len;
+			b = *p;
+			c++;
+		}
+		rs.byteCount = (usize_t)(p - src);
+		rs.charCount = c;
+		return rs;
+	}
+
+	inline static const utf8_t* UTF8_skip(const utf8_t* p, usize_t count) {
+		utf8_t b = *p;
+		while (b && count--) {
+			usize_t len;
+			if (b < 0x80)len = 1;
+			else if (b < 0xE0)len = 2;
+			else if (b < 0xF0)len = 3;
+			else if (b < 0xF8)len = 4;
+			else if (b < 0xFC)len = 5;
+			else len = 6;
+			//你1好2吗3.4I5'6a7m8 9Y0i1.
+			p += len;
+			b = *p;
+		}
+		return p;
+	}
+	
+
 	inline static const utf32_t* UTF32_get(const utf32_t* src,usize_t index) {
 		utf32_t b;
 		if (!src || (b = *src) == 0) {
@@ -58,6 +126,32 @@ extern "C" {
 		}
 		return 0;
 	}
+
+
+
+	inline static const utf16_t* UTF16_get(const utf16_t* const src, usize_t index) {
+		utf16_t b = 0;
+		if (!src || (b = *src) == 0) return 0;
+		usize_t c = 0;
+		const utf16_t* p = (const utf16_t*)src;
+		while (b) {
+			if (c == index) return p;
+			if (b >= 0xD800 && b <= 0xDFFF) {
+				p += 1;
+			}
+			p += 1;
+			b = *src;
+			c++;
+		}
+		return 0;
+	}
+
+
+	
+
+
+
+
 	inline static usize_t UTF32_convertToUTF8(utf32_t src, utf8_t* const des)
 	{
 		if (src == 0) return 0;
@@ -116,44 +210,7 @@ extern "C" {
 	}
 
 
-	inline static EncodingCountResult UTF16_count(const utf16_t* const src) {
-		EncodingCountResult rs;
-		utf16_t b = 0;
-		if (!src || (b = *src) == 0) {
-			rs.byteCount = rs.charCount = 0;
-			return rs;
-		}
-		usize_t c = 0;
-		const utf16_t* p = (const utf16_t*)src;
-		while (b) {
-			if (b >= 0xD800 && b <= 0xDFFF) {
-				p += 1;
-			}
-			p += 1;
-			b = *src;
-			c++;
-		}
-		rs.charCount = c;
-		rs.byteCount = ((usize_t)(p - src)) * sizeof(utf16_t);
-		return rs;
-	}
-
-	inline static const utf16_t* UTF16_get(const utf16_t* const src,usize_t index) {
-		utf16_t b = 0;
-		if (!src || (b = *src) == 0) return 0;
-		usize_t c = 0;
-		const utf16_t* p = (const utf16_t*)src;
-		while (b) {
-			if (c == index) return p;
-			if (b >= 0xD800 && b <= 0xDFFF) {
-				p += 1;
-			}
-			p += 1;
-			b = *src;
-			c++;
-		}
-		return 0;
-	}
+	
 
 
 	inline static usize_t UTF16_convertToUTF32(const utf16_t* src, utf32_t*const des)
@@ -185,99 +242,57 @@ extern "C" {
 
 
 
-	inline static EncodingCountResult UTF8_count(const utf8_t* const src) {
-		EncodingCountResult rs;
-		utf8_t b;
-		if (!src || (b = *src) == 0) {
-			rs.byteCount = rs.charCount = 0;
-			return rs;
-		}
-		usize_t c = 0;
-		utf8_t* p = (utf8_t*)src;
-		while (b) {
-			usize_t len;
-			if (b < 0x80)len = 1;
-			else if (b < 0xE0)len = 2;
-			else if (b < 0xF0)len = 3;
-			else if (b < 0xF8)len = 4;
-			else if (b < 0xFC)len = 5;
-			else len = 6;
-			//你1好2吗3.4I5'6a7m8 9Y0i1.
-			p += len;
-			b = *p;
-			c++;
-		}
-		rs.byteCount = (usize_t)(p - src);
-		rs.charCount = c;
-		return rs;
-	}
-
-	inline static const utf8_t* UTF8_get(const utf8_t* const src,usize_t index) {
-		utf8_t b;
-		if (!src || (b = *src) == 0)return 0;
-		usize_t c = 0;
-		utf8_t* p = (utf8_t*)src;
-		while (b) {
-			if (c == index) return p;
-			usize_t len;
-			if (b < 0x80)len = 1;
-			else if (b < 0xE0)len = 2;
-			else if (b < 0xF0)len = 3;
-			else if (b < 0xF8)len = 4;
-			else if (b < 0xFC)len = 5;
-			else len = 6;
-			//你1好2吗3.4I5'6a7m8 9Y0i1.
-			p += len;
-			b = *p;
-			c++;
-		}
-		return 0;
-	}
+	
 
 
-	inline static usize_t UTF8_convertToUTF32(const utf8_t* src, utf32_t* const des)
+	inline static utf32_t UTF8_convertToUTF32(const utf8_t* str, ufavor_t*const bytes)
 	{
 		utf8_t b;
-		if (!src || (b = *src) == 0) return 0;
+		if (!str || (b = *str) == 0) return 0;
 		if (b < 0x80)
 		{
-			*des = b;
-			return 1;
+			if (bytes) *bytes = 1;
+			return b;
 		}
 
 		if (b < 0xC0 || b > 0xFD) return 0; // the src is invalid  
-		usize_t len;
-
+		ufavor_t len;
+		utf32_t value = 0;
 		if (b < 0xE0)
 		{
-			*des = b & 0x1F;
+			value = b & 0x1F;
 			len = 2;
 		}
 		else if (b < 0xF0) {
-			*des = b & 0x0F;
+			value = b & 0x0F;
 			len = 3;
 		}
 		else if (b < 0xF8) {
-			*des = b & 0x07;
+			value = b & 0x07;
 			len = 4;
 		}
 		else if (b < 0xFC) {
-			*des = b & 0x03;
+			value = b & 0x03;
 			len = 5;
 		}
 		else {
-			*des = b & 0x01;
+			value = b & 0x01;
 			len = 6;
 		}
-		src++;
-		for (usize_t i = 1; i < len; ++i)
+		str++;
+		for (ufavor_t i = 1; i < len; ++i)
 		{
-			b = *src;
+			b = *str;
 			if (b < 0x80 || b > 0xBF) return 0; // the src is invalid  
-			*des = (*des << 6) + (b & 0x3F);// 00111111
-			src++;
+			value = (value << 6) + (b & 0x3F);// 00111111
+			str++;
 		}
-		return len;
+		if (bytes) *bytes = len;
+		return value;
+	}
+
+	inline static const utf32_t UTF8_get(const utf8_t* const src, usize_t index) {
+		return UTF8_convertToUTF32(UTF8_skip(src, index), 0);
 	}
 
 
@@ -320,29 +335,14 @@ extern "C" {
 
 	inline static usize_t UTF8_convertToUTF16(const utf8_t* src, utf16_t* const des)
 	{
-		utf32_t code;
-		usize_t len = UTF8_convertToUTF32(src, &code);
+		ufavor_t len = 0;
+		utf32_t code = UTF8_convertToUTF32(src,(ufavor_t*const) &len);
 		if (len == 0) return 0;
 		if (UTF32_convertToUTF16(code, des) != 1) return 0;
 		return len;
 	}
 
-	inline static const utf8_t* UTF8_skip(const utf8_t* p,usize_t count) {
-		utf8_t b = *p;
-		while (b && count--) {
-			usize_t len;
-			if (b < 0x80)len = 1;
-			else if (b < 0xE0)len = 2;
-			else if (b < 0xF0)len = 3;
-			else if (b < 0xF8)len = 4;
-			else if (b < 0xFC)len = 5;
-			else len = 6;
-			//你1好2吗3.4I5'6a7m8 9Y0i1.
-			p += len;
-			b = *p;
-		}
-		return p;
-	}
+	
 
 
 

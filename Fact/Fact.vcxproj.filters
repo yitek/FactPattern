@@ -31,6 +31,9 @@
     <Filter Include="tests\primes">
       <UniqueIdentifier>{e0c182cd-44bd-46b0-a5be-b1f485e4d563}</UniqueIdentifier>
     </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{9f861d23-55a0-45c1-8f94-47e00c17604e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h">
@@ -90,6 +93,9 @@
     <ClInclude Include="tests\TestRuntime.h">
       <Filter>tests</Filter>
     </ClInclude>
+    <ClInclude Include="io\stream.h">
+      <Filter>io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -145,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="tests\TestRuntime.c">
       <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="io\stream.c">
+      <Filter>io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,19 @@
-﻿  String.c
+﻿  TAlignedMemory.c
+  TGCMemory.c
+  memories_module.c
+  Array.c
+  Link.c
+  List.c
+  String.c
+  TType.c
+  primes_module.c
+  runtime.c
+  TestRuntime.c
+  TestMemory.c
+  TestArray.c
   TestEncoding.c
-D:\Yitek\FactPattern\Fact\tests\primes\TestEncoding.c(22,22): warning C4101: “srs1”: 未引用的局部变量
-D:\Yitek\FactPattern\Fact\tests\primes\TestEncoding.c(20,22): warning C4101: “srs”: 未引用的局部变量
+  TestLink.c
+  TestList.c
   正在生成代码...
   main.cpp
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

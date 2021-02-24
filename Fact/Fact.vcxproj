@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="def.h" />
+    <ClInclude Include="io\stream.h" />
     <ClInclude Include="primes\Array.h" />
     <ClInclude Include="primes\Encoding.h" />
     <ClInclude Include="primes\Link.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="tests\TestRuntime.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="io\stream.c" />
     <ClCompile Include="primes\Array.c" />
     <ClCompile Include="primes\Link.c" />
     <ClCompile Include="primes\List.c" />
