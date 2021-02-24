@@ -26,10 +26,8 @@ extern "C" {
 		void* setter;
 	}TProperty;
 
-	//typedef struct stTTypeBuilder
+	
 
-	TType* TType__create(const char* name, usize_t mixins, usize_t interfaces, usize_t fields, usize_t methods, usize_t properties, TMemory* mm);
-	TType* TType__setField(TType* type,usize_t index,const char* name,TType* fieldType,uword_t decorators,usize_t offset);
 	
 #ifdef __cplusplus 
 } //extern "C" 

@@ -9,7 +9,7 @@ TAlignedMemoryMeta TAlignedMemory__meta__ = {
 	.allocating = TAlignedMemory__allocating,
 	.collectGarbages = TAlignedMemory_collectGarbages,
 	.free = (bool_t(*)(TMemory*, void*))TAlignedMemory_free,
-	.get_type=0,
+	.__gettype__=0,
 	.offset=0,
 	.__destruct__ = (void(*)(TMemory*, bool_t))TAlignedMemory__destruct__
 };
@@ -343,8 +343,9 @@ TAlignedMemory* TAlignedMemory__construct__(TAlignedMemory* self, AlignedMemoryO
 			if (logger)  TLogger_trace(logger, "AlignedMemory.__construct__", "Memory is allocated for <AlignedMemory>[%p]:%d", self,sizeof(TAlignedMemory));
 		}
 		self->allocatedBytes = sizeof(TAlignedMemory);
+		*((ClazzMeta**)(&self->__meta__)) = (ClazzMeta*)&TAlignedMemory__meta__;
 	}
-	self->__meta__ = (ClazzMeta*)&TAlignedMemory__meta__;
+	
 	if (opts) {
 		self->gcBytes = opts->gcBytes;
 		self->pageSize = opts->pageSize;

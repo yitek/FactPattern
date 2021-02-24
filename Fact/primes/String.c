@@ -80,7 +80,7 @@ const String* String_clip(const String* arr, const usize_t start, usize_t length
 		*(unichar_t*)((byte_t*)(substr + 1) + bytes) = 0;
 		substr->length = length;
 		substr->bytes = bytes;
-		m_look((void*)substr,8,4);
+		m_look((void*)substr,8,(MLookTake)4);
 		return substr;
 	} return String_empty;
 

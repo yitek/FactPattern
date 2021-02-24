@@ -52,7 +52,7 @@ void outx(uint_t n, favor_t width) {
 	}
 }
 
-void outlx(ulong_t n, favor_t width) {
+void outlx(ulong_t n, int width) {
 	ulong_t factor = 1;
 	favor_t len = 0;
 	ulong_t x = n;
@@ -514,66 +514,6 @@ void outcs_fmtln(OutColors color, const byte_t* str, ...) {
 #endif
 
 
-TMemoryMeta TMemory__meta__ = {
-	.offset = 0,
-	.get_type = 0,
-	.alloc = TMemory_alloc,
-	.alloc1 = TMemory_alloc1,
-	.free = TMemory_free,
-	.__destruct__ = 0,
-};
-
-struct stTMemoryLayout TMemory_instance = {
-	.__ref__ = 0,
-	.inst.__meta__ = (ClazzMeta*)&TMemory__meta__
-};
-TMemory* TMemory_default = (TMemory*)((byte_t*)(&TMemory_instance) + sizeof(struct stMRefUnit));
-
-void* TMemory_alloc(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
-	void* p = malloc(size);
-	if (p) {
-		return p;
-	}
-	else {
-		log_exit(ExitCode_memory, "TMemory.alloc", "Cannot allocate memory!");
-		exit(1);
-	}
-}
-
-void* TMemory_alloc1(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
-	void* p = malloc(size);
-	if (p) {
-		return p;
-	}
-	else {
-		log_exit(ExitCode_memory, "TMemory.alloc1", "Cannot allocate memory!");
-		exit(1);
-	}
-}
-bool_t TMemory_free(TMemory* self, void* p) { free(p); return 1; }
-
-
-TMemory* TMemory__construct__(TMemory* self) {
-	if (!self) {
-		self = (TMemory*)malloc(sizeof(TMemory));
-		if (!self) {
-			log_exit(ExitCode_memory, "TMemory.__construct__", "Cannot allocate memory!");
-			exit(1);
-		}
-	}
-	self->__meta__ = (ClazzMeta*)&TMemory__meta__;
-	return self;
-}
-
-void TMemory__destruct__(TMemory* self,bool_t existed) {
-	if (self == &TMemory_instance.inst ) {
-		TLogger_notice(0,"TMemory.__destruct__","The prime TMemory instance should not be destructed.");
-		return;
-	}
-
-	if (!existed) free(self);
-}
-
 
 
 
@@ -615,28 +555,320 @@ void m_look(const void* str, usize_t length, MLookTake take) {
 	}
 }
 
+//////////////////////////////////////////////
+// Object,Type,String Meta define
 
-
-
-
-
-
-
-LoggerMeta TLogger__meta__ = {
+const struct stTObjectMeta TObject__metaInstance = {
 	.offset = 0,
-	.output = TLogger__output
+	.__toString__ = TObject__toString__,
+	.__gettype__ = TObject__gettype__,
+	.__compare__ = TObject__compare__,
+	.__endle__ = 0
+};
+const struct stTObjectMeta TType__metaInstance = {
+	.offset = 0,
+	.__toString__ = TObject__toString__,
+	.__gettype__ = TType__gettype__,
+	.__compare__ = TObject__compare__,
+	.__endle__ = 0
 };
 
-struct stLoggerLayout {
+const struct stTObjectMeta TString__metaInstance = {
+	.offset = 0,
+	.__toString__ = TString__toString__,
+	.__gettype__ = TType__gettype__,
+	.__compare__ = TObject__compare__,
+	.__endle__ = 0
+};
+
+/////////////////////////////////
+// Object Type define
+
+struct {
 	struct stMRefUnit;
-	struct stTLogger;
-} TLogger_defaultInstance = {
-	.__meta__ = (ClazzMeta*)&TLogger__meta__,
-	.level = 0,
-	.__ref__ = 0
+	struct stTString inst;
+	byte_t strDatas[6 + sizeof(unichar_t)];
+} TObject__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 6,
+	.inst.length = 6,
+	.strDatas = "Object"
 };
-TLogger* TLogger_default = (TLogger*)((byte_t*)&TLogger_defaultInstance + sizeof(struct stMRefUnit));
 
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} TObject__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.vftptr = (struct stVFTL*)&TObject__metaInstance,
+	.inst.name = &TObject__typenameInstance.inst,
+	.inst.size = sizeof(struct stTType),
+	.inst.base = 0,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0,
+	.inst.genericArguments = 0,
+	.inst.extras = 0
+};
+const struct stTType*const const TObject__type__ = &TObject__typeInstance.inst;
+
+
+/////////////////////////////////
+// Type's Type define
+
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[4 + sizeof(unichar_t)];
+} TType__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 4,
+	.inst.length = 4,
+	.strDatas = "Type"
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} TType__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.vftptr = (struct stVFTL*)&TType__metaInstance,
+	.inst.name = &TType__typenameInstance.inst,
+	.inst.size = sizeof(struct stTType),
+	.inst.base = &TObject__typeInstance.inst,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0,
+	.inst.genericArguments = 0,
+	.inst.extras = 0
+};
+const struct stTType*const TType__type__ = &TType__typeInstance.inst;
+
+/////////////////////////////////
+// String Type define
+
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[6 + sizeof(unichar_t)];
+} TString__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 6,
+	.inst.length = 6,
+	.strDatas = "String"
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} TString__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.name = &TType__typenameInstance.inst,
+	.inst.size = sizeof(struct stTString),
+	.inst.vftptr = &TString__metaInstance,
+	.inst.base = &TObject__typeInstance.inst,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0,
+	.inst.genericArguments = 0,
+	.inst.extras = 0
+};
+const struct stTType*const  TString__type__ = &TString__typeInstance.inst;
+
+
+/////////////////////////////////////
+/// TMemory
+
+
+const struct stTType* TMemory__gettype__(struct stTObject* self) {return TMemory__type__;}
+
+struct {
+	struct stTMemoryMeta;
+	void(*__endle__)();
+} TMemory__metaInstance = {
+	.offset = 0,
+	.__gettype__ = 0,
+	.__compare__ = TObject__compare__,
+	.__toString__ = TObject__toString__,
+	.__gettype__ = TMemory__gettype__,
+	.alloc = TMemory_alloc,
+	.alloc1 = TMemory_alloc1,
+	.free = TMemory_free,
+	.__destruct__ = 0,
+	.__endle__ = 0
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[9+ sizeof(unichar_t)];
+} TMemory__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 9,
+	.inst.length =9,
+	.strDatas = "SysMemory"
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} TMemory__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.name = &TMemory__typenameInstance.inst,
+	.inst.size = sizeof(struct stTMemory),
+	.inst.vftptr = (struct stVFTL*)&TMemory__metaInstance,
+	.inst.base = &TObject__typeInstance.inst,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0,
+	.inst.genericArguments = 0,
+	.inst.extras = 0
+};
+
+const struct stTType* const TMemory__type__ = &TMemory__typeInstance.inst;
+
+struct {
+	struct stMRefUnit;
+	struct stTMemory inst;
+}TMemory__defaultInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TMemory__metaInstance
+};
+TMemory* TMemory_default = &TMemory__defaultInstance.inst;
+
+void* TMemory_alloc(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
+	void* p = malloc(size);
+	if (p) {
+		return p;
+	}
+	else {
+		log_exit(ExitCode_memory, "TMemory.alloc", "Cannot allocate memory!");
+		exit(1);
+	}
+}
+
+void* TMemory_alloc1(TMemory* self, usize_t size, void* mInitArgs, MemoryKinds mkind) {
+	void* p = malloc(size);
+	if (p) {
+		return p;
+	}
+	else {
+		log_exit(ExitCode_memory, "TMemory.alloc1", "Cannot allocate memory!");
+		exit(1);
+	}
+}
+bool_t TMemory_free(TMemory* self, void* p) { free(p); return 1; }
+
+
+TMemory* TMemory__construct__(TMemory* self) {
+	if (!self) {
+		self = (TMemory*)malloc(sizeof(TMemory));
+		if (!self) {
+			log_exit(ExitCode_memory, "TMemory.__construct__", "Cannot allocate memory!");
+			exit(1);
+		}
+		*((ClazzMeta**)&self->__meta__) = (ClazzMeta*)&TMemory__metaInstance;
+	}
+	
+	return self;
+}
+
+void TMemory__destruct__(TMemory* self, bool_t existed) {
+	if (self == &TMemory__defaultInstance.inst) {
+		TLogger_notice(0, "TMemory.__destruct__", "The prime TMemory instance should not be destructed.");
+		return;
+	}
+
+	if (!existed) free(self);
+}
+
+
+/////////////////////////////////////
+/// TLogger
+
+
+const struct stTType* TLogger__gettype__(struct stTObject* self) { return TLogger__type__; }
+
+struct {
+	struct stTLoggerMeta;
+	void(*__endle__)();
+} TLogger__metaInstance = {
+	.offset = 0,
+	.__gettype__ = 0,
+	.__compare__ = TObject__compare__,
+	.__toString__ = TObject__toString__,
+	.__gettype__ = TMemory__gettype__,
+	.output = TLogger__output,
+	.__endle__ = 0
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[6 + sizeof(unichar_t)];
+} TLogger__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 6,
+	.inst.length = 6,
+	.strDatas = "Logger"
+};
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} TLogger__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.name = &TLogger__typenameInstance.inst,
+	.inst.size = sizeof(struct stTLogger),
+	.inst.vftptr = (struct stVFTL*)&TLogger__metaInstance,
+	.inst.base = &TObject__typeInstance.inst,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0,
+	.inst.genericArguments = 0,
+	.inst.extras = 0
+};
+
+const struct stTType* const TLogger__type__ = &TLogger__typeInstance.inst;
+
+struct {
+	struct stMRefUnit;
+	struct stTLogger inst;
+}TLogger__defaultInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TLogger__metaInstance
+};
+TLogger* TLogger_default = &TLogger__defaultInstance.inst;
 
 inline static OutColors getLevelColor(LogLevels level) {
 	favor_t color = 7;
@@ -785,8 +1017,9 @@ TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts) {
 	if (!self) {
 		self = ((TLogger*)TMemory_alloc(0,sizeof(TLogger),0, 0));
 		if (!self) exit(0);
+		*((ClazzMeta**)&self->__meta__) = (ClazzMeta*)&TLogger__metaInstance;
 	}
-	self->__meta__ = (ClazzMeta*)&TLogger__meta__;
+	
 	if (opts) {
 		m_copy(&self->level, opts, sizeof(LoggerOptions));
 	}
@@ -890,4 +1123,5 @@ void Test_end() {
 	TMemory_free(0,(void*)test->category);
 	TMemory_free(0,test);
 }
+
 

@@ -22,50 +22,206 @@ extern "C" {
 #endif
 
 
-typedef enum {
-	OutColor_orign = 0,
-	OutColor_blue = 1,
-	OutColor_green = 2,
-	OutColor_red = 4,
-	OutColor_highline = 8,
-	OutForeColor_blue = 1,
-	OutForeColor_green = 2,
-	OutForeColor_red = 4,
-	OutForeColor_highline = 8,
-	OutBackColor_blue = 1 << 4,
-	OutBackColor_green = 2 << 4,
-	OutBackColor_red = 4 << 4,
-	OutBackColor_highline = 8 << 4
+	typedef enum {
+		OutColor_orign = 0,
+		OutColor_blue = 1,
+		OutColor_green = 2,
+		OutColor_red = 4,
+		OutColor_highline = 8,
+		OutForeColor_blue = 1,
+		OutForeColor_green = 2,
+		OutForeColor_red = 4,
+		OutForeColor_highline = 8,
+		OutBackColor_blue = 1 << 4,
+		OutBackColor_green = 2 << 4,
+		OutBackColor_red = 4 << 4,
+		OutBackColor_highline = 8 << 4
 
-}OutColors;
-void out(byte_t ch);
-void outs(const byte_t* str);
-void outln(const byte_t* str);
+	}OutColors;
+	void out(byte_t ch);
+	void outs(const byte_t* str);
+	void outln(const byte_t* str);
 
-void outc(OutColors color, byte_t ch);
-void outcs(OutColors color, const byte_t* str);
-void outcln(OutColors color, const byte_t* str);
+	void outc(OutColors color, byte_t ch);
+	void outcs(OutColors color, const byte_t* str);
+	void outcln(OutColors color, const byte_t* str);
 
 
-void outu(uint_t n, favor_t width);
-void outd(int_t n, favor_t width);
-void outx(uint_t n, favor_t width);
-void outb(uint_t n, favor_t width);
-void outlu(ulong_t n, favor_t width);
-void outld(long_t n, favor_t width);
-void outlx(ulong_t n, favor_t width);
-void outlb(ulong_t n, favor_t width);
-void outf(double n, favor_t i, favor_t f);
-void outt(const byte_t* fmt);
-static inline void out_p(void* p, favor_t width) { 
-	outlx((ulong_t)p,width); 
-}
-void outs_fmt(const byte_t* str, ...);
-void outcs_fmt(OutColors color, const byte_t* str, ...);
-void outcs_fmtln(OutColors color, const byte_t* str, ...);
-void outs_format(const byte_t* p, bool_t ignoreEndRet, void* args);
-void outcs_format(OutColors color, const byte_t* str, bool_t ignoreEndRet, void* args);
+	void outu(uint_t n, favor_t width);
+	void outd(int_t n, favor_t width);
+	void outx(uint_t n, favor_t width);
+	void outb(uint_t n, favor_t width);
+	void outlu(ulong_t n, favor_t width);
+	void outld(long_t n, favor_t width);
+	void outlx(ulong_t n, favor_t width);
+	void outlb(ulong_t n, favor_t width);
+	void outf(double n, favor_t i, favor_t f);
+	void outt(const byte_t* fmt);
+	static inline void out_p(void* p, int width) {
+		outlx((ulong_t)p, width);
+	}
+	void outs_fmt(const byte_t* str, ...);
+	void outcs_fmt(OutColors color, const byte_t* str, ...);
+	void outcs_fmtln(OutColors color, const byte_t* str, ...);
+	void outs_format(const byte_t* p, bool_t ignoreEndRet, void* args);
+	void outcs_format(OutColors color, const byte_t* str, bool_t ignoreEndRet, void* args);
 
+
+
+	typedef enum {
+		MemoryUnitKind_link,
+		MemoryUnitKind_ref
+	} MemoryUnitKinds;
+
+	struct stMLnkUnit {
+		struct stMLnkUnit* next;
+	};
+
+	struct stMRefUnit {
+		usize_t __ref__;
+	};
+
+	struct stTType;
+	struct stTObject;
+
+
+	typedef struct stClazzMeta {
+		struct stVFTL;
+		struct stTType* (*__gettype__)(struct stTObject* self);
+		struct stTString* (*__toString__)(struct stTObject* self);
+		favor_t(*__compare__)(struct stTObject* left, struct stTObject* right);
+	} ClazzMeta;
+
+	struct stTObject {
+		/// <summary>
+			/// 对象信息指针(结构跟虚函数表一样，只是第一个虚函数固定成get_type函数)
+			/// </summary>
+		const struct stClazzMeta*const __meta__;
+
+	};
+
+	struct stTObjectMeta {
+		struct stClazzMeta;
+		void(*__endle__)();
+	} ;
+
+	typedef struct stMTObjUnit {
+		usize_t ref;
+		struct stTObject;
+	} MTObjUnit;
+
+	struct stArray {
+		usize_t length;
+	};
+
+	struct stTArray {
+		struct stTObject;
+		struct stArray;
+	};
+
+	struct stString {
+		usize_t length;
+		usize_t bytes;
+	};
+
+	struct stTString {
+		struct stTObject;
+		struct stString;
+	};
+	struct _stTString {
+		struct stTObject __ob__;
+		struct stString __str__;
+	};
+
+	struct stLink {
+		struct stLink* next;
+	};
+	struct stList {
+		usize_t length;
+		struct stLink* head;
+		struct stLink* tail;
+	};
+	struct stTList {
+		struct stTObject;
+		struct stList;
+	};
+
+	typedef enum {
+		TypeKind_func = 0b0000001,
+		TypeKind_struct = 0b0000010,
+		TypeKind_class = 0b0000100,
+		TypeKind_interface = 0b0001000
+	}TypeKinds;
+
+	struct stTType {
+		struct stTObject;
+		const struct stTString* name;
+		ufavor_t size;
+		TypeKinds kind;
+		struct stVFTL* vftptr;
+		struct stTType* base;
+		struct stTArray* mixins;
+		struct stTArray* interfaces;
+		struct stTArray* genericArguments;
+		struct stTArray* fields;
+		struct stTArray* methods;
+		struct stTArray* properties;
+		void* extras;
+	};
+	typedef enum {
+		MemberType_field = 0b01,
+		MemberType_method = 0b10,
+		MemberType_property = 0b11
+	} MemberTypes;
+
+	typedef enum {
+		AccessLevel_private = 0,
+		AccessLevel_protected = 0b00100000000,
+		AccessLevel_internal = 0b01000000000,
+		AccessLevel_protected_internal = 0b01100000000,
+		AccessLevel_public = 0b11100000000
+	} AccessLevels;
+
+	struct stTMember {
+		struct stTObject;
+		struct stTString* name;
+		uword_t decorators;
+		struct stTType* type;
+	};
+
+	struct stTField {
+		struct stTMember;
+		usize_t offset;
+	};
+
+	extern const struct stTObjectMeta TObject__metaInstance;
+	extern const struct stTObjectMeta TType__metaInstance;
+	extern const struct stTObjectMeta TString__metaInstance;
+
+	extern const struct stTType*const TObject__type__;
+	extern const struct stTType*const TType__type__;
+	extern const struct stTType*const TString__type__;
+	inline static const struct stTType* TObject__gettype__(struct stTObject* self) { return TObject__type__; };
+	inline static const struct stTType* TType__gettype__(struct stTObject* self) { return TType__type__; };
+	inline static const struct stTType* TString__gettype__(struct stTObject* self) { return TString__type__; };
+	inline static favor_t TObject__compare__(struct stTObject* left, struct stTObject* right) { return left == right ? 0 : ((left > right) ? 1 : -1); }
+	inline static const struct stTString* TObject__toString__(struct stTObject* self) {return self->__meta__->__gettype__(self)->name;}
+	inline static const struct stTString* TString__toString__(struct stTObject* self) { return (struct stTString*)self; };
+
+	static inline struct stTType* get_type(struct stTObject* obj) {
+		return (struct stTType*)obj->__meta__->__gettype__(obj);
+	}
+	static inline struct stTType* get_genericArgument(struct stTObject* obj, ufavor_t index) {
+		return ((struct stTType*)(obj->__meta__->__gettype__(obj)->genericArguments + 1)) + index;
+	}
+	static inline void* ref_increase(void* obj) { return (((struct stMRefUnit*)obj - 1)->__ref__++, obj); }
+#define ref_inc(obj) (((struct stMRefUnit*)obj-1)->__ref__++,obj)
+	static inline void* ref_decrease(void* obj) { return (--(((struct stMRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((struct stMRefUnit*)obj - 1)->__ref__ = 0, obj))); }
+#define ref_dec(obj) (--(((struct stMRefUnit*)obj - 1)->__ref__) >= 0 ? obj : ((((struct stMRefUnit*)obj - 1)->__ref__=0,obj)))
+
+#define Object_param(obj) ( (*((struct stMTObjUnit*)obj-1)).__ref__++,obj )
+#define Object_assign(dest,obj) ( (*((struct stMTObjUnit*)(dest=obj)-1)).__ref__++,obj )
+#define Object_release(obj) ( --(*((struct stMTObjUnit*)obj-1)).__ref__<=0?(obj=0):obj )
 
 typedef enum {
 	MemoryKind_normal = 0,
@@ -87,14 +243,8 @@ typedef struct stTMemoryMeta {
 	void (*__destruct__)(TMemory* mm, bool_t existed);
 }TMemoryMeta;
 
+extern const struct stTType*const TMemory__type__;
 
-
-struct stTMemoryLayout {
-	struct stMRefUnit;
-	struct stTMemory inst;
-};
-
-extern struct stTMemoryLayout TMemory_instance;
 extern TMemory* TMemory_default;
 
 TMemory* TMemory__construct__(TMemory* self);
@@ -226,7 +376,7 @@ static inline bool_t m_equal(const void* dest, const void* src, usize_t size) {
 }
 static inline bool_t TMemory_equal(void* dest, const void* src, usize_t size) { return m_equal(dest,src,size); }
 
-static inline favor_t m_compare(const void* leftBuffer, const void* rightBuffer) {
+static inline int m_compare(const void* leftBuffer, const void* rightBuffer) {
 	if (leftBuffer == rightBuffer) return 0;
 	if (leftBuffer) {
 		if (rightBuffer) {
@@ -267,6 +417,11 @@ typedef usize_t(*MLookTake)(utiny_t b);
 
 void m_look(const void* str, usize_t length, MLookTake take);
 
+/// <summary>
+/// TLogger
+/// </summary>
+
+
 
 typedef enum {
 	LogLevel_none = 0,
@@ -304,14 +459,12 @@ typedef struct stTLogger {
 
 typedef void (*TLoggerOutput)(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 
-typedef struct stLoggerMeta {
+typedef struct stTLoggerMeta {
 	struct stClazzMeta;
 	TLoggerOutput output;
-}LoggerMeta;
+}TLoggerMeta;
 
-extern LoggerMeta TLogger__meta__;
-
-
+extern const struct stTType*const TLogger__type__;
 extern TLogger* TLogger_default;
 
 TLogger* TLogger__construct__(TLogger* self, LoggerOptions* opts);
@@ -330,7 +483,7 @@ void TLogger_log(TLogger* self, LogLevels level, const byte_t* category, const b
 
 void TLogger__output(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args);
 static inline void TLogger_output__virtual__(struct stTLogger* self, LogLevels lv, const byte_t* category, const byte_t* message, void* args) {
-	((LoggerMeta*)(((struct stTObject*)self)->__meta__))->output(self, lv, category, message, args);
+	((TLoggerMeta*)(((struct stTObject*)self)->__meta__))->output(self, lv, category, message, args);
 }
 
 typedef enum {
@@ -341,9 +494,6 @@ typedef enum {
 } ExitCodes;
 favor_t log_exit(favor_t code, const byte_t* category, const byte_t* message, ...);
 
-
-
-// 基础内存类
 
 
 

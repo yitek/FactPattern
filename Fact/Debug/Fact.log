@@ -1,7 +1,8 @@
-﻿  TAlignedMemory.c
-  TGCMemory.c
-  memories_module.c
-  TestMemory.c
-  正在生成代码...
-  main.cpp
+﻿  runtime.c
+D:\Yitek\FactPattern\Fact\runtime.c(561,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\runtime.c(568,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\runtime.c(576,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\runtime.c(692,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\runtime.c(706,1): warning C4090: “初始化”: 不同的“const”限定符
+D:\Yitek\FactPattern\Fact\runtime.c(819,1): warning C4090: “初始化”: 不同的“const”限定符
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

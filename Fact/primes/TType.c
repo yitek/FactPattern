@@ -1,4 +1,12 @@
 #include "TType.h"
+#include "../runtime.h"
+
+
+
+
+
+
+
 
 TType* TType__create(const char* name, usize_t mixins, usize_t interfaces, usize_t fields, usize_t methods, usize_t properties, TMemory* mm) {
 	usize_t nameSize = m_strlen(name);
@@ -7,7 +15,7 @@ TType* TType__create(const char* name, usize_t mixins, usize_t interfaces, usize
 	byte_t* buffer = (byte_t*)(type + 1);
 	// name
 	type->name = (struct stTString*)buffer; m_copy(buffer += sizeof(struct stTString), name, nameSize); buffer += nameSize;
-	type->name->bytes = nameSize; type->name->length = -1;
+	//type->name->bytes = nameSize; type->name->length = -1;
 	// mixins
 	type->mixins = (struct stTArray*)buffer;
 	type->mixins->length = mixins;

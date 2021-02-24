@@ -340,7 +340,7 @@ struct stTUserForTestType {
 	struct stTType;
 };
 
-LoggerMeta TUserForTest__meta__ = {
+TLoggerMeta TUserForTest__meta__ = {
 	.offset = 0,
 	.output = TLogger__output
 };

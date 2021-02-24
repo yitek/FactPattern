@@ -11,7 +11,7 @@ TGCMemoryMeta TGCMemory__meta__ = {
 	.allocating = (MemoryAllocatingDirectives(*)(TAlignedMemory*, usize_t, MemoryKinds, AlignedMemoryChunk*)) TGCMemory__allocating,
 	.collectGarbages = (AlignedMemoryReleaseInfo(*)(TAlignedMemory*, bool_t, AlignedMemoryGCCallback))TGCMemory_collectGarbages,
 	.free = (bool_t(*)(TMemory*, void*))TGCMemory_free,
-	.get_type = 0,
+	.__gettype__ = 0,
 	.offset = 0,
 	.__destruct__ = (void(*)(TMemory*, bool_t))TGCMemory__destruct__
 };
@@ -19,9 +19,12 @@ TGCMemoryMeta TGCMemory__meta__ = {
 const usize_t markNumber = 1 << (sizeof(usize_t) - 1);
 const usize_t unmarkNumber = !(1 << (sizeof(usize_t) - 1));
 
-TGCMemory* TGCMemory__construct__(TGCMemory* self, GCMemoryOptions* opts, TLogger* logger) {
-	self = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)self, (AlignedMemoryOptions*)opts, logger);
-	((struct stTObject*)self)->__meta__ = (ClazzMeta*)&TGCMemory__meta__;
+TGCMemory* TGCMemory__construct__(TGCMemory* _self, GCMemoryOptions* opts, TLogger* logger) {
+	TGCMemory* self = (TGCMemory*)TAlignedMemory__construct__((TAlignedMemory*)_self, (AlignedMemoryOptions*)opts, logger);
+	if (!_self) {
+		*((ClazzMeta**)&self->__meta__) = (ClazzMeta*)&TGCMemory__meta__;
+	}
+	
 	if (opts) {
 		self->sweepBytes = opts->sweepBytes;
 	}

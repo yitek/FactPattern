@@ -144,9 +144,12 @@
     <ClInclude Include="io\stream.h" />
     <ClInclude Include="primes\Array.h" />
     <ClInclude Include="primes\Encoding.h" />
+    <ClInclude Include="primes\TInt.h" />
     <ClInclude Include="primes\Link.h" />
     <ClInclude Include="primes\List.h" />
     <ClInclude Include="primes\String.h" />
+    <ClInclude Include="primes\TArray.h" />
+    <ClInclude Include="primes\TString.h" />
     <ClInclude Include="runtime.h" />
     <ClInclude Include="memories\TAlignedMemory.h" />
     <ClInclude Include="memories\TGCMemory.h" />
@@ -165,9 +168,12 @@
   <ItemGroup>
     <ClCompile Include="io\stream.c" />
     <ClCompile Include="primes\Array.c" />
+    <ClCompile Include="primes\TInt.c" />
     <ClCompile Include="primes\Link.c" />
     <ClCompile Include="primes\List.c" />
     <ClCompile Include="primes\String.c" />
+    <ClCompile Include="primes\TArray.c" />
+    <ClCompile Include="primes\TString.c" />
     <ClCompile Include="runtime.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memories\TAlignedMemory.c" />

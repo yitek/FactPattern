@@ -99,6 +99,15 @@
     <ClInclude Include="tests\primes\TestString.h">
       <Filter>tests\primes</Filter>
     </ClInclude>
+    <ClInclude Include="primes\TArray.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\TInt.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\TString.h">
+      <Filter>primes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -160,6 +169,15 @@
     </ClCompile>
     <ClCompile Include="tests\primes\TestString.c">
       <Filter>tests\primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\TArray.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\TInt.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\TString.c">
+      <Filter>primes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
