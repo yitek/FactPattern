@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/d1 reportSingleClassLayoutCLogger /wd 4819 /wd 26812 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/d1 reportSingleClassLayoutClassA /wd 4819 /wd 26812 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,13 +142,16 @@
   <ItemGroup>
     <ClInclude Include="def.h" />
     <ClInclude Include="io\stream.h" />
+    <ClInclude Include="modules\TTypeBuilder.h" />
     <ClInclude Include="primes\Array.h" />
     <ClInclude Include="primes\Encoding.h" />
+    <ClInclude Include="primes\Set.h" />
     <ClInclude Include="primes\TInt.h" />
     <ClInclude Include="primes\Link.h" />
     <ClInclude Include="primes\List.h" />
     <ClInclude Include="primes\String.h" />
     <ClInclude Include="primes\TArray.h" />
+    <ClInclude Include="primes\TList.h" />
     <ClInclude Include="primes\TString.h" />
     <ClInclude Include="runtime.h" />
     <ClInclude Include="memories\TAlignedMemory.h" />
@@ -167,12 +170,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\stream.c" />
+    <ClCompile Include="modules\TTypeBuilder.c" />
     <ClCompile Include="primes\Array.c" />
+    <ClCompile Include="primes\Set.c" />
     <ClCompile Include="primes\TInt.c" />
     <ClCompile Include="primes\Link.c" />
     <ClCompile Include="primes\List.c" />
     <ClCompile Include="primes\String.c" />
     <ClCompile Include="primes\TArray.c" />
+    <ClCompile Include="primes\TList.c" />
     <ClCompile Include="primes\TString.c" />
     <ClCompile Include="runtime.c" />
     <ClCompile Include="main.cpp" />
@@ -191,6 +197,7 @@
     <ClCompile Include="tests\TestRuntime.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hello.fact" />
     <None Include="vcproj2cmake.ps1" />
   </ItemGroup>
   <ItemGroup>

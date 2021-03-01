@@ -37,6 +37,7 @@ void* List_append(List* self, usize_t itemSize,  TMemory* memory,void* itemType,
 	return node + 1;
 }
 
+
  void* List_unshift(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind) {
 	if (!memory)memory = TMemory_default;
 	Link* node = (Link*)_ALLOC1_(itemSize + sizeof(Link), itemType, mkind, memory);

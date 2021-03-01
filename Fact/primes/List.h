@@ -24,6 +24,7 @@ extern "C" {
 	List* List__construct__(List* self, TMemory* memory, void* itemType, MemoryKinds mkind);
 	void List__destruct__(List* self, bool_t existed, TMemory* memory);
 	void* List_append(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind);
+	
 	inline static void* List_push(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind) { return List_append(self,itemSize,memory,itemType,mkind); }
 	void* List_unshift(List* self, usize_t itemSize, TMemory* memory, void* itemType, MemoryKinds mkind);
 	inline static void* List_searchByIndex(List* self, usize_t index) {

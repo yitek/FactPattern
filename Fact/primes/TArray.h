@@ -18,11 +18,24 @@
 extern "C" {
 #endif
 	
-	typedef struct stTArray TArray;
+	typedef struct {
+		union {
+			struct stTArray;
+			struct {
+				struct stTObject __ob__;
+				struct stArray inst;
+			};
+		};
+	}TArray;
 
-	extern const struct stTObjectMeta TArray__metaInstance;
+	typedef struct stTArrayMeta {
+		struct stISetMeta;
+	} TArrayMeta;
+
+	extern const struct TArrayMeta TArray__metaInstance;
 
 	extern const struct stTType* const TArray__type__;
+	inline static const struct stTType* TArray__gettype__() { return TArray__type__; }
 
 	const TArray* TArray__construct__(TArray* self, const void* buffer, const usize_t count, TMemory* mm, struct stTType* type, MemoryKinds mkind);
 

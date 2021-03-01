@@ -4,13 +4,13 @@
 #define _FREE_(p,mm) m_free(p,mm)
 
 
-struct {
+const struct {
 	struct stMRefUnit;
 	struct stTString inst;
 	char chars[3 + sizeof(unichar_t)];
 } Int_nameInstance = {
 	.__ref__ = 0,
-	.inst.__meta__ = &TString__metaInstance,
+	.inst.__meta__ = (const struct stClazzMeta*)&TString__metaInstance,
 	.inst.length = 3,
 	.inst.bytes = 3,
 	.chars = "Int"
@@ -20,7 +20,7 @@ struct {
 	struct stTType inst;
 } Int_typeInstance = {
 	.__ref__ = 0,
-	.inst.name = &Int_nameInstance,
+	.inst.name = &Int_nameInstance.inst,
 	.inst.kind = TypeKind_struct,
 	.inst.size = sizeof(int_t),
 	.inst.__meta__ = 0
@@ -42,6 +42,7 @@ TInt* TInt__construct__(TInt* self,int_t value ,TMemory* mm, MemoryKinds mkind) 
 		*((ClazzMeta**)(&self->__meta__)) = (ClazzMeta*)&Int__meta__;
 	}
 	self->value = value;
+	return self;
 
 }
 

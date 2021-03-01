@@ -1,7 +1,12 @@
 #include "TArray.h"
 
-#define _ALLOC_(size,type,mind,mm) m_alloc(size,type,mind,mm);
-#define _FREE_(p,mm) m_free(p,mm);
+#define _ALLOC_(size,type,mind,mm) m_alloc(size,type,mind,mm)
+#define _FREE_(p,mm) m_free(p,mm)
+
+//const struct stTArraytMeta TArray__metaInstance;
+
+//const struct stTType* const TArray__type__;
+
 
 const TArray* TArray__construct__(TArray* self, const void* buffer, const usize_t count,  TMemory* mm, struct stTType* type, MemoryKinds mkind) {
 	//if (unitSize == 0) log_exit(ExitCode_argument, "Array.__construct__", "unitSize is required.");
@@ -114,3 +119,21 @@ void TArray__destruct__(TArray* self, bool_t existed, TMemory* mm) {
 
 #undef _ALLOC_
 #undef _FREE_
+
+
+
+
+const struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[7 + sizeof(unichar_t)];
+
+} TArray__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 7,
+	.inst.length = 7,
+	.strDatas = "Array()"
+};
+
+const struct stTString* TArray__toString__() { return (const struct stTString*)&TArray__typenameInstance; }

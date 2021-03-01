@@ -565,6 +565,30 @@ const struct stTObjectMeta TObject__metaInstance = {
 	.__compare__ = TObject__compare__,
 	.__endle__ = 0
 };
+
+const struct stIIteratorMeta IIterator__metaInstance = {
+   .__toString__ = KeyValuePair__toString__,
+   .__gettype__ = KeyValuePair__gettype__,
+   .__compare__ = TObject__compare__,
+   .__reset__ = 0,
+   .__current__ = 0,
+   .__next__ = 0,
+   .__endle__ = 0
+};
+
+const struct stTObjectMeta KeyValuePair__metaInstance = {
+   .__toString__ = KeyValuePair__toString__,
+   .__gettype__ = KeyValuePair__gettype__,
+   .__compare__ = TObject__compare__,
+   .__endle__ = 0
+};
+
+const struct stISetMeta ISet__metaInstance = {
+   .__toString__ = TObject__toString__,
+   .__gettype__ = ISet__gettype__,
+   .__compare__ = TObject__compare__,
+   .__iterator__ = 0
+};
 const struct stTObjectMeta TType__metaInstance = {
 	.offset = 0,
 	.__toString__ = TObject__toString__,
@@ -618,6 +642,133 @@ struct {
 };
 const struct stTType*const const TObject__type__ = &TObject__typeInstance.inst;
 
+
+
+///////////////////
+// IIterator() 
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[11 + sizeof(unichar_t)];
+} IIterator__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 11,
+	.inst.length = 11,
+	.strDatas = "IIterator()"
+};
+
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} IIterator__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_struct,
+	.inst.genericRestricts = (struct stTArray*)&KeyValuePair_genericRestrictsInstance,
+	.inst.genericArguments = 0,
+	.inst.vftptr = (struct stVFTL*)&IIterator__metaInstance,
+	.inst.name = &IIterator__typenameInstance.inst,
+	.inst.size = 0,
+	.inst.base = 0,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0
+};
+const struct stTType* const const IIterator__type__ = &IIterator__typeInstance.inst;
+
+
+///////////////////
+// KeyValuePair(,) 
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[15 + sizeof(unichar_t)];
+} KeyValuePair__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 15,
+	.inst.length = 15,
+	.strDatas = "KeyValuePair(,)"
+};
+
+const struct stTString* KeyValuePair__toString__(struct stTObject* self) { return &KeyValuePair__typenameInstance.inst; }
+
+
+
+
+const KeyValuePairRestricts KeyValuePair_genericRestrictsInstance = {
+	.length = 2,
+	.keyRestrict.defaultType = 0,
+	.keyRestrict.restrictType = 0,
+	.valueRestrict.defaultType = 0,
+	.valueRestrict.defaultType = 0
+};
+
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} KeyValuePair__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_struct,
+	.inst.genericRestricts = (struct stTArray*)&KeyValuePair_genericRestrictsInstance,
+	.inst.genericArguments = 0,
+	.inst.vftptr = (struct stVFTL*)&KeyValuePair__metaInstance,
+	.inst.name = &KeyValuePair__typenameInstance.inst,
+	.inst.size = 0,
+	.inst.base = 0,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0
+};
+const struct stTType* const const KeyValuePair__type__ = &KeyValuePair__typeInstance.inst;
+
+
+struct {
+	struct stMRefUnit;
+	struct stTString inst;
+	byte_t strDatas[4 + sizeof(unichar_t)];
+} ISet__typenameInstance = {
+	.__ref__ = 0,
+	.inst.__meta__ = (ClazzMeta*)&TString__metaInstance,
+	.inst.bytes = 4,
+	.inst.length = 4,
+	.strDatas = "ISet"
+};
+
+
+
+
+struct {
+	struct stMRefUnit;
+	struct stTType inst;
+} ISet__typeInstance = {
+	.inst.__meta__ = (ClazzMeta*)&TType__metaInstance,
+	.inst.kind = TypeKind_class,
+	.inst.genericRestricts = (struct stTArray*)&KeyValuePair_genericRestrictsInstance,
+	.inst.genericArguments = 0,
+	.inst.vftptr = (struct stVFTL*)&ISet__metaInstance,
+	.inst.name = &ISet__typenameInstance.inst,
+	.inst.size = sizeof(struct stTType),
+	.inst.base = 0,
+	.inst.mixins = 0,
+	.inst.interfaces = 0,
+	.inst.genericArguments = 0,
+	.inst.methods = 0,
+	.inst.fields = 0,
+	.inst.properties = 0,
+	.inst.extras = 0
+};
+const struct stTType* const const ISet__type__ = &ISet__typeInstance.inst;
 
 /////////////////////////////////
 // Type's Type define

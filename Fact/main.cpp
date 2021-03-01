@@ -13,7 +13,7 @@
 #include "tests/primes/TestString.h"
 //#include "tests/TestLink.h"
 
- 
+using namespace std;
 void printSysInfo() {
 #if defined(__WIN__)
 
@@ -40,8 +40,50 @@ void printSysInfo() {
     printf_s("sizeof(void*): %d\n", sizeof(void*));
     printf_s("sizeof(wchar_t): %d\n", sizeof(void*));
 }
+
+class ClassA {
+    
+public:
+    int classA_value;
+    ClassA(int value) {
+        this->classA_value = value;
+    }
+    void aMethod() { printf_s("ClassA.aMethod() is invoked.\n"); }
+    virtual void get_type() { cout << "ClassA.get_type(virtual) is invoked, self="<< this << endl; }
+};
+void testCppClassLayout() {
+    ClassA a(22);
+    typedef union {
+        void(*Fun)(ClassA*);
+        void(ClassA::* CFun)();
+    }Fn;
+
+    
+
+    Fn pFun;
+    cout << "a:" << (int*)(&a) << endl;
+    cout << "a.__vftptr__ value:" << (int*)(&a) << endl;
+
+    cout << "a.__vftptr__[0]:" << (int*)*(int*)(&a) << endl;
+    //cout << "ClassA::get_type addr:" << (Fun)&ClassA::get_type << endl;
+    printf_s(" ClassA::get_type addr:%p\n",(&ClassA::get_type));
+    pFun.Fun = (void(*)(ClassA*)) * ((int*)*(int*)(&a));
+    a.get_type();
+    ClassA* pA = &a;
+    __asm 
+    {
+        mov ecx,pA;
+    }
+    pFun.Fun(&a);
+    //pFun.CFun = (&ClassA::get_type);
+    //pFun.Fun();
+    //printf_s("*vftptr[%p]\n", (void*)*(long**)vftptr);
+    //printf_s("objA._ClassA_value[%p]\n",&objA->classA_value);
+    
+}
 int main()
 {
+    testCppClassLayout();
     printSysInfo();
     testRuntime();
     testMemory();

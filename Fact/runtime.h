@@ -110,12 +110,32 @@ extern "C" {
 		struct stTObject;
 	} MTObjUnit;
 
+	extern const struct stTType* const KeyValuePair__type__;
+	
+	struct stIIteratorMeta {
+		struct stTObjectMeta;
+		void (*__reset__)();
+		void* (*__current__)();
+		bool_t(*__next__)();
+	};
+
+
+	struct stISetMeta {
+		struct stTObjectMeta;
+		struct stIIterator* (*__iterator__)();
+	};
+	
+	struct stISet {
+		struct stTObject;
+	};
+
 	struct stArray {
 		usize_t length;
 	};
 
+
 	struct stTArray {
-		struct stTObject;
+		struct stISet;
 		struct stArray;
 	};
 
@@ -125,11 +145,11 @@ extern "C" {
 	};
 
 	struct stTString {
-		struct stTObject;
+		struct stISet;
 		struct stString;
 	};
 	struct _stTString {
-		struct stTObject __ob__;
+		struct stISet __ob__;
 		struct stString __str__;
 	};
 
@@ -142,8 +162,13 @@ extern "C" {
 		struct stLink* tail;
 	};
 	struct stTList {
-		struct stTObject;
+		struct stISet;
 		struct stList;
+	};
+
+	struct _stTList {
+		struct stISet __ob__;
+		struct stList __list__;
 	};
 
 	typedef enum {
@@ -159,6 +184,7 @@ extern "C" {
 		ufavor_t size;
 		TypeKinds kind;
 		struct stVFTL* vftptr;
+		struct stTArray* genericRestricts;
 		struct stTType* base;
 		struct stTArray* mixins;
 		struct stTArray* interfaces;
@@ -194,20 +220,52 @@ extern "C" {
 		usize_t offset;
 	};
 
+	struct stGenericRestrict {
+		const struct stTType* defaultType;
+		const struct stTType* restrictType;
+	};
+	
+
+
+	typedef struct {
+		struct stArray;
+		union {
+			struct stGenericRestrict infos[2];
+			struct {
+				struct stGenericRestrict valueRestrict;
+				struct stGenericRestrict keyRestrict;
+			};
+		};
+
+	} KeyValuePairRestricts;
+
+	extern const KeyValuePairRestricts KeyValuePair_genericRestrictsInstance;
+
 	extern const struct stTObjectMeta TObject__metaInstance;
+	extern const struct stTObjectMeta KeyValuePair__metaInstance;
+	extern const struct stIIteratorMeta IIterator__metaInstance;
+	extern const struct stISetMeta ISet__metaInstance;
 	extern const struct stTObjectMeta TType__metaInstance;
 	extern const struct stTObjectMeta TString__metaInstance;
 
 	extern const struct stTType*const TObject__type__;
+	extern const struct stTType* const KeyValuePair__type__;
+	extern const struct stTType* const IIterator__type__;
+	extern const struct stTType* const ISet__type__;
 	extern const struct stTType*const TType__type__;
 	extern const struct stTType*const TString__type__;
 	inline static const struct stTType* TObject__gettype__(struct stTObject* self) { return TObject__type__; };
+	inline static const struct stTType* KeyValuePair__gettype__(struct stTObject* self) { return KeyValuePair__type__; };
+	inline static const struct stTType* IIterator__gettype__(struct stTObject* self) { return IIterator__type__; };
+	inline static const struct stTType* ISet__gettype__(struct stTObject* self) { return ISet__type__; }
 	inline static const struct stTType* TType__gettype__(struct stTObject* self) { return TType__type__; };
 	inline static const struct stTType* TString__gettype__(struct stTObject* self) { return TString__type__; };
+
 	inline static favor_t TObject__compare__(struct stTObject* left, struct stTObject* right) { return left == right ? 0 : ((left > right) ? 1 : -1); }
+	
 	inline static const struct stTString* TObject__toString__(struct stTObject* self) {return self->__meta__->__gettype__(self)->name;}
 	inline static const struct stTString* TString__toString__(struct stTObject* self) { return (struct stTString*)self; };
-
+	const struct stTString* KeyValuePair__toString__(struct stTObject* self);
 	static inline struct stTType* get_type(struct stTObject* obj) {
 		return (struct stTType*)obj->__meta__->__gettype__(obj);
 	}

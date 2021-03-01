@@ -1,10 +1,16 @@
-﻿  String.c
-  TestString.c
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(7,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(9,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(12,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(15,1): warning C4090: “初始化”: 不同的“const”限定符
-D:\Yitek\FactPattern\Fact\tests\primes\TestString.c(24,1): warning C4090: “初始化”: 不同的“const”限定符
-  正在生成代码...
-  main.cpp
+﻿  main.cpp
+  class _s__RTTIBaseClassArray	size(1):
+  	+---
+   0	| arrayOfBaseClassDescriptors
+  	+---
+  class ClassA	size(8):
+  	+---
+   0	| {vfptr}
+   4	| classA_value
+  	+---
+  ClassA::$vftable@:
+  	| &ClassA_meta
+  	|  0
+   0	| &ClassA::get_type
+  ClassA::get_type this adjustor: 0
   Fact.vcxproj -> D:\Yitek\FactPattern\Debug\Fact.exe

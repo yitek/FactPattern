@@ -34,6 +34,9 @@
     <Filter Include="io">
       <UniqueIdentifier>{9f861d23-55a0-45c1-8f94-47e00c17604e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{6f24242b-2e45-4164-bf8c-386929bbc8b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="def.h">
@@ -108,6 +111,15 @@
     <ClInclude Include="primes\TString.h">
       <Filter>primes</Filter>
     </ClInclude>
+    <ClInclude Include="primes\Set.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="primes\TList.h">
+      <Filter>primes</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\TTypeBuilder.h">
+      <Filter>modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -179,9 +191,19 @@
     <ClCompile Include="primes\TString.c">
       <Filter>primes</Filter>
     </ClCompile>
+    <ClCompile Include="primes\Set.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="primes\TList.c">
+      <Filter>primes</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\TTypeBuilder.c">
+      <Filter>modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcproj2cmake.ps1" />
+    <None Include="hello.fact" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

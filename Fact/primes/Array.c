@@ -105,3 +105,5 @@ void Array__destruct__(Array* self, bool_t existed,TMemory* mm) {
 		m_free(self,mm?mm:TMemory_default);
 	}
 }
+
+// meta

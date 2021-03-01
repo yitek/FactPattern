@@ -3,7 +3,7 @@
 #define _ALLOC1_(size,arg,kind,mm) m_alloc1(size,arg,kind,mm)
 #define _FREE_(p,mm) m_free(p,mm)
 
-const TString* const TString_empty = &String__emptyInstance.__ob__;
+const TString* const TString_empty = (const TString* const)&String__emptyInstance.__ob__;
 
 const TString* TString__construct__(TString* self, const byte_t* buffer, usize_t byteCount, TMemory* memory, MemoryKinds mkind) {
 	usize_t charCount = -1;
@@ -83,7 +83,7 @@ const TString* TString_clip(const TString* arr, const usize_t start, usize_t len
 		substr->length = length;
 		substr->bytes = bytes;
 		return substr;
-	} return String_empty;
+	} return (const TString*) String_empty;
 
 }
 

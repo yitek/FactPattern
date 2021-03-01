@@ -1,0 +1,167 @@
+import { Stream , File } from:io
+import console as con
+
+// 定义函数
+fabric(n: Int,showProcess:Bool=false) Int
+	f = 1
+	for i:Int in [0..n]
+		if showProcss, con.outln(i)
+		f += i
+	return f
+
+print (str:Str = "hello" ...params:Any[]) Bool
+	at = 0
+	while match = str.match(/\{([0..9]+)\}/g)
+		con out str.substr(at,match.length)
+		   .out params[Int(match[0])]
+		at += match.length
+	rest = str.substr(startAt=at)
+	con.out rest
+	return true
+
+//定义类
+CFile extends Object implements IFile:
+	filename:Str
+	public CFile()
+	public CFile(filename:Str)
+		self.filename = filename
+
+	public virtual log()
+
+//定义特征
+InFile trait CFile implements IInFile:
+	underlay:Any
+	filename:Str
+	public InFile(underlay:Any):
+		self.underlay = underlay
+		self.filename = super.filename
+
+	log()
+		self.underlay log
+
+	public read():Byte
+		return self.underlay read
+
+OutFile trait CFile implements IInFile:
+	underlay:Any
+	filename:Str
+	public OutFile(underlay:Any):
+		self.underlay = underlay
+		self.filename = trait.filename
+
+	log() 
+		self.underlay.log()
+
+	public write(b:Byte):OutFile
+		self.underlay write b
+		return self
+
+IOFile extends CFile traits InFile OutFile implements IIOFile:
+	public IOFile(filename:Str,inUnderlay=null,outUnderlay=null):
+		CFile(self,filename)
+		InFile(self,inUnderlay)
+		OutFile(self,outUnderlay)
+	
+	override log() IOFile:
+		self::InFile log
+		self::OutFile log
+
+src = IOFile("file://d:\fact\in.txt")
+dest = IOFile("file://d:\fact\out.txt")
+
+while b = src.read()
+	dest write b
+
+
+////中文风格
+
+从：输入输出库,导入 { 流类 , 文件类 } 
+导入 控制台类 作为 控制台
+
+斐波拉契算法（ 数字：整型，(是=是，不=否)需要显示过程 ） 布尔型
+	斐数 = 1
+	遍历 【1.。数字】 作为 i
+		如果 需要显示过程，控制台 打印 斐数
+		斐数 += i
+	返回 真
+
+打印（字串：字串型，。。。字串参数列表：对象【】） 
+	字符位置 = 0
+	匹配结果 = 字串。匹配（/\{([0..9]+)\}/g）
+	当 存在 匹配结果
+		控制台 输出 （字串。子串 从字符位置  长度为：匹配结果的长度）
+		       输出 字串参数列表【整型（匹配结果【0】）】
+		字串位置 += 匹配结果的长度
+		控制台 输出 （字串 。子串 从：字符位置）
+		匹配结果 = 字串 匹配 /\{([0..9]+)\}/g 从:字符位置
+	字符位置 = 0
+
+
+函数定义 ：其实是句型定义
+
+substr(start,length)
+
+@控制台 输出 （@字符串1 取子串，从 @字符位置 开始 ，获取长度为 @匹配结果的长度）
+
+// @名词 @量词
+
+
+《字串型》：扩展 《对象类》 实现 《集合接口》
+//<String>: extends <Object> implements <ISet>
+	【句法：自 @自己 中】
+	//[gramma: in @self]
+
+	@字串长度《整型》
+	//@length<Int>
+
+	取子串（【】@开始位置，@字符长度=-1）《字串型》公开的 可重载的
+	// substr([FromGet] @start <Int>, @length<Int>=-1 ) <String> public virtual
+		结果为 字串型（@自己的长度 - @开始位置 + @字符长度）
+		// return String(@self - @start + @length)
+
+	取子串 :从@开始位置《整型》【来自GET】开始 :获取长度为 @字符长度《整型》=-1 《字串型》
+	// substr :from @start<Int>[FromGet] :take @length<Int>=-1 <String>
+		结果为 字串型（@自己的长度 - @开始位置 + @字符长度）
+		// return String(@self's length - @start + @length)
+
+字串1= “”
+// str1 = ""
+// 主谓宾结构
+字串1 取子串 从 字符位置 开始，获取长度为 匹配结果的长度
+// str1 sub from start take match's length 虽然这个表达更接近自然语言，但非常不清晰
+// str1.sub from: start,take: match.length // 这个表达就好多了
+// str1.sub(from=start,take=match.length) // 这个表达跟赋值统一，但人读上去有些别扭
+// <String>.sub(str1, from:start,take:match.length)
+// 字串1.取子串（从：字符位置， 获取：匹配结果.长度）
+// 字串型.取子串（字串1，从:字符位置，获取：匹配结果的长度）
+
+sub:() //到底是定义了一个sub函数还是调用了sub函数？
+
+<String(T)> extends <Object> implements <ISet> [public]
+《字串型(T)》扩展自《对象类》，实现接口《集合接口》【公开的】
+	length<Int> = 0
+	长度《整型》 = 0
+	sub(<Int>start[FromBody], length<Int>:-1 )
+
+
+
+
+// 谓语提前
+取子串 自 字串1 中，从 字符位置 开始，获取长度为 匹配结果的长度
+// sub in str1 from at take match's length
+<String> : extends <Object> implements ISet
+	[gramma: from @self]
+	@length<Int>
+	sub: from @start, take @length
+		return @self.length - @start + @length
+@str = ""
+@str sub from @start ,take @length
+sub @str take @length from @start
+sub from @str take @length from @start
+
+
+
+
+
+		
+		
